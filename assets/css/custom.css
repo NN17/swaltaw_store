@@ -1,0 +1,55 @@
+#maincontent {
+	margin-top: 70px;
+	border: 1px solid #eee;
+	padding: 15px;
+}
+
+.content{
+	padding: 15px;
+}
+
+textarea{
+	resize: none !important;
+	height: 130px;
+}
+
+.custom-confirm-box{
+	width: 40%;
+	margin: 0px auto;
+}
+
+.ui.search.dropdown.selection{
+	width: 100% !important;
+}
+
+.actions{
+	padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: 1px solid #ddd;
+    text-align: center !important;
+    background: #eee;
+}
+
+.actions .button{
+	width: 25% !important;
+}
+
+/*table{
+	font-size: 12px !important;
+}*/
+
+.myanmar h1, .myanmar h2, .myanmar h3, .myanmar h4, .myanmar h5, .myanmar div, .myanmar li, .myanmar th, .myanmar td, .myanmar a, .myanmar input, .myanmar textarea, .myanmar select, .myanmar button{
+	font-family: 'Padauk', sans-serif !important;
+}
+
+.english h1, .english h2, .english h3, .english h4, .english h5, .english div, .english li, .english th, .english td, .english a, .english input, .english textarea, .english select, .english button{
+	font-family: 'Quicksand', sans-serif !important;
+}
+
+.pagination{
+	text-align: center;
+}
+
+.text-capitalize{
+	text-transform: capitalize !important;
+}

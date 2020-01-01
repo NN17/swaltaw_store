@@ -1,0 +1,44 @@
+/* 
+* Margin
+*/
+.mid-margin {
+	margin-top: 15px !important;
+	margin-bottom: 15px !important;
+}
+
+/* 
+* Padding
+*/
+.mid-padding {
+	padding-top: 15px !important;
+	padding-bottom: 15px !important;
+}
+
+/* 
+* Text align
+*/
+
+.text-right {
+	text-align: right !important;
+}
+
+.text-left {
+	text-align: left !important;
+}
+
+.text-center {
+	text-align: center !important;
+}
+
+.py-5 {
+	padding-top: 50px;
+	padding-bottom: 50px;
+}
+
+.icon-5x {
+	font-size: 60px !important;
+}
+
+.text-grey {
+	color: #aaa;
+}
