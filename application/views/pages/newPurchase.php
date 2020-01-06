@@ -45,7 +45,7 @@
     </div>
     <div class="field">
         <label><?=$this->lang->line('quantity')?></label>
-        <?=form_number('qty','','placeholder="'.$this->lang->line('quantity').'" required')?>
+        <?=form_number('qty','','placeholder="'.$this->lang->line('quantity').'" min="1" required')?>
     </div>
     <div class="field">
         <label><?=$this->lang->line('remark')?> ( Optional )</label>

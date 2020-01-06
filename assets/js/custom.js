@@ -99,6 +99,66 @@ $(document).ready(function() {
 		$('#code').val(catCode + "-" + bCode + "-" + iCode);
 	});
 
+	$("#warehouseIssue").on('change', function(){
+		var warehouse = $(this).val();
+		// console.log(warehouse);
+
+		$.ajax({
+			url: base_url() + 'ignite/getItemsByWarehouse/' + warehouse,
+			type: 'GET',
+			crossDomain: 'TRUE',
+			success: function(res){
+				$("#itemIssue").html(res);
+			}
+		})
+	});
+
+	// Check Qty..
+	$("#qtyIssue").on('change', function(){
+		var qty = $(this).val();
+		var warehouse = $("#warehouseIssue").val();
+		var item = $('#itemIssue').val();
+
+		$("#qtyErr").html('<div class="ui active inline loader"></div>');
+		setTimeout(function(){
+			console.log(qty + '/' + warehouse + '/' + item);
+			if(warehouse == "" || item == ""){
+				$("#qtyErr").html('<i class="ui icon orange large exclamation triangle"></i>');
+				$("#qtyIssue").attr('placeholder', 'Warhouse & Item must not be NULL ..');
+				$("#qtyIssue").val('');
+				$("#qtyIssue").focus();
+			}
+			else{
+				$.ajax({
+					url: base_url() + 'ignite/checkQty/' + qty + '/' + warehouse + '/' + item,
+					type: 'GET',
+					crossDomain: 'TRUE',
+					success: function(res){
+						// $("#qtyErr").html(res);
+						console.log(res);
+						var obj = JSON.parse(res);
+						if(obj.status == true){
+							$("#qtyErr").html('<i class="icon check circle large green"></i>').attr('data-status', obj.status);
+						}else{
+							$("#qtyErr").html('<i class="icon exclamation triangle large orange"></i> Only '+ obj.quantity +' Remain..').attr('data-status', obj.status);
+						}
+					}
+				});
+			}
+		},1000);
+		
+	});
+
+	// Stock Out Form submit
+	$("#formStockOut").on('submit', function(){
+		console.log('form submitted');
+		var qtyStatus = $("#qtyErr").data('status');
+		if(qtyStatus == false){
+			event.preventDefault();
+			$("#qtyIssue").focus();
+		}
+	});
+
 
 });// End of document ready function
 

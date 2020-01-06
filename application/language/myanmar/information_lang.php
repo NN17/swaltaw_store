@@ -4,8 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	// Language Setting for main menu
 	$lang['home'] = 'မူလစာမျက်နှာ';
 	$lang['stocks'] = 'ကုန်ပစ္စည်းလက်ကျန်';
-	$lang['purchase'] = 'အဝယ်စာရင်း';
-	$lang['sales'] = 'အရောင်းစာရင်း';
+	$lang['purchase'] = 'ကုန်ပစ္စည်း အဝင်';
+	$lang['sales'] = 'ကုန်ပစ္စည်း အထွက်';
 	$lang['itemPrice'] = 'ပစ္စည်းနှင့် စျေးနှုန်း';
 	$lang['lang_en'] = 'အင်္ဂလိပ်';
 	$lang['lang_mm'] =  'မြန်မာ';
@@ -69,10 +69,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['remark'] = 'မှတ်ချက်';
 	$lang['email'] = 'အီးမေးလ်';
 	$lang['date'] = 'နေ့စွဲ';
+	$lang['quantity'] = 'အရေအတွက်';
 
 	// Language for Purchase
 	$lang['new_purchase'] = 'အဝယ်စာရင်းအသစ်ထည့်ရန်';
-	$lang['quantity'] = 'အရေအတွက်';
 	$lang['purchase_date'] = 'ဝယ်ယူသည့်နေ့စွဲ';
 	$lang['editPurchase'] = 'အဝယ်စာရင်းပြင်ဆင်ရန်';
+
+	// Language for Sales
+	$lang['new_sale'] = 'ကုန်ပစ္စည်းထုတ်ပေးရန်';
+	$lang['sale_date'] = 'ထုတ်ပေးသည့်ရက်စွဲ';
+	$lang['edit_sale'] = 'ပစ္စည်းထုတ်ပေးမှု ပြင်ဆင်ရန်';
  

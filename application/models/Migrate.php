@@ -275,6 +275,60 @@ class Migrate extends CI_Model {
 
         $this->dbforge->add_key('purchaseId', TRUE);
         $this->dbforge->create_table('purchase_tbl', TRUE);
+
+        // Create Stocks Balance Table
+        $this->dbforge->add_field(array(
+          'balanceId' => array(
+            'type' => 'INT',
+            'constraint' => 8,
+            'auto_increment' => TRUE
+          ),
+          'itemId' => array(
+            'type' => 'INT',
+            'constraint' => 8
+          ),
+          'qty' => array(
+            'type' => 'INT',
+            'constraint' => 8
+          ),
+          'warehouseId' => array(
+            'type' => 'INT',
+            'constraint' => 8
+          ),
+        ));
+
+        $this->dbforge->add_key('balanceId', TRUE);
+        $this->dbforge->create_table('stocks_balance_tbl', TRUE);
+
+        // Create Stock Out Table
+        $this->dbforge->add_field(array(
+          'issueId' => array(
+            'type' => 'INT',
+            'constraint' => 8,
+            'auto_increment' => TRUE
+          ),
+          'itemId' => array(
+            'type' => 'INT',
+            'constraint' => 8
+          ),
+          'qty' => array(
+            'type' => 'INT',
+            'constraint' => 8
+          ),
+          'warehouseId' => array(
+            'type' => 'INT',
+            'constraint' => 8
+          ),
+          'issueDate' => array(
+            'type' => 'DATETIME'
+          ),
+          'remark' => array(
+            'type' => 'TEXT'
+          ),
+        ));
+
+        $this->dbforge->add_key('issueId', TRUE);
+        $this->dbforge->create_table('stocks_out_tbl', TRUE);
         
         
         // ------------ End of Create Tables ---------------

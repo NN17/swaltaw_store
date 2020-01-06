@@ -3,9 +3,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 	// Language for Main Menu
 	$lang['home'] = 'HOME';
-	$lang['stocks'] = 'STOCK BALANCE';
-	$lang['purchase'] = 'PURCHASE';
-	$lang['sales'] = 'SALES';
+	$lang['stocks'] = 'Stock Balance';
+	$lang['purchase'] = 'Stocks In';
+	$lang['sales'] = 'Stocks Out';
 	$lang['itemPrice'] = 'Items & Price';
 	$lang['lang_en'] = 'English';
 	$lang['lang_mm'] = 'Myanmar';
@@ -68,9 +68,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['remark'] = 'Remark';
 	$lang['email'] = 'Email';
 	$lang['date'] = 'Date';
+	$lang['quantity'] = 'Quantity';
 
 	// Language for Purchase
 	$lang['new_purchase'] = 'New Purchase';
-	$lang['quantity'] = 'Quantity';
 	$lang['purchase_date'] = 'Purchase Date';
 	$lang['editPurchase'] = 'Edit Purchase';
+
+	// Language for Sales
+	$lang['new_sale'] = 'New Stocks Issue';
+	$lang['sale_date'] = 'Issue Date';
+	$lang['edit_sale'] = 'Edit Stock Issue';

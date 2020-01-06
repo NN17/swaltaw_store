@@ -20,7 +20,7 @@
     <div class="ui fixed  menu <?=$this->session->userdata('site_lang')?>">
         
         <div class="ui container fluid">
-            <a href="ignite/dashboard" class="header item">
+            <a href="ignite/home" class="header item">
             <img src="assets/imgs/ignite-logo-circle.png" />
             &nbsp; &nbsp; IGNITE SOURCE &nbsp;
             <small class="text-grey">Inventory</small>

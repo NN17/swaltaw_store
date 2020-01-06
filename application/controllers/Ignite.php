@@ -573,6 +573,27 @@ class Ignite extends CI_Controller {
         );
 
         $this->db->insert('purchase_tbl', $arr);
+
+        // Check balance exist
+        $balance = $this->ignite_model->get_limit_datas('stocks_balance_tbl', ['itemId' => $itemId, 'warehouseId' => $warehouse])->row_array();
+        if(count($balance) > 0){
+            $arr = array(
+                'qty' => $qty + $balance['qty'],
+            );
+
+            $this->db->where('itemId', $itemId);
+            $this->db->where('warehouseId', $warehouse);
+            $this->db->update('stocks_balance_tbl', $arr);
+        }
+        else{
+            $arr = array(
+                'itemId' => $itemId,
+                'qty' => $qty,
+                'warehouseId' => $warehouse,
+            );
+
+            $this->db->insert('stocks_balance_tbl', $arr);
+        }
         redirect('purchase/0');
     }
 
@@ -623,8 +644,77 @@ class Ignite extends CI_Controller {
     * Sales Section Start
     */
     public function sales(){
+        $data['issues'] = $this->ignite_model->get_issuedItems();
+
         $data['content'] = 'pages/sales';
         $this->load->view('layouts/template', $data);
+    }
+
+    public function newSale(){
+        $data['items'] = $this->ignite_model->get_issueItems();
+        $data['warehouses'] = $this->ignite_model->get_data('warehouse_tbl')->result_array();
+        
+        $data['content'] = 'pages/newSale';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function getItemsByWarehouse(){
+        $warehouseId = $this->uri->segment(3);
+
+        $items = $this->ignite_model->get_issueItemsByWarehouse($warehouseId);
+
+        if(count($items) > 0){            
+            foreach($items as $item){
+
+                echo '<option value="'.$item['itemId'].'">'.$item['itemName'].' ( '.$item['categoryName'].' / '.$item['brandName'].' ) ~ '.number_format($item['purchasePrice']).' '.$item['currency'].'</option>';
+            }
+        }
+        else{
+            echo '<option value="">No Result Found ..</option>';
+        }
+    }
+
+    public function checkQty(){
+        $qty = $this->uri->segment(3);
+        $warehouse = $this->uri->segment(4);
+        $item = $this->uri->segment(5);
+
+        $status = $this->ignite_model->checkQty($qty, $warehouse, $item);
+        if($status['qty'] >= $qty){
+            echo json_encode(array('status' => true, 'quantity' => $status['qty']));
+        }
+        else{
+            echo json_encode(array('status' => false, 'quantity' => $status['qty']));
+        }
+    }
+
+    public function addStockOut(){
+        $warehouse = $this->input->post('warehouse');
+        $item = $this->input->post('item');
+        $issueDate = $this->input->post('iDate');
+        $qty = $this->input->post('qty');
+        $remark = $this->input->post('remark');
+
+        $arr = array(
+            'itemId' => $item,
+            'qty' => $qty,
+            'warehouseId' => $warehouse,
+            'issueDate' => $issueDate,
+            'remark' => $remark
+        );
+
+        $this->db->insert('stocks_out_tbl', $arr);
+
+        $bal = $this->ignite_model->get_limit_datas('stocks_balance_tbl',['itemId' => $item, 'warehouseId' => $warehouse])->row_array();
+        $balUpt = array(
+            'qty' => ($bal['qty'] - $qty)
+        );
+
+        $this->db->where('itemId', $item);
+        $this->db->where('warehouseId', $warehouse);
+        $this->db->update('stocks_balance_tbl', $balUpt);
+
+        redirect('sales');
     }
     /*
     * Sales Section End

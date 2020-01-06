@@ -360,4 +360,65 @@ class Ignite_model extends CI_Model {
         return $data->result_array();
     }
 
+    function get_issueItems(){
+        $data = $this->db->query("SELECT * FROM stocks_balance_tbl AS sb
+                LEFT JOIN items_price_tbl AS ip
+                ON ip.itemId = sb.itemId 
+                LEFT JOIN categories_tbl AS cat
+                ON cat.categoryId = ip.categoryId
+                LEFT JOIN brands_tbl AS brand
+                ON brand.brandId = ip.brandId
+                LEFT JOIN currency_tbl AS currency
+                ON currency.currencyId = ip.currency
+                LEFT JOIN supplier_tbl AS supplier
+                ON supplier.supplierId = ip.supplierId
+                WHERE sb.qty > 0
+                AND ip.active = TRUE
+                ORDER BY ip.itemName ASC
+                ");
+        return $data->result_array();
+    }
+
+    function get_issueItemsByWarehouse($warehouse){
+        $data = $this->db->query("SELECT * FROM stocks_balance_tbl AS sb
+                LEFT JOIN items_price_tbl AS ip
+                ON ip.itemId = sb.itemId 
+                LEFT JOIN categories_tbl AS cat
+                ON cat.categoryId = ip.categoryId
+                LEFT JOIN brands_tbl AS brand
+                ON brand.brandId = ip.brandId
+                LEFT JOIN currency_tbl AS currency
+                ON currency.currencyId = ip.currency
+                LEFT JOIN supplier_tbl AS supplier
+                ON supplier.supplierId = ip.supplierId
+                WHERE sb.qty > 0
+                AND ip.active = TRUE
+                AND sb.warehouseId = $warehouse
+                ORDER BY ip.itemName ASC
+                ");
+        return $data->result_array();
+    }
+
+    function checkQty($qty, $warehouse, $item){
+        $data = $this->db->query("SELECT * FROM stocks_balance_tbl
+                    WHERE itemId = $item
+                    AND warehouseId = $warehouse
+                    ")->row_array();
+        
+        return $data;
+    }
+
+    function get_issuedItems(){
+        $data = $this->db->query("SELECT * FROM stocks_out_tbl AS so
+            LEFT JOIN items_price_tbl AS ip
+            ON ip.itemId = so.itemId
+            LEFT JOIN brands_tbl AS bd
+            ON bd.brandId = ip.brandId
+            LEFT JOIN warehouse_tbl AS wh
+            ON wh.warehouseId = so.warehouseId
+            ORDER BY so.issueDate DESC
+            ");
+        return $data->result_array();
+    }
+
 }
