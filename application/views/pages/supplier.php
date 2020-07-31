@@ -1,11 +1,12 @@
-<h3><?=$this->lang->line('supplier')?></h3>
-<div class="ui divider"></div>
+<div class="ui clearing segment">
+	<h3 class="ui violet left floated header"><?=$this->lang->line('supplier')?></h3>
+	<a href="create-supplier" class="ui right floated button purple">
+	    <i class="icon plus circle"></i> <?=$this->lang->line('new')?>
+	</a>
+</div>
 
-<a href="create-supplier" class="ui button purple">
-    <i class="icon plus circle"></i> <?=$this->lang->line('new')?>
-</a>
 
-<table class="ui table padded purple tablet stackable">
+<table class="ui table padded purple tablet stackable" id="dataTable">
 	<thead>
 		<tr>
 			<th>#</th>

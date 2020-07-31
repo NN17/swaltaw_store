@@ -1,7 +1,7 @@
 <h3><?=$this->lang->line('new_warehouse')?></h3>
 <div class="ui divider"></div>
 
-<div class="ui two column grid">
+<div class="ui three column centered grid">
 <div class="column">
 <?=form_open('ignite/addWarehouse', 'class="ui form"')?>
     <input type="hidden" name="referer" value="<?=$_SERVER['HTTP_REFERER']?>" />
@@ -30,7 +30,19 @@
         </div>
     </div>
 
+    <h4 class="ui orange dividing header">Use as Shop</h4>
     <div class="field">
+        <label><?=$this->lang->line('shops')?></label>
+        <div class="inline">
+            <div class="ui toggle checkbox">
+            <input name="shop" type="checkbox" tabindex="0" class="hidden">
+            <label><?=$this->lang->line('active')?></label>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui divider"></div>
+    <div class="field text-center">
         <?=form_submit('save',$this->lang->line('save'),'class="ui button blue"')?>
         <?=anchor('warehouse',$this->lang->line('cancel'),'class="ui button"')?>
     </div>

@@ -1,11 +1,12 @@
-<h3><?=$this->lang->line('category')?></h3>
-<div class="ui divider"></div>
+<div class="ui clearing segment">
+	<h3 class="ui navy left floated header"><?=$this->lang->line('category')?></h3>
+	<a href="create-category" class="ui right floated button purple">
+	    <i class="icon plus circle"></i> <?=$this->lang->line('new')?>
+	</a>
+</div>
 
-<a href="create-category" class="ui button purple">
-    <i class="icon plus circle"></i> <?=$this->lang->line('new')?>
-</a>
 
-<table class="ui table">
+<table class="ui table" id="dataTable">
 	<thead>
 		<tr>
 			<th>#</th>

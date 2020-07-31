@@ -47,6 +47,8 @@ class Ignite extends CI_Controller {
     }
     
     public function home(){
+        $this->breadcrumb->add('Home');
+
         $data['content'] = 'pages/home';
         $this->load->view('layouts/template', $data);
     }
@@ -65,12 +67,19 @@ class Ignite extends CI_Controller {
 
     // Warehouse
     public function warehouse(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Warehouse');
+
         $data['warehouses'] = $this->ignite_model->get_data('warehouse_tbl')->result_array();
         $data['content'] = 'pages/warehouse';
         $this->load->view('layouts/template', $data);
     }
 
     public function createWarehouse(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Warehouse', 'warehouse');
+        $this->breadcrumb->add('Create');
+
         $data['content'] = 'pages/createWarehouse';
         $this->load->view('layouts/template', $data);
     }
@@ -88,11 +97,19 @@ class Ignite extends CI_Controller {
             $active = false;
         }
 
+        if($this->input->post('shop')){
+            $shop = true;
+        }
+        else{
+            $shop = false;
+        }
+
         $arr = array(
             'warehouseName' => $name,
             'serial' => $serial,
             'remark' => $remark,
-            'activeState' => $active
+            'activeState' => $active,
+            'shop' => $shop
         );
 
         $this->db->insert('warehouse_tbl', $arr);
@@ -100,6 +117,10 @@ class Ignite extends CI_Controller {
     }
 
     public function editWarehouse(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Warehouse', 'warehouse');
+        $this->breadcrumb->add('Modify');
+
         $warehouseId = $this->uri->segment(2);
 
         $data['warehouse'] = $this->ignite_model->get_limit_data('warehouse_tbl', 'warehouseId', $warehouseId)->row_array();
@@ -120,11 +141,19 @@ class Ignite extends CI_Controller {
             $active = false;
         }
 
+        if($this->input->post('shop')){
+            $shop = true;
+        }
+        else{
+            $shop = false;
+        }
+
         $arr = array(
             'warehouseName' => $name,
             'serial' => $serial,
             'remark' => $remark,
-            'activeState' => $active
+            'activeState' => $active,
+            'shop' => $shop
         );
 
         $this->db->where('warehouseId', $warehouseId);
@@ -143,12 +172,19 @@ class Ignite extends CI_Controller {
     
     // Supplier
     public function supplier(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Supplier');
+
         $data['suppliers'] = $this->ignite_model->get_suppliers();
         $data['content'] = 'pages/supplier';
         $this->load->view('layouts/template', $data);
     }
 
     public function createSupplier(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Supplier', 'supplier');
+        $this->breadcrumb->add('Create');
+
         $data['content'] = 'pages/createSupplier';
         $this->load->view('layouts/template', $data);
     }
@@ -187,6 +223,10 @@ class Ignite extends CI_Controller {
     }
 
     public function editSupplier(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Supplier', 'supplier');
+        $this->breadcrumb->add('Modify');
+
         $supplierId = $this->uri->segment(2);
 
         $data['supplier'] = $this->ignite_model->get_limit_data('supplier_tbl', 'supplierId', $supplierId)->row_array();
@@ -233,6 +273,9 @@ class Ignite extends CI_Controller {
 
     // Currency
     public function currency(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Currency');
+
         $data['currencies'] = $this->ignite_model->get_data('currency_tbl')->result_array();
         $data['content'] = 'pages/currency';
         $this->load->view('layouts/template', $data);
@@ -248,6 +291,9 @@ class Ignite extends CI_Controller {
     * Items & Price Section
     */
     public function itemsPrice(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Items & Price');
+
         $this->load->library('pagination');
 
         $config['base_url'] = base_url().'items-price/';
@@ -272,6 +318,11 @@ class Ignite extends CI_Controller {
     }
 
     public function newItem(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Items & price', 'items-price/0');
+        $this->breadcrumb->add('Create');
+
+        $data['referer'] = $this->uri->segment(2);
         $data['code'] = $this->ignite_model->max('items_price_tbl','itemId');
         $data['categories'] = $this->ignite_model->get_data_order('categories_tbl', 'categoryName', 'asc')->result_array();
         $data['brands'] = $this->ignite_model->get_data_order('brands_tbl', 'brandName', 'asc')->result_array();
@@ -288,6 +339,7 @@ class Ignite extends CI_Controller {
         $brand = $this->input->post('brand');
         $supplier = $this->input->post('supplier');
         $name = $this->input->post('name');
+        $model = $this->input->post('model');
         $code = $this->input->post('code');
         $currency = $this->input->post('currency');
         $p_price = $this->input->post('p_price');
@@ -297,6 +349,7 @@ class Ignite extends CI_Controller {
 
         $arr = array(
             'itemName' => $name,
+            'itemModel' => $model,
             'categoryId' => $category,
             'codeNumber' => $code,
             'brandId' => $brand,
@@ -311,11 +364,19 @@ class Ignite extends CI_Controller {
         );
 
         $this->db->insert('items_price_tbl', $arr);
-        redirect($referer);
+        if($referer === '~'){
+            redirect('items-price/0');
+        }else{
+            redirect($referer);
+        }
         
     }
 
     public function editItem(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Items & price', 'items-price/0');
+        $this->breadcrumb->add('Modify');
+
         $itemId = $this->uri->segment(2);
 
         $data['item'] = $this->ignite_model->get_limit_data('items_price_tbl', 'itemId', $itemId)->row_array();
@@ -337,12 +398,14 @@ class Ignite extends CI_Controller {
         $brand = $this->input->post('brand');
         $supplier = $this->input->post('supplier');
         $name = $this->input->post('name');
+        $model = $this->input->post('model');
         $code = $this->input->post('code');
         $currency = $this->input->post('currency');
         $remark = $this->input->post('remark');
 
         $arr = array(
             'itemName' => $name,
+            'itemModel' => $model,
             'categoryId' => $category,
             'codeNumber' => $code,
             'brandId' => $brand,
@@ -407,12 +470,19 @@ class Ignite extends CI_Controller {
     * Categories Section
     */
     public function categories(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Categories');
+
         $data['content'] = 'pages/categories';
         $data['categories'] = $this->ignite_model->get_categories();
         $this->load->view('layouts/template', $data);
     }
 
     public function createCategory(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Categories', 'categories');
+        $this->breadcrumb->add('Create');
+
         $data['content'] = 'pages/newCategory';
         $this->load->view('layouts/template', $data);
     }
@@ -439,6 +509,10 @@ class Ignite extends CI_Controller {
     }
 
     public function editCategory(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Categories', 'categories');
+        $this->breadcrumb->add('Modify');
+
         $catId = $this->uri->segment(2);
 
         $data['catDetail'] = $this->ignite_model->get_limit_data('categories_tbl', 'categoryId', $catId)->row_array();
@@ -477,12 +551,19 @@ class Ignite extends CI_Controller {
     * Brands Section
     */
     public function brands(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Brands');
+
         $data['brands'] = $this->ignite_model->get_brands();
         $data['content'] = 'pages/brands';
         $this->load->view('layouts/template', $data);
     }
 
     public function createBrand(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Brands', 'brands');
+        $this->breadcrumb->add('Create');
+
         $data['content'] = 'pages/newBrand';
         $this->load->view('layouts/template', $data);
     }
@@ -510,6 +591,10 @@ class Ignite extends CI_Controller {
     }
 
     public function editBrand(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Brands', 'brands');
+        $this->breadcrumb->add('Modify');
+
         $brandId = $this->uri->segment(2);
         $data['brand'] = $this->ignite_model->get_limit_data('brands_tbl', 'brandId', $brandId)->row_array();
 
@@ -544,12 +629,19 @@ class Ignite extends CI_Controller {
 
     //Purchase Section
     public function purchase(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Stocks In');
+
         $data['purchaseItem'] = $this->ignite_model->get_purchaseItem();
         $data['content'] = 'pages/purchase';
         $this->load->view('layouts/template', $data);
     }
 
     public function newPurchase(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Stocks In', 'purchase/0');
+        $this->breadcrumb->add('Create');
+
         $data['items'] = $this->ignite_model->get_allItems();
         $data['warehouses'] = $this->ignite_model->get_data('warehouse_tbl')->result_array();
 
@@ -598,6 +690,10 @@ class Ignite extends CI_Controller {
     }
 
     public function editPurchase(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Stocks In', 'purchase/0');
+        $this->breadcrumb->add('Modify');
+
         $purchaseId = $this->uri->segment(2);
 
         $data['purchase'] = $this->ignite_model->get_limit_data('purchase_tbl', 'purchaseId', $purchaseId)->row_array();
@@ -644,6 +740,9 @@ class Ignite extends CI_Controller {
     * Sales Section Start
     */
     public function sales(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Stocks Out');
+
         $data['issues'] = $this->ignite_model->get_issuedItems();
 
         $data['content'] = 'pages/sales';
@@ -651,6 +750,10 @@ class Ignite extends CI_Controller {
     }
 
     public function newSale(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Stocks Out', 'sales');
+        $this->breadcrumb->add('Create');
+
         $data['items'] = $this->ignite_model->get_issueItems();
         $data['warehouses'] = $this->ignite_model->get_data('warehouse_tbl')->result_array();
         
@@ -719,5 +822,170 @@ class Ignite extends CI_Controller {
     /*
     * Sales Section End
     */
+
+    /*
+    * Balance Section Start
+    */
+    public function stockBalance(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Stock Balance');
+
+        $data['content'] = 'pages/balance';
+        $this->load->view('layouts/template', $data);
+    }
+    /*
+    * Balance Section End
+    */
+
+    /*
+    * User Section Start
+    */
+
+    public function users(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Users');
+
+        $data['users'] = $this->ignite_model->get_user_data();
+        $data['content'] = 'pages/users';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function newUser(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Users', 'users');
+        $this->breadcrumb->add('Create');
+
+        $data['content'] = 'pages/newUser';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function addUser(){
+        $arr = array(
+            'username' => $this->input->post('name'),
+            'secret' =>  $this->auth->hash_password($this->input->post('psw')),
+            'role' => 1,
+            'accountState' => true
+        );
+
+        $this->db->insert('accounts_tbl', $arr);
+        $max = $this->ignite_model->max('accounts_tbl','accId');
+        redirect('set-permission/'.$max['accId']);
+    }
+
+    public function setPermission(){
+        $accId = $this->uri->segment(2);
+        $data['user'] = $this->ignite_model->get_limit_data('accounts_tbl', 'accId', $accId)->row();
+        $data['links'] = $this->ignite_model->get_data('link_structure_tbl')->result();
+
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Users', 'users');
+        $this->breadcrumb->add('Permission');
+
+        $data['content'] = 'pages/permission';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function addPermission(){
+        $accId = $this->uri->segment(3);
+
+        $links = $this->ignite_model->get_data('link_structure_tbl')->result();
+        $count = count($this->input->post());
+        $accept = '';
+        $i = 1;
+        foreach($links as $link){
+            if($this->input->post('permission'.$link->linkId)){
+                $accept .= $link->linkId;
+                if($i < ($count-1)){
+                    $accept .= ',';
+                    $i++;
+                }
+            }
+        }
+        
+        $arr = array(
+            'accId' => $accId,
+            'link_accept' => $accept,
+            'created_at' => date('Y-m-d h:i:s'),
+            'updated_at' => date('Y-m-d h:i:s')
+        );
+
+        $this->db->insert('permission_tbl', $arr);
+        redirect('users');
+    }
+
+    public function modifyPermission(){
+        $permissionId = $this->uri->segment(2);
+
+        $data['user'] = $this->ignite_model->get_limit_data('permission_tbl', 'permissionId', $permissionId)->row();
+        $data['links'] = $this->ignite_model->get_data('link_structure_tbl')->result();
+
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Users', 'users');
+        $this->breadcrumb->add('Modify Permission');
+
+        $data['content'] = 'pages/modifyPermission';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function updatePermission(){
+        $accId = $this->uri->segment(3);
+
+        $links = $this->ignite_model->get_data('link_structure_tbl')->result();
+        $count = count($this->input->post());
+        $accept = '';
+        $i = 1;
+        foreach($links as $link){
+            if($this->input->post('permission'.$link->linkId)){
+                $accept .= $link->linkId;
+                if($i < ($count-1)){
+                    $accept .= ',';
+                    $i++;
+                }
+            }
+        }
+        
+        $arr = array(
+            'link_accept' => $accept,
+            'updated_at' => date('Y-m-d h:i:s')
+        );
+
+        $this->db->where('accId', $accId);
+        $this->db->update('permission_tbl', $arr);
+        redirect('users');
+    }
+
+    public function resetPassword(){
+        $accId = $this->uri->segment(2);
+        $data['acc'] = $this->ignite_model->get_limit_data('accounts_tbl', 'accId', $accId)->row();
+
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Users', 'users');
+        $this->breadcrumb->add('Reset Password');
+
+        $data['content'] = 'pages/resetPassword';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function updatePassword(){
+        $accId = $this->uri->segment(3);
+        $psw = $this->auth->hash_password($this->input->post('psw'));
+
+        $this->db->update('accounts_tbl', ['secret' => $psw], ['accId' => $accId]);
+        redirect('users');
+    }
+
+    public function disableUser(){
+        $accId = $this->uri->segment(2);
+
+        $this->db->update('accounts_tbl', ['accountState' => false], ['accId' => $accId]);
+        redirect('users');
+    }
+
+    public function enableUser(){
+        $accId = $this->uri->segment(2);
+
+        $this->db->update('accounts_tbl', ['accountState' => true], ['accId' => $accId]);
+        redirect('users');
+    }
 }
 

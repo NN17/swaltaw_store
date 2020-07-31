@@ -5,13 +5,13 @@
 <div class="seven wide column">
 <?=form_open('ignite/addItem', 'class="ui form"')?>
 	<h4 class="ui teal dividing header">Basic Information</h4>
-	<input type="hidden" name="referer" value="<?=$_SERVER['HTTP_REFERER']?>" />
+	<input type="hidden" name="referer" value="<?=$referer?>" />
 
 	<div class="field">
 		<?=form_label($this->lang->line('category'))?>
 		<div class="ui grid">
 			<div class="twelve wide column">
-				<select name="category" class="ui search dropdown" id="cat">
+				<select name="category" class="ui search dropdown" id="cat" required>
 					<option value="">Select</option>
 					<?php foreach($categories as $cat):?>
 					<option value="<?=$cat['categoryId']?>"><?=$cat['categoryName']?></option>
@@ -28,7 +28,7 @@
     	<?=form_label($this->lang->line('brand'))?>
     	<div class="ui grid">
 			<div class="twelve wide column">
-				<select name="brand" class="ui search dropdown" id="brand">
+				<select name="brand" class="ui search dropdown" id="brand" required>
 					<option value="">Select</option>
 					<?php foreach($brands as $brand):?>
 						<option value="<?=$brand['brandId']?>"><?=$brand['brandName']?></option>
@@ -45,7 +45,7 @@
     	<?=form_label($this->lang->line('supplier'))?>
     	<div class="ui grid">
 			<div class="twelve wide column">
-				<select name="supplier" class="ui search dropdown">
+				<select name="supplier" class="ui search dropdown" required>
 					<option value="">Select</option>
 					<?php foreach($suppliers as $supplier): ?>
 						<option value="<?=$supplier['supplierId']?>"><?=$supplier['supplierName']?></option>
@@ -61,6 +61,11 @@
     <div class="field">
         <?=form_label($this->lang->line('name'))?>
         <?=form_input('name',set_value('name'),'placeholder="'.$this->lang->line('item_name').'" required')?>  
+    </div>
+
+    <div class="field">
+        <?=form_label($this->lang->line('item_model'))?>
+        <?=form_input('model',set_value('model'),'placeholder="'.$this->lang->line('item_model').'" required')?>  
     </div>
 
    	<div class="field">

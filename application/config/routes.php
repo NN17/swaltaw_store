@@ -113,3 +113,19 @@ $route['edit-purchase/(:num)'] = 'ignite/editPurchase';
 */
 $route['sales'] = 'ignite/sales';
 $route['create-sales'] = 'ignite/newSale';
+
+/*
+* Routes for Stocks Balance
+*/
+$route['stock-balance'] = 'ignite/stockBalance';
+
+/*
+* Routes for users
+*/
+$route['users'] = 'ignite/users';
+$route['new-user'] = 'ignite/newUser';
+$route['set-permission/:num'] = 'ignite/setPermission';
+$route['modify-permission/:num'] = 'ignite/modifyPermission';
+$route['reset-password/:num'] = 'ignite/resetPassword';
+$route['disable-user/:num'] = 'ignite/disableUser';
+$route['enable-user/:num'] = 'ignite/enableUser';

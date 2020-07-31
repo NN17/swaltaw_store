@@ -10,7 +10,7 @@
 		<?=form_label($this->lang->line('category'))?>
 		<div class="ui grid">
 			<div class="twelve wide column">
-				<select name="category" class="ui search dropdown" id="cat">
+				<select name="category" class="ui search dropdown" id="cat" required>
 					<option value="">Select</option>
 					<?php foreach($categories as $cat):?>
 					<option value="<?=$cat['categoryId']?>" <?=$item['categoryId']==$cat['categoryId']?'selected':''?>><?=$cat['categoryName']?></option>
@@ -27,7 +27,7 @@
     	<?=form_label($this->lang->line('brand'))?>
     	<div class="ui grid">
 			<div class="twelve wide column">
-				<select name="brand" class="ui search dropdown" id="brand">
+				<select name="brand" class="ui search dropdown" id="brand" required>
 					<option value="">Select</option>
 					<?php foreach($brands as $brand):?>
 						<option value="<?=$brand['brandId']?>" <?=$item['brandId']==$brand['brandId']?'selected':''?>><?=$brand['brandName']?></option>
@@ -44,7 +44,7 @@
     	<?=form_label($this->lang->line('supplier'))?>
     	<div class="ui grid">
 			<div class="twelve wide column">
-				<select name="supplier" class="ui search dropdown">
+				<select name="supplier" class="ui search dropdown" required>
 					<option value="">Select</option>
 					<?php foreach($suppliers as $supplier): ?>
 						<option value="<?=$supplier['supplierId']?>" <?=$item['supplierId']==$supplier['supplierId']?'selected':''?>><?=$supplier['supplierName']?></option>
@@ -60,6 +60,11 @@
     <div class="field">
         <?=form_label($this->lang->line('name'))?>
         <?=form_input('name',$item['itemName'],'placeholder="'.$this->lang->line('item_name').'" required')?>  
+    </div>
+
+    <div class="field">
+        <?=form_label($this->lang->line('item_model'))?>
+        <?=form_input('model',$item['itemModel'],'placeholder="'.$this->lang->line('item_model').'" required')?>  
     </div>
 
    	<div class="field">

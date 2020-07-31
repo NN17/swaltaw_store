@@ -57,7 +57,7 @@
     </div>
     <div class="field">
         <?=form_submit('save',$this->lang->line('save'),'class="ui button blue"')?>
-        <?=anchor('purchase/0',$this->lang->line('cancel'),'class="ui button"')?>
+        <?=anchor('sales',$this->lang->line('cancel'),'class="ui button"')?>
     </div>
 	<?=form_close()?>
 	</div>

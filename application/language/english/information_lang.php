@@ -7,6 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['purchase'] = 'Stocks In';
 	$lang['sales'] = 'Stocks Out';
 	$lang['itemPrice'] = 'Items & Price';
+	$lang['reports'] = 'Reports';
 	$lang['lang_en'] = 'English';
 	$lang['lang_mm'] = 'Myanmar';
 	$lang['accounts'] = 'Accounts';
@@ -28,6 +29,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['warehouse_serial'] = 'Warehouse Serial';
 	$lang['warehouse_remark'] = 'Remark for Warehouse';
 
+	// Language for shops
+	$lang['shops'] = 'Shops';
+
 	// Language for supplier
 	$lang['new_supplier'] = 'Add New Supplier';
 	$lang['edit_supplier'] = 'Edit Supplier';
@@ -41,6 +45,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	// Language for Items & Price
 	$lang['new_item'] = 'New Item';
 	$lang['item_name'] = 'Item Name';
+	$lang['item_model'] = 'Model Number';
 	$lang['item_code'] = 'Code Number';
 	$lang['purchase_price'] = 'Purchase Price';
 	$lang['retail_price'] = 'Retail Price';
@@ -79,3 +84,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['new_sale'] = 'New Stocks Issue';
 	$lang['sale_date'] = 'Issue Date';
 	$lang['edit_sale'] = 'Edit Stock Issue';
+
+	// Language for Users
+	$lang['account_state'] = 'Account State';
+	$lang['created_date'] = 'Created Date';
+	$lang['permission'] = 'Permission';
+	$lang['new_user'] = 'Create New Account';
+	$lang['user_name'] = 'User Name';
+	$lang['password'] = 'Password';
+	$lang['reset_password'] = 'Reset Password';
+	$lang['new_password'] = 'New Password';

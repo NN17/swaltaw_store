@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Padauk|Quicksand&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" media="screen" href="semantic/semantic.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/DataTables.SemanticUI/datatables.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/jquery.datetimepicker.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/jquery-confirm.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css" />
@@ -25,21 +26,12 @@
             &nbsp; &nbsp; IGNITE SOURCE &nbsp;
             <small class="text-grey">Inventory</small>
             </a>
-            <a href="home" class="item <?php if($this->uri->segment(1) == 'home' || $this->uri->segment(1) == ''){echo 'active';}?>">
-                <i class="desktop icon"></i> <?=$this->lang->line('home')?>
+            <?php $main_menu = $this->ignite_model->get_limit_data('link_structure_tbl', 'sub_menu', false)->result(); ?>
+            <?php foreach($main_menu as $row): ?>
+            <a href="<?=$row->machine?>" class="item <?php if($this->uri->segment(1) == $row->machine){echo 'active';}?>">
+                <i class="icon <?=$row->color?> <?=$row->icon_class?>"></i> <?=$this->lang->line($row->lang_name)?>
             </a>
-
-            <a href="stocks-balance" class="item">
-                <i class="table icon blue"></i> <?=$this->lang->line('stocks')?>
-            </a>
-
-            <a href="purchase/0" class="item">
-                <i class="plus square icon green"></i> <?=$this->lang->line('purchase')?>
-            </a>
-
-            <a href="sales" class="item">
-                <i class="minus square icon orange"></i> <?=$this->lang->line('sales')?>
-            </a>
+            <?php endforeach; ?>
 
             
 
@@ -67,30 +59,15 @@
                 <!-- Setting -->
                 <div class="borderless item">
                     <div class="ui dropdown">
-                        <div class="default icon"><i class="icon cog"></i></div>
+                        <div class="default icon"><i class="icon grey cog"></i></div>
                         
                             <div class="menu">
-                                <a href="users" class="item" data-value="female">
-                                    <i class="icon user circle"></i> <?=$this->lang->line('accounts')?>
-                                </a>
-                                <a href="warehouse" class="item" data-value="female">
-                                    <i class="icon warehouse"></i> <?=$this->lang->line('warehouse')?>
-                                </a>
-                                <a href="supplier" class="item" data-value="female">
-                                    <i class="icon cart plus"></i> <?=$this->lang->line('supplier')?>
-                                </a>
-                                <a href="currency" class="item" data-value="female">
-                                    <i class="icon pound sign"></i> <?=$this->lang->line('currency')?>
-                                </a>
-                                <a href="categories" class="item" data-value="female">
-                                    <i class="icon list ol"></i> <?=$this->lang->line('category')?>
-                                </a>
-                                <a href="brands" class="item" data-value="female">
-                                    <i class="icon trademark"></i> <?=$this->lang->line('brand')?>
-                                </a>
-                                <a href="items-price/0" class="item">
-                                    <i class="clipboard list icon"></i> <?=$this->lang->line('itemPrice')?>
-                                </a>
+                                <?php $submenu = $this->ignite_model->get_limit_data('link_structure_tbl', 'sub_menu', true)->result();?>
+                                <?php foreach($submenu as $menu): ?>
+                                    <a href="<?=$menu->machine?>" class="item" data-value="female">
+                                        <i class="icon <?=$menu->icon_class?>"></i> <?=$this->lang->line($menu->lang_name)?>
+                                    </a>
+                                <?php endforeach; ?>
                             </div>
                         </div>
                 </div>
@@ -115,6 +92,14 @@
 
     </div>
 
+    <div class="breadcrumb-wrap">
+        <div class="ui container fluid">
+            <div class="ui breadcrumb">
+                <i class="icon flag checkered grey"></i> | <?php $this->breadcrumb->show()?>
+            </div>
+        </div>
+    </div>
+
     <div id="maincontent" class="ui main container fluid">
         <div class="content <?=$this->session->userdata('site_lang')?>">
             <?php $this->load->view($content)?>            
@@ -127,6 +112,7 @@
 
     <script src="assets/js/jquery-3.4.1.min.js"></script>
     <script src="semantic/semantic.min.js"></script>
+    <script type="text/javascript" src="assets/DataTables.SemanticUI/datatables.min.js"></script>
     <script src="assets/js/jquery.datetimepicker.js"></script>
     <script src="assets/js/jquery-confirm.js"></script>
     <script src="assets/js/custom.js"></script>

@@ -7,6 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['purchase'] = 'ကုန်ပစ္စည်း အဝင်';
 	$lang['sales'] = 'ကုန်ပစ္စည်း အထွက်';
 	$lang['itemPrice'] = 'ပစ္စည်းနှင့် စျေးနှုန်း';
+	$lang['reports'] = 'အစီရင်ခံစာ ထုတ်ယူရန်';
 	$lang['lang_en'] = 'အင်္ဂလိပ်';
 	$lang['lang_mm'] =  'မြန်မာ';
 	$lang['accounts'] = 'အကောင့်များ';
@@ -28,6 +29,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['warehouse_serial'] = 'သိုလှောင်ရုံအမှတ်စဉ်';
 	$lang['warehouse_remark'] = 'သိုလှောင်ရုံအတွက် မှတ်ချက်';
 
+	// Language for shops
+	$lang['shops'] = 'ဆိုင်များ';
+
 	// Language for supplier
 	$lang['new_supplier'] = 'ကုန်သွင်းသူအသစ် ထည့်သွင်းရန်';
 	$lang['edit_supplier'] = 'ကုန်သွင်းသူအချက်အလက်များပြင်ဆင်ရန်';
@@ -41,6 +45,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	// Language for Items & Price
 	$lang['new_item'] = 'ပစ္စည်းအသစ်';
 	$lang['item_name'] = 'ပစ္စည်းအမည်';
+	$lang['item_model'] = 'မော်ဒယ် နံပါတ်';
 	$lang['item_code'] = 'ကုဒ်နံပါတ်';
 	$lang['purchase_price'] = 'ဝယ်ယူ စျေးနှုန်း';
 	$lang['retail_price'] = 'လက်လီ စျေးနှုန်း';
@@ -80,4 +85,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['new_sale'] = 'ကုန်ပစ္စည်းထုတ်ပေးရန်';
 	$lang['sale_date'] = 'ထုတ်ပေးသည့်ရက်စွဲ';
 	$lang['edit_sale'] = 'ပစ္စည်းထုတ်ပေးမှု ပြင်ဆင်ရန်';
+
+	// Language for Users
+	$lang['account_state'] = 'အကောင့်အခြေအနေ';
+	$lang['created_date'] = 'ဖန်တီးသည့်ရက်စွဲ';
+	$lang['permission'] = 'လုပ်ဆောင်နိုင်မှုများ';
+	$lang['new_user'] = 'အကောင့်အသစ်ပြုလုပ်ရန်';
+	$lang['user_name'] = 'အသုံးပြုသူအမည်';
+	$lang['password'] = 'စကားဝှက်';
+	$lang['reset_password'] = 'စကားဝှက် ပြောင်းလဲရန်';
+	$lang['new_password'] = 'စကားဝှက် အသစ်';
  

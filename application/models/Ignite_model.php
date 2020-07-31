@@ -355,7 +355,7 @@ class Ignite_model extends CI_Model {
             ON warehouse.warehouseId = purchase.warehouseId
             LEFT JOIN brands_tbl AS brand
             ON brand.brandId = item.brandId
-            ORDER BY warehouse.serial ASC
+            ORDER BY purchase.purchaseDate DESC, warehouse.serial ASC
             ");
         return $data->result_array();
     }
@@ -419,6 +419,15 @@ class Ignite_model extends CI_Model {
             ORDER BY so.issueDate DESC
             ");
         return $data->result_array();
+    }
+
+    function get_user_data(){
+        $query = $this->db->query("SELECT * FROM accounts_tbl
+            LEFT JOIN permission_tbl
+            ON permission_tbl.accId = accounts_tbl.accId
+            WHERE accounts_tbl.role != 0
+            ");
+        return $query->result();
     }
 
 }

@@ -1,15 +1,17 @@
-<h3><?=$this->lang->line('itemPrice')?></h3>
-<div class="ui divider"></div>
+<div class="ui clearing segment">
+	<h3 class="ui navy left floated header"><?=$this->lang->line('itemPrice')?></h3>
+	<a href="new-item/~" class="ui right floated button violet">
+	    <i class="icon plus circle"></i> <?=$this->lang->line('new')?>
+	</a>
+</div>
 
-<a href="new-item/~" class="ui button violet">
-    <i class="icon plus circle"></i> <?=$this->lang->line('new')?>
-</a>
 
-<table class="ui table">
+<table class="ui violet table" id="dataTable">
 	<thead>
 		<tr>
 			<th>#</th>
 			<th><?=$this->lang->line('item_name')?></th>
+			<th><?=$this->lang->line('item_model')?></th>
 			<th><?=$this->lang->line('brand')?></th>
 			<th><?=$this->lang->line('currency')?></th>
 			<th class="ui right aligned"><?=$this->lang->line('purchase_price')?></th>
@@ -24,15 +26,16 @@
 			$cat = "";
 			foreach($items as $item):
 		?>
-		<?php if($cat != $item['categoryName']):?>
-			<tr>
-				<td colspan="9" class="error"><?=$item['categoryName']?></td>
+		<!-- <?php if($cat != $item['categoryName']):?>
+			<tr class="negative">
+				<td colspan="10"><?=$item['categoryName']?></td>
 			</tr>
 			<?php $cat = $item['categoryName'];?>
-		<?php endif;?>
+		<?php endif;?> -->
 			<tr>
 				<td><?=$item['codeNumber']?></td>
 				<td><?=$item['itemName']?></td>
+				<td><?=$item['itemModel']?></td>
 				<td><?=$item['brandName']?></td>
 				<td><?=$item['currency']?></td>
 				<td class="ui right aligned"><strong><?=number_format($item['purchasePrice'])?></strong></td>
@@ -40,7 +43,7 @@
 				<td class="ui right aligned"><strong><?=number_format($item['wholesalePrice'])?></strong></td>
 				<td><?=$item['supplierName']?></td>
 				<td>
-					<button class="ui button icon tiny circular yellow" onclick="changePriceModal(<?=$item['itemId']?>)"><i class="ui icon money bill alternate outline"></i></button>
+					<button class="ui button icon tiny circular yellow" onclick="changePriceModal(<?=$item['itemId']?>)" id="popup" data-content="Update Price"><i class="ui icon money bill alternate outline"></i></button>
 					<a href="edit-item/<?=$item['itemId']?>" class="ui icon button tiny orange circular"><i class="ui icon cog"></i></a>
 					<a href="javascript:void(0)" class="ui icon button tiny red circular" id="delete" data-url="ignite/deleteItem/<?=$item['itemId']?>"><i class="ui icon remove"></i></a>
 				</td>

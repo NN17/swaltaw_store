@@ -13,6 +13,14 @@ $(document).ready(function() {
 
 	$('.ui.checkbox').checkbox();
 
+	$('[id=popup]')
+	  .popup({
+	    inline: false
+	  })
+	;
+
+	$('#dataTable').DataTable();
+
 	/*
 	 * DateTime Picker
 	 */

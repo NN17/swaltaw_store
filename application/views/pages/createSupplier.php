@@ -1,7 +1,7 @@
 <h3><?=$this->lang->line('new_supplier')?></h3>
 <div class="ui divider"></div>
 
-<div class="ui two column grid">
+<div class="ui two column centered grid">
 <div class="column">
 <?=form_open('ignite/addSupplier', 'class="ui form"')?>
     <div class="field">
