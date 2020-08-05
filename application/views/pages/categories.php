@@ -11,6 +11,7 @@
 		<tr>
 			<th>#</th>
 			<th><?=$this->lang->line('category_name')?></th>
+			<th><?=$this->lang->line('cat_code')?></th>
 			<th><?=$this->lang->line('remark')?></th>
 			<th></th>
 		</tr>
@@ -23,6 +24,7 @@
 		<tr>
 			<td><?=$i?></td>
 			<td><?=$cat['categoryName']?></td>
+			<td><?=$cat['letterCode']?></td>
 			<td><?=!empty($cat['remark'])?$cat['remark']:'...'?></td>
 			<td>
 				<a href="edit-category/<?=$cat['categoryId']?>" class="ui button icon tiny circular orange"><i class="ui icon cog"></i></a>

@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['home'] = 'HOME';
 	$lang['stocks'] = 'Stock Balance';
 	$lang['purchase'] = 'Stocks In';
-	$lang['sales'] = 'Stocks Out';
+	$lang['stock_out'] = 'Stocks Out';
 	$lang['itemPrice'] = 'Items & Price';
 	$lang['reports'] = 'Reports';
 	$lang['lang_en'] = 'English';
@@ -58,6 +58,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['add_category'] = 'Add New Category';
 	$lang['category_name'] = 'Category Name';
 	$lang['edit_category'] = 'Edit Category';
+	$lang['cat_code'] = 'Letter Code';
 
 	// Language for Brands
 	$lang['brand'] = 'Brand';
@@ -74,6 +75,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['email'] = 'Email';
 	$lang['date'] = 'Date';
 	$lang['quantity'] = 'Quantity';
+	$lang['from'] = 'From';
+	$lang['to'] = 'To';
 
 	// Language for Purchase
 	$lang['new_purchase'] = 'New Purchase';

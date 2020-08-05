@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['home'] = 'မူလစာမျက်နှာ';
 	$lang['stocks'] = 'ကုန်ပစ္စည်းလက်ကျန်';
 	$lang['purchase'] = 'ကုန်ပစ္စည်း အဝင်';
-	$lang['sales'] = 'ကုန်ပစ္စည်း အထွက်';
+	$lang['stock_out'] = 'ကုန်ပစ္စည်း အထွက်';
 	$lang['itemPrice'] = 'ပစ္စည်းနှင့် စျေးနှုန်း';
 	$lang['reports'] = 'အစီရင်ခံစာ ထုတ်ယူရန်';
 	$lang['lang_en'] = 'အင်္ဂလိပ်';
@@ -59,6 +59,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['add_category'] = 'အမျိုးအစားအသစ်ထည့်ရန်';
 	$lang['category_name'] = 'အမျိုးအစားအမည်';
 	$lang['edit_category'] = 'အမျိုးအစားပြင်ဆင်ရန်';
+	$lang['cat_code'] = 'စာလုံးကုဒ်';
 
 	// Language for Brands
 	$lang['brand'] = 'ကုန်အမှတ်တံဆိပ်';
@@ -75,6 +76,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['email'] = 'အီးမေးလ်';
 	$lang['date'] = 'နေ့စွဲ';
 	$lang['quantity'] = 'အရေအတွက်';
+	$lang['from'] = 'မှ';
+	$lang['to'] = 'သို့';
 
 	// Language for Purchase
 	$lang['new_purchase'] = 'အဝယ်စာရင်းအသစ်ထည့်ရန်';

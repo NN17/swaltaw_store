@@ -1,0 +1,62 @@
+<div class="ui clearing segment">
+	<h3 class="ui blue header"><?=$this->lang->line('stocks')?></h3>
+</div>
+
+<table class="ui celled table" id="dataTable">
+	<thead>
+		<tr>
+			<th class="ui right aligned">#</th>
+			<th>Code</th>
+			<th>Name</th>
+			<th>Model</th>
+			<!-- Loop for warehouse -->
+			<?php foreach($warehouse as $row): ?>
+				<th class="ui right aligned"><?=$row->warehouseName?></th>
+			<?php endforeach; ?>
+			<!-- End of warehouse loop -->
+			<th class="ui right aligned">Total</th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php $i=1; ?>
+		<?php foreach($items as $item): ?>
+			<tr>
+				<td class="ui right aligned"><?=$i?></td>
+				<td><?=$item->codeNumber?></td>
+				<td><?=$item->itemName?></td>
+				<td><?=$item->itemModel?></td>
+				<!-- Loop for warehouse -->
+				<?php $totalQty = 0; ?>
+				<?php foreach($warehouse as $row): ?>
+					<?php 
+						// $pItems = $this->ignite_model->get_purchase_items_by_warehouse($row->warehouseId, $item->itemId)->row(); 
+						// $transItems = $this->ignite_model->get_transfer_items_by_warehouse($row->warehouseId, $item->itemId)->row();
+						// // Define purchase quantity is greater than 0
+						// if($pItems->qty > 0){
+						// 	$pQty = $pItems->qty;
+						// }else{
+						// 	$pQty = 0;
+						// }
+						// // Definte transfer qty is greater than 0
+						// if($transItems->qty > 0){
+						// 	$tQty = $transItems->qty;
+						// }else{
+						// 	$tQty = 0;
+						// }
+
+						// $diff = $pQty-$tQty;
+						// $totalQty += $diff;
+						$balance = $this->ignite_model->get_limit_datas('stocks_balance_tbl', ['itemId' => $item->itemId, 'warehouseId' => $row->warehouseId])->row();
+						if(isset($balance->qty)){
+							$totalQty += $balance->qty;
+						}
+					?>
+					<td class="ui right aligned"><?=isset($balance->qty)?$balance->qty:0?></td>
+				<?php endforeach; ?>
+				<!-- End of warehouse loop -->
+				<td class="ui right aligned <?=$totalQty<5?'negative':'positive'?>"><strong><?=$totalQty?></strong></td>
+			</tr>
+			<?php $i++; ?>
+		<?php endforeach; ?>
+	</tbody>
+</table>

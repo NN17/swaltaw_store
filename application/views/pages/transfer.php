@@ -1,6 +1,6 @@
 <div class="ui clearing orange segment">
-	<h3 class="ui left floated header"><?=$this->lang->line('sales')?></h3>
-	<a href="create-sales" class="ui right floated button orange">
+	<h3 class="ui left floated header"><?=$this->lang->line('stock_out')?></h3>
+	<a href="create-transfer" class="ui right floated button orange">
 	    <i class="icon plus circle"></i> <?=$this->lang->line('new')?>
 	</a>
 </div>

@@ -492,10 +492,12 @@ class Ignite extends CI_Controller {
         $seg4 = $this->uri->segment(4);
 
         $name = $this->input->post('name');
+        $l_code = $this->input->post('l_code');
         $remark = $this->input->post('remark');
 
         $arr = array(
             'categoryName' => $name,
+            'letterCode' => $l_code,
             'remark' => $remark
         );
 
@@ -505,6 +507,16 @@ class Ignite extends CI_Controller {
         }
         else{
             redirect('categories');
+        }
+    }
+
+    public function checkLetterCode(){
+        $letter = $this->input->post('character');
+        $checkLC = $this->ignite_model->get_limit_data('categories_tbl', 'letterCode', $letter)->row();
+        if(isset($checkLC->categoryId)){
+            echo json_encode(array('status' => false));
+        }else{
+            echo json_encode(array('status' => true, 'letter' => $letter));
         }
     }
 
@@ -525,10 +537,12 @@ class Ignite extends CI_Controller {
         $catId = $this->uri->segment(3);
 
         $name = $this->input->post('name');
+        $l_code = $this->input->post('l_code');
         $remark = $this->input->post('remark');
 
         $arr = array(
             'categoryName' => $name,
+            'letterCode' => $l_code,
             'remark' => $remark
         );
 
@@ -739,25 +753,25 @@ class Ignite extends CI_Controller {
     /*
     * Sales Section Start
     */
-    public function sales(){
+    public function transfer(){
         $this->breadcrumb->add('Home', 'home');
         $this->breadcrumb->add('Stocks Out');
 
         $data['issues'] = $this->ignite_model->get_issuedItems();
 
-        $data['content'] = 'pages/sales';
+        $data['content'] = 'pages/transfer';
         $this->load->view('layouts/template', $data);
     }
 
-    public function newSale(){
+    public function newTransfer(){
         $this->breadcrumb->add('Home', 'home');
-        $this->breadcrumb->add('Stocks Out', 'sales');
+        $this->breadcrumb->add('Stocks Out', 'transfer');
         $this->breadcrumb->add('Create');
 
         $data['items'] = $this->ignite_model->get_issueItems();
         $data['warehouses'] = $this->ignite_model->get_data('warehouse_tbl')->result_array();
         
-        $data['content'] = 'pages/newSale';
+        $data['content'] = 'pages/newTransfer';
         $this->load->view('layouts/template', $data);
     }
 
@@ -768,8 +782,8 @@ class Ignite extends CI_Controller {
 
         if(count($items) > 0){            
             foreach($items as $item){
-
-                echo '<option value="'.$item['itemId'].'">'.$item['itemName'].' ( '.$item['categoryName'].' / '.$item['brandName'].' ) ~ '.number_format($item['purchasePrice']).' '.$item['currency'].'</option>';
+                echo '<option value="">Select</option>';
+                echo '<option value="'.$item['codeNumber'].'">'.$item['itemName'].' ( '.$item['categoryName'].' / '.$item['brandName'].' ) ~ '.number_format($item['purchasePrice']).' '.$item['currency'].'</option>';
             }
         }
         else{
@@ -780,9 +794,11 @@ class Ignite extends CI_Controller {
     public function checkQty(){
         $qty = $this->uri->segment(3);
         $warehouse = $this->uri->segment(4);
-        $item = $this->uri->segment(5);
+        $itemCode = $this->uri->segment(5);
 
-        $status = $this->ignite_model->checkQty($qty, $warehouse, $item);
+        $item = $this->ignite_model->get_limit_data('items_price_tbl', 'codeNumber', $itemCode)->row();
+
+        $status = $this->ignite_model->checkQty($qty, $warehouse, $item->itemId);
         if($status['qty'] >= $qty){
             echo json_encode(array('status' => true, 'quantity' => $status['qty']));
         }
@@ -791,33 +807,59 @@ class Ignite extends CI_Controller {
         }
     }
 
-    public function addStockOut(){
-        $warehouse = $this->input->post('warehouse');
-        $item = $this->input->post('item');
+    public function doTransfer(){
+        $source = $this->input->post('warehouseFrom');
+        $destination = $this->input->post('warehouseTo');
+        $itemCode = $this->input->post('item');
         $issueDate = $this->input->post('iDate');
         $qty = $this->input->post('qty');
         $remark = $this->input->post('remark');
 
+        $item = $this->ignite_model->get_limit_data('items_price_tbl', 'codeNumber', $itemCode)->row();
+
         $arr = array(
-            'itemId' => $item,
+            'itemId' => $item->itemId,
             'qty' => $qty,
-            'warehouseId' => $warehouse,
+            'transferIn' => $destination,
+            'transferOut' => $source,
+            'tranType' => 'T',
             'issueDate' => $issueDate,
             'remark' => $remark
         );
 
-        $this->db->insert('stocks_out_tbl', $arr);
+        $this->db->insert('transfer_tbl', $arr);
 
-        $bal = $this->ignite_model->get_limit_datas('stocks_balance_tbl',['itemId' => $item, 'warehouseId' => $warehouse])->row_array();
-        $balUpt = array(
-            'qty' => ($bal['qty'] - $qty)
+        $balIn = $this->ignite_model->get_limit_datas('stocks_balance_tbl',['itemId' => $item->itemId, 'warehouseId' => $destination])->row();
+
+        if(isset($balIn->qty)){
+            $updBalIn = array(
+                'qty' => ($balIn->qty + $qty)
+            );
+
+            $this->db->where('itemId', $item->itemId);
+            $this->db->where('warehouseId', $destination);
+            $this->db->update('stocks_balance_tbl', $updBalIn);
+        }else{
+            $updBalIn = array(
+                'itemId' => $item->itemId,
+                'qty' => $qty,
+                'warehouseId' => $destination
+            );
+
+            $this->db->insert('stocks_balance_tbl', $updBalIn);
+        }
+
+        $balOut = $this->ignite_model->get_limit_datas('stocks_balance_tbl',['itemId' => $item->itemId, 'warehouseId' => $source])->row();
+
+        $updBalOut = array(
+            'qty' => ($balOut->qty - $qty)
         );
 
-        $this->db->where('itemId', $item);
-        $this->db->where('warehouseId', $warehouse);
-        $this->db->update('stocks_balance_tbl', $balUpt);
+        $this->db->where('itemId', $item->itemId);
+        $this->db->where('warehouseId', $source);
+        $this->db->update('stocks_balance_tbl', $updBalOut);
 
-        redirect('sales');
+        redirect('transfer');
     }
     /*
     * Sales Section End
@@ -830,6 +872,8 @@ class Ignite extends CI_Controller {
         $this->breadcrumb->add('Home', 'home');
         $this->breadcrumb->add('Stock Balance');
 
+        $data['items'] = $this->ignite_model->get_stock_items()->result();
+        $data['warehouse'] = $this->ignite_model->get_limit_data('warehouse_tbl', 'activeState', true)->result();
         $data['content'] = 'pages/balance';
         $this->load->view('layouts/template', $data);
     }

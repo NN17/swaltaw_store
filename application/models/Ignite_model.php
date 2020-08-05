@@ -415,7 +415,7 @@ class Ignite_model extends CI_Model {
             LEFT JOIN brands_tbl AS bd
             ON bd.brandId = ip.brandId
             LEFT JOIN warehouse_tbl AS wh
-            ON wh.warehouseId = so.warehouseId
+            ON wh.warehouseId = so.warehouseFrom
             ORDER BY so.issueDate DESC
             ");
         return $data->result_array();
@@ -428,6 +428,33 @@ class Ignite_model extends CI_Model {
             WHERE accounts_tbl.role != 0
             ");
         return $query->result();
+    }
+
+    function get_stock_items(){
+        $query = $this->db->query("SELECT * FROM items_price_tbl
+            WHERE active = true
+            ORDER BY itemName
+            ");
+
+        return $query;
+    }
+
+    function get_purchase_items_by_warehouse($warehouseId, $itemId){
+        $query = $this->db->query("SELECT SUM(quantity) AS qty
+            FROM purchase_tbl
+            WHERE warehouseId = $warehouseId
+            AND itemId = $itemId
+            ");
+        return $query;
+    }
+
+    function get_transfer_items_by_warehouse($warehouseId, $itemId){
+        $query = $this->db->query("SELECT SUM(qty) AS qty
+            FROM stocks_out_tbl
+            WHERE warehouseFrom = $warehouseId
+            AND itemId = $itemId
+            ");
+        return $query;
     }
 
 }

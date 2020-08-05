@@ -111,8 +111,8 @@ $route['edit-purchase/(:num)'] = 'ignite/editPurchase';
 /*
 * Routes for Sales
 */
-$route['sales'] = 'ignite/sales';
-$route['create-sales'] = 'ignite/newSale';
+$route['transfer'] = 'ignite/transfer';
+$route['create-transfer'] = 'ignite/newTransfer';
 
 /*
 * Routes for Stocks Balance

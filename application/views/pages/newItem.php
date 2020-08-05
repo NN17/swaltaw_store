@@ -68,10 +68,10 @@
         <?=form_input('model',set_value('model'),'placeholder="'.$this->lang->line('item_model').'" required')?>  
     </div>
 
-   	<div class="field">
+   	<!-- <div class="field">
         <?=form_label($this->lang->line('item_code'))?>
         <?=form_input('code',sprintf('%04d',0).'-'.sprintf('%04d',0).'-'.sprintf('%05d',($code['itemId']+1)),'placeholder="'.$this->lang->line('item_code').'" id="code" data-itemid="'.($code['itemId']+1).'" readonly')?>
-    </div>
+    </div> -->
 
     <div class="field">
     	<label><?=$this->lang->line('currency')?></label>

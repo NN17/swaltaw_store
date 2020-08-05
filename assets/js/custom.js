@@ -28,7 +28,9 @@ $(document).ready(function() {
 		timepicker: false,
 		format: "Y-m-d",
 		formatDate: "Y-m-d",
-		closeOnDateSelect: true
+		closeOnDateSelect: true,
+		scrollInput: false,
+		value: new Date()
 	});
 
 	
@@ -116,10 +118,63 @@ $(document).ready(function() {
 			type: 'GET',
 			crossDomain: 'TRUE',
 			success: function(res){
+				$(".ui.dropdown").removeClass('disabled');
 				$("#itemIssue").html(res);
 			}
 		})
 	});
+
+	$("#itemIssue").on('change', function(){
+		var code = $(this).val();
+		$("#itemCode").val(code);
+	});
+
+	$("#destination").on('change', function(){
+		var destination = $(this).val();
+		var source = $("#warehouseIssue").val();
+
+		$("#destErr").html('<div class="ui active inline loader"></div>');
+
+		setTimeout(function(){
+			if(destination == source){
+				$("#destErr").html('<i class="icon exclamation triangle large orange"></i> Source and Destination must not be same !').attr('data-status', false);
+			}else{
+				$("#destErr").html('<i class="icon check circle large green"></i>').attr('data-status', true);
+			}
+		},1000);
+	});
+
+	// Check Letter Code ..
+	$("#LC_check").on('keyup', function(event){
+		var lc = $(this).val().toUpperCase();
+		var key = event.keyCode;
+		console.log(lc);
+		$("#LC_err").html('<div class="ui active inline loader"></div>');
+		setTimeout(function(){
+			if(lc != ''){
+				$.ajax({
+						url: base_url() + 'ignite/checkLetterCode',
+						type: 'POST',
+						crossDomain: true,
+						data: {
+							'character' : lc
+						},
+						success: function(res){
+							let obj = JSON.parse(res);
+							if(obj.status == true){
+								$("#LC_err").html('<i class="icon check circle large green"></i>').attr('data-status', true);
+							}else{
+								$("#LC_err").html('<i class="icon exclamation triangle large orange"></i>').attr('data-status', false);
+							}
+						}
+					})
+			}else{
+				$("#LC_err").html('<i class="icon exclamation triangle large orange"></i>');
+			}
+		},1000);
+		$(this).val(lc);
+	});
+
 
 	// Check Qty..
 	$("#qtyIssue").on('change', function(){
@@ -158,13 +213,23 @@ $(document).ready(function() {
 	});
 
 	// Stock Out Form submit
-	$("#formStockOut").on('submit', function(){
-		console.log('form submitted');
+	$("#formStockOut").on('submit', function(event){
+		// console.log('form submitted');
 		var qtyStatus = $("#qtyErr").data('status');
-		if(qtyStatus == false){
+		var destStatus = $("#destErr").data('status');
+		console.log(qtyStatus + '/' + destStatus);
+		if(destStatus == false || qtyStatus == false){
 			event.preventDefault();
-			$("#qtyIssue").focus();
+			$.alert({
+			    title: 'Invalid Input!',
+			    content: 'Please check form again!',
+				backgroundDismiss: false,
+				columnClass: "custom-confirm-box",
+			});
 		}
+
+		qtyStatus = '';
+		destStatus = '';
 	});
 
 
@@ -228,6 +293,14 @@ function format(size, num){
 	}
 	var fStr = str+num;
 	return fStr;
+}
+
+function checkCategory(e){
+	let err = $("#LC_err").data('status');
+	if (err == false){
+		return false;
+		$("#LC_err").focus();
+	}
 }
 
 // 

@@ -3,10 +3,25 @@
 
 <div class="ui grid">
 	<div class="eight wide column">
-	<?=form_open('ignite/updateCategory/'.$catDetail['categoryId'], 'class="ui form"')?>
+	<?=form_open('ignite/updateCategory/'.$catDetail['categoryId'], 'class="ui form" onsubmit="return checkCategory()"')?>
 	    <div class="field">
 	    	<label><?=$this->lang->line('name')?></label>
-	    	<?=form_input('name',$catDetail['categoryName'],'placeholder="'.$this->lang->line('category_name').'" required')?>
+	    	<div class="ui grid">
+	    		<div class="twelve wide column">
+	    			<?=form_input('name',$catDetail['categoryName'],'placeholder="'.$this->lang->line('category_name').'" required')?>
+	    		</div>
+	    	</div>
+	    </div>
+	    <div class="field">
+			<label><?=$this->lang->line('cat_code')?></label>
+	    	<div class="ui grid">
+	    		<div class="twelve wide column">
+			    	<?=form_input('l_code',$catDetail['letterCode'],'placeholder="'.$this->lang->line('cat_code').'" maxlength="2" id="LC_check" onkeypress="return /[a-z]/i.test(event.key)" required')?>
+			    </div>
+			    <div class="four wide column" id="LC_err">
+			    	<span ></span>
+			    </div>
+			</div>
 	    </div>
 	    <div class="field">
 	    	<label><?=$this->lang->line('remark')?> ( Optional )</label>

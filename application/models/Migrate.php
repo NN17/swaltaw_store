@@ -349,6 +349,10 @@ class Migrate extends CI_Model {
             'type' => 'VARCHAR',
             'constraint' => 256
           ),
+          'letterCode' => array(
+            'type' => 'CHAR',
+            'constraint' => 2
+          ),
           'remark' => array(
             'type' => 'TEXT'
           )
@@ -494,7 +498,7 @@ class Migrate extends CI_Model {
 
         // Create Stock Out Table
         $this->dbforge->add_field(array(
-          'issueId' => array(
+          'tranId' => array(
             'type' => 'INT',
             'constraint' => 8,
             'auto_increment' => TRUE
@@ -507,9 +511,17 @@ class Migrate extends CI_Model {
             'type' => 'INT',
             'constraint' => 8
           ),
-          'warehouseId' => array(
+          'transferIn' => array(
             'type' => 'INT',
             'constraint' => 8
+          ),
+          'transferOut' => array(
+            'type' => 'INT',
+            'constraint' => 8
+          ),
+          'tranType' => array(
+            'type' => 'CHAR',
+            'constraint' => 15
           ),
           'issueDate' => array(
             'type' => 'DATETIME'
@@ -519,8 +531,8 @@ class Migrate extends CI_Model {
           ),
         ));
 
-        $this->dbforge->add_key('issueId', TRUE);
-        $this->dbforge->create_table('stocks_out_tbl', TRUE);
+        $this->dbforge->add_key('tranId', TRUE);
+        $this->dbforge->create_table('transfer_tbl', TRUE);
         
         
         // ------------ End of Create Tables ---------------
