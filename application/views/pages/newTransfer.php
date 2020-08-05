@@ -4,7 +4,6 @@
 <div class="ui grid">
 	<div class="ten wide column">
 	<?=form_open('ignite/doTransfer', 'class="ui form" id="formStockOut" ')?>
-
     <div class="field">
     	<?=form_label($this->lang->line('warehouse') .' ( '.$this->lang->line('from').' )')?>
     	<div class="ui grid">

@@ -14,10 +14,9 @@ $(document).ready(function() {
 	$('.ui.checkbox').checkbox();
 
 	$('[id=popup]')
-	  .popup({
-	    inline: false
-	  })
-	;
+		.popup({
+			inline: false
+		});
 
 	$('#dataTable').DataTable();
 
@@ -33,7 +32,7 @@ $(document).ready(function() {
 		value: new Date()
 	});
 
-	
+
 	/*
 	 * Delete Confirmation
 	 */
@@ -45,8 +44,7 @@ $(document).ready(function() {
 			title: "<i class='icon exclamation triangle yellow'></i> Are you sure want to DELETE",
 			backgroundDismiss: false,
 			columnClass: "custom-confirm-box",
-			content:
-				"This action can not be undone, the data you selected will be delete permanently.",
+			content: "This action can not be undone, the data you selected will be delete permanently.",
 			buttons: {
 				Delete: {
 					btnClass: "btn-red",
@@ -61,7 +59,7 @@ $(document).ready(function() {
 		});
 	});
 
-	$('[id=curDefault]').on('change', function(){
+	$('[id=curDefault]').on('change', function() {
 		var currencyId = $(this).val();
 		// console.log(currencyId);
 		$.ajax({
@@ -76,7 +74,7 @@ $(document).ready(function() {
 	});
 
 	// Generate Item Code
-	$('#cat').on('change', function(){
+	$('#cat').on('change', function() {
 		var bCode = "0000";
 		var cat = String($(this).val());
 		var brand = $('#brand').val();
@@ -86,15 +84,15 @@ $(document).ready(function() {
 
 		// console.log(format(4, '1'));
 
-		if(brand != ""){
+		if (brand != "") {
 			bCode = format(4, brand);
 		}
 
 		$('#code').val(catCode + "-" + bCode + "-" + iCode);
-		
+
 	});
 
-	$('#brand').on('change', function(){
+	$('#brand').on('change', function() {
 		var catCode = "0000";
 		var cat = String($('#cat').val());
 		var brand = String($(this).val());
@@ -102,14 +100,14 @@ $(document).ready(function() {
 		var bCode = format(4, brand);
 		var iCode = format(5, id);
 
-		if(cat != ""){
+		if (cat != "") {
 			catCode = format(4, cat);
 		}
 
 		$('#code').val(catCode + "-" + bCode + "-" + iCode);
 	});
 
-	$("#warehouseIssue").on('change', function(){
+	$("#warehouseIssue").on('change', function() {
 		var warehouse = $(this).val();
 		// console.log(warehouse);
 
@@ -117,112 +115,111 @@ $(document).ready(function() {
 			url: base_url() + 'ignite/getItemsByWarehouse/' + warehouse,
 			type: 'GET',
 			crossDomain: 'TRUE',
-			success: function(res){
+			success: function(res) {
 				$(".ui.dropdown").removeClass('disabled');
 				$("#itemIssue").html(res);
 			}
 		})
 	});
 
-	$("#itemIssue").on('change', function(){
+	$("#itemIssue").on('change', function() {
 		var code = $(this).val();
 		$("#itemCode").val(code);
 	});
 
-	$("#destination").on('change', function(){
+	$("#destination").on('change', function() {
 		var destination = $(this).val();
 		var source = $("#warehouseIssue").val();
 
 		$("#destErr").html('<div class="ui active inline loader"></div>');
 
-		setTimeout(function(){
-			if(destination == source){
+		setTimeout(function() {
+			if (destination == source) {
 				$("#destErr").html('<i class="icon exclamation triangle large orange"></i> Source and Destination must not be same !').attr('data-status', false);
-			}else{
+			} else {
 				$("#destErr").html('<i class="icon check circle large green"></i>').attr('data-status', true);
 			}
-		},1000);
+		}, 1000);
 	});
 
 	// Check Letter Code ..
-	$("#LC_check").on('keyup', function(event){
+	$("#LC_check").on('keyup', function(event) {
 		var lc = $(this).val().toUpperCase();
 		var key = event.keyCode;
 		console.log(lc);
 		$("#LC_err").html('<div class="ui active inline loader"></div>');
-		setTimeout(function(){
-			if(lc != ''){
+		setTimeout(function() {
+			if (lc != '') {
 				$.ajax({
-						url: base_url() + 'ignite/checkLetterCode',
-						type: 'POST',
-						crossDomain: true,
-						data: {
-							'character' : lc
-						},
-						success: function(res){
-							let obj = JSON.parse(res);
-							if(obj.status == true){
-								$("#LC_err").html('<i class="icon check circle large green"></i>').attr('data-status', true);
-							}else{
-								$("#LC_err").html('<i class="icon exclamation triangle large orange"></i>').attr('data-status', false);
-							}
+					url: base_url() + 'ignite/checkLetterCode',
+					type: 'POST',
+					crossDomain: true,
+					data: {
+						'character': lc
+					},
+					success: function(res) {
+						let obj = JSON.parse(res);
+						if (obj.status == true) {
+							$("#LC_err").html('<i class="icon check circle large green"></i>').attr('data-status', true);
+						} else {
+							$("#LC_err").html('<i class="icon exclamation triangle large orange"></i>').attr('data-status', false);
 						}
-					})
-			}else{
+					}
+				})
+			} else {
 				$("#LC_err").html('<i class="icon exclamation triangle large orange"></i>');
 			}
-		},1000);
+		}, 1000);
 		$(this).val(lc);
 	});
 
 
 	// Check Qty..
-	$("#qtyIssue").on('change', function(){
+	$("#qtyIssue").on('change', function() {
 		var qty = $(this).val();
 		var warehouse = $("#warehouseIssue").val();
 		var item = $('#itemIssue').val();
 
 		$("#qtyErr").html('<div class="ui active inline loader"></div>');
-		setTimeout(function(){
+		setTimeout(function() {
 			console.log(qty + '/' + warehouse + '/' + item);
-			if(warehouse == "" || item == ""){
+			if (warehouse == "" || item == "") {
 				$("#qtyErr").html('<i class="ui icon orange large exclamation triangle"></i>');
 				$("#qtyIssue").attr('placeholder', 'Warhouse & Item must not be NULL ..');
 				$("#qtyIssue").val('');
 				$("#qtyIssue").focus();
-			}
-			else{
+			} else {
 				$.ajax({
 					url: base_url() + 'ignite/checkQty/' + qty + '/' + warehouse + '/' + item,
 					type: 'GET',
 					crossDomain: 'TRUE',
-					success: function(res){
+					success: function(res) {
 						// $("#qtyErr").html(res);
 						console.log(res);
 						var obj = JSON.parse(res);
-						if(obj.status == true){
+						if (obj.status == true) {
 							$("#qtyErr").html('<i class="icon check circle large green"></i>').attr('data-status', obj.status);
-						}else{
-							$("#qtyErr").html('<i class="icon exclamation triangle large orange"></i> Only '+ obj.quantity +' Remain..').attr('data-status', obj.status);
+						} else {
+							$("#qtyErr").html('<i class="icon exclamation triangle large orange"></i> Only ' + obj.quantity + ' Remain..').attr('data-status', obj.status);
 						}
 					}
 				});
 			}
-		},1000);
-		
+		}, 1000);
+
 	});
 
 	// Stock Out Form submit
-	$("#formStockOut").on('submit', function(event){
-		// console.log('form submitted');
-		var qtyStatus = $("#qtyErr").data('status');
-		var destStatus = $("#destErr").data('status');
+	$("#formStockOut").on('submit', function(event) {
+		var qtyStatus = $('#qtyErr').attr('data-status');
+		var destStatus = $('#destErr').attr('data-status');
+
 		console.log(qtyStatus + '/' + destStatus);
-		if(destStatus == false || qtyStatus == false){
+		if (destStatus == 'false' || qtyStatus == 'false') {
 			event.preventDefault();
 			$.alert({
-			    title: 'Invalid Input!',
-			    content: 'Please check form again!',
+				title: 'Invalid Input!',
+				content: 'Please check form again!',
 				backgroundDismiss: false,
 				columnClass: "custom-confirm-box",
 			});
@@ -233,44 +230,39 @@ $(document).ready(function() {
 	});
 
 
-});// End of document ready function
+}); // End of document ready function
 
-function category_modal(){
+function category_modal() {
 	$('.tiny.modal.category')
-	  .modal('show')
-	;
+		.modal('show');
 }
 
-function brand_modal(){
+function brand_modal() {
 	$('.tiny.modal.brand')
-	  .modal('show')
-	;
+		.modal('show');
 }
 
-function supplier_modal(){
+function supplier_modal() {
 	$('.tiny.modal.supplier')
-	  .modal('show')
-	;
+		.modal('show');
 }
 
-function warehouse_modal(){
+function warehouse_modal() {
 	$('.tiny.modal.warehouse')
-	.modal('show')
-  ;
+		.modal('show');
 }
 
-function item_modal(){
+function item_modal() {
 	$('.tiny.modal.item')
-	.modal('show')
-  ;
+		.modal('show');
 }
 
-function changePriceModal(itemId){
+function changePriceModal(itemId) {
 	$.ajax({
 		url: base_url() + 'ignite/getPrice/' + itemId,
 		type: 'POST',
 		crossDomain: "TRUE",
-		success: function(res){
+		success: function(res) {
 			var price = $.parseJSON(res);
 			$('#changePriceForm').attr('action', 'ignite/changePrice/' + itemId);
 			$("#itemName").html(price.itemName);
@@ -280,24 +272,23 @@ function changePriceModal(itemId){
 		}
 	});
 	$('.tiny.modal.changePrice')
-	  .modal('show')
-	;
+		.modal('show');
 }
 
-function format(size, num){
+function format(size, num) {
 	var i = 0;
 	var str = '';
-	while(i < (size-num.length)){
+	while (i < (size - num.length)) {
 		str += "0";
-		i ++;
+		i++;
 	}
-	var fStr = str+num;
+	var fStr = str + num;
 	return fStr;
 }
 
-function checkCategory(e){
+function checkCategory(e) {
 	let err = $("#LC_err").data('status');
-	if (err == false){
+	if (err == false) {
 		return false;
 		$("#LC_err").focus();
 	}
