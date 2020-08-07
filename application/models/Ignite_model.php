@@ -409,14 +409,14 @@ class Ignite_model extends CI_Model {
     }
 
     function get_issuedItems(){
-        $data = $this->db->query("SELECT * FROM stocks_out_tbl AS so
+        $data = $this->db->query("SELECT * FROM transfer_tbl AS tr
             LEFT JOIN items_price_tbl AS ip
-            ON ip.itemId = so.itemId
+            ON ip.itemId = tr.itemId
             LEFT JOIN brands_tbl AS bd
             ON bd.brandId = ip.brandId
             LEFT JOIN warehouse_tbl AS wh
-            ON wh.warehouseId = so.warehouseFrom
-            ORDER BY so.issueDate DESC
+            ON wh.warehouseId = tr.transferIn
+            ORDER BY tr.issueDate DESC
             ");
         return $data->result_array();
     }
@@ -455,6 +455,21 @@ class Ignite_model extends CI_Model {
             AND itemId = $itemId
             ");
         return $query;
+    }
+
+    function get_saleItemSearch($key){
+        $query = $this->db->query("SELECT * FROM stocks_balance_tbl AS sb
+            LEFT JOIN warehouse_tbl AS wh
+            ON wh.warehouseId = sb.warehouseId
+            LEFT JOIN items_price_tbl AS ip
+            ON ip.itemId = sb.itemId
+            LEFT JOIN brands_tbl AS bd
+            ON bd.brandId = ip.brandId
+            WHERE ip.itemName LIKE '$key%'
+            OR ip.itemModel LIKE '$key%'
+            OR bd.brandName LIKE '$key%'
+            ");
+        return $query->result_array();
     }
 
 }

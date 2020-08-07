@@ -3,7 +3,7 @@
 
 <div class="ui grid">
 	<div class="eight wide column">
-	<?=form_open('ignite/updateCategory/'.$catDetail['categoryId'], 'class="ui form" onsubmit="return checkCategory()"')?>
+	<?=form_open('ignite/updateCategory/'.$catDetail['categoryId'], 'class="ui form" id="catSubmit"')?>
 	    <div class="field">
 	    	<label><?=$this->lang->line('name')?></label>
 	    	<div class="ui grid">

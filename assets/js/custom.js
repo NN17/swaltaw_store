@@ -32,6 +32,50 @@ $(document).ready(function() {
 		value: new Date()
 	});
 
+	// Autofocus
+	$(function(){
+		let val = $('#saleCode').val();
+		if(val == ''){
+			$('#saleCode').focus();
+		}
+	})
+
+	// F2 Shoutcut
+	$("#saleCode, #itemQty, #itemPrice").on('keydown', function(event){
+		var key = event.keyCode;
+		if(key == 113){
+			$("#itemSearch").modal('show');
+		}
+	});
+
+	// Sale Item Search..
+	$('#saleItemSearch').on('keyup', function(){
+		let keyword = $(this).val();
+
+		$.ajax({
+			url: base_url() + 'ignite/saleItemSearch',
+			type: "GET",
+			crossDomain: "TRUE",
+			data: {
+				'keyword' : keyword
+			},
+			success: function(result){
+				let html;
+				result.forEach(function(x){
+					html += `<tr onclick="selectItem('${x.codeNumber}', ${x.retailPrice})" class="item">
+							<td>${x.itemName}</td>
+							<td>${x.itemModel}</td>
+							<td class="ui right aligned">${Intl.NumberFormat().format(x.purchasePrice)}</td>
+							<td class="ui right aligned">${Intl.NumberFormat().format(x.retailPrice)}</td>
+							<td class="ui right aligned">${Intl.NumberFormat().format(x.wholesalePrice)}</td>
+						</tr>`;
+				});
+				$("#searchContent").html(html);
+				
+			}
+		});
+	});
+
 
 	/*
 	 * Delete Confirmation
@@ -75,37 +119,41 @@ $(document).ready(function() {
 
 	// Generate Item Code
 	$('#cat').on('change', function() {
-		var bCode = "0000";
-		var cat = String($(this).val());
-		var brand = $('#brand').val();
+		// var bCode = "0000";
+		var cat = $(this).val();
 		var id = String($('#code').data('itemid'));
-		var catCode = format(4, cat);
 		var iCode = format(5, id);
 
-		// console.log(format(4, '1'));
+		$.ajax({
+			url: base_url() + 'ignite/getLetterCode',
+			type: 'POST',
+			crossDomain: 'TRUE',
+			data: {
+				'catId' : cat
+			},
+			success: function(res){
+				let obj = JSON.parse(res);
+				$('#code').val(obj.code + "-" + iCode);
+			}
+		});
 
-		if (brand != "") {
-			bCode = format(4, brand);
-		}
-
-		$('#code').val(catCode + "-" + bCode + "-" + iCode);
 
 	});
 
-	$('#brand').on('change', function() {
-		var catCode = "0000";
-		var cat = String($('#cat').val());
-		var brand = String($(this).val());
-		var id = String($('#code').data('itemid'));
-		var bCode = format(4, brand);
-		var iCode = format(5, id);
+	// $('#brand').on('change', function() {
+	// 	var catCode = "0000";
+	// 	var cat = String($('#cat').val());
+	// 	var brand = String($(this).val());
+	// 	var id = String($('#code').data('itemid'));
+	// 	var bCode = format(4, brand);
+	// 	var iCode = format(5, id);
 
-		if (cat != "") {
-			catCode = format(4, cat);
-		}
+	// 	if (cat != "") {
+	// 		catCode = format(4, cat);
+	// 	}
 
-		$('#code').val(catCode + "-" + bCode + "-" + iCode);
-	});
+	// 	$('#code').val(catCode + "-" + bCode + "-" + iCode);
+	// });
 
 	$("#warehouseIssue").on('change', function() {
 		var warehouse = $(this).val();
@@ -160,9 +208,9 @@ $(document).ready(function() {
 					success: function(res) {
 						let obj = JSON.parse(res);
 						if (obj.status == true) {
-							$("#LC_err").html('<i class="icon check circle large green"></i>').attr('data-status', true);
+							$("#LC_err").html('<i class="icon check circle large green"></i>').attr('data-status', obj.status);
 						} else {
-							$("#LC_err").html('<i class="icon exclamation triangle large orange"></i>').attr('data-status', false);
+							$("#LC_err").html('<i class="icon exclamation triangle large orange"></i>').attr('data-status', obj.status);
 						}
 					}
 				})
@@ -229,6 +277,20 @@ $(document).ready(function() {
 		destStatus = '';
 	});
 
+	$("#catSubmit").on('submit', function(event){
+		let err = $("#LC_err").attr('data-status');
+		if (err == 'false') {
+			event.preventDefault();
+			$.alert({
+				title: 'Invalid Input!',
+				content: 'The Code letter is has been exist or not be null. Please Try again .. !',
+				backgroundDismiss: false,
+				columnClass: "custom-confirm-box",
+			});
+			$("#LC_err").focus();
+		}
+	})
+
 
 }); // End of document ready function
 
@@ -286,13 +348,14 @@ function format(size, num) {
 	return fStr;
 }
 
-function checkCategory(e) {
-	let err = $("#LC_err").data('status');
-	if (err == false) {
-		return false;
-		$("#LC_err").focus();
-	}
+function selectItem(code, price){
+	$("#saleCode").val(code);
+	$("#itemSearch").modal('hide');
+	$("#itemQty").val(1);
+	$("#itemPrice").val(price);
+	$("#itemQty").focus();
 }
+
 
 // 
 

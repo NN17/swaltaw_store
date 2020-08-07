@@ -3,7 +3,7 @@
 
 <div class="ui grid">
 	<div class="eight wide column">
-	<?=form_open('ignite/addCategory', 'class="ui form" onsubmit="return checkCategory(e)"')?>
+	<?=form_open('ignite/addCategory', 'class="ui form" id="catSubmit"')?>
 	    <div class="field">
 	    	<div class="ui grid">
 	    		<div class="twelve wide column">
@@ -16,7 +16,7 @@
 			<label><?=$this->lang->line('cat_code')?></label>
 	    	<div class="ui grid">
 	    		<div class="twelve wide column">
-			    	<?=form_input('l_code','','placeholder="'.$this->lang->line('cat_code').'" maxlength="2" id="LC_check" pattern="[A-Za-z]{3}" onkeypress="return /[a-z]/i.test(event.key)" required')?>
+			    	<?=form_input('l_code','','placeholder="'.$this->lang->line('cat_code').'" maxlength="2" id="LC_check" onkeypress="return /[a-z]/i.test(event.key)" required')?>
 			    </div>
 			    <div class="four wide column" id="LC_err">
 			    	<span ></span>

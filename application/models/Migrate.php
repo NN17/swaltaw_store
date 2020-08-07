@@ -115,9 +115,9 @@ class Migrate extends CI_Model {
                 'description' => 'Incoming Stocks and that store in which warehouse'
               ),
               array(
-                'machine' => 'sales',
+                'machine' => 'transfer',
                 'name' => 'Stocks Out',
-                'lang_name' => 'sales',
+                'lang_name' => 'stock_out',
                 'icon_class' => 'minus square',
                 'color' => 'orange',
                 'sub_menu' => false,
@@ -169,7 +169,7 @@ class Migrate extends CI_Model {
                 'description' => 'Define currency for inventory system'
               ),
               array(
-                'machine' => 'category',
+                'machine' => 'categories',
                 'name' => 'Category',
                 'lang_name' => 'category',
                 'icon_class' => 'list ol',
@@ -178,7 +178,7 @@ class Migrate extends CI_Model {
                 'description' => 'Define category list for import items'
               ),
               array(
-                'machine' => 'brand',
+                'machine' => 'brands',
                 'name' => 'Brand',
                 'lang_name' => 'brand',
                 'icon_class' => 'trademark',
@@ -252,6 +252,9 @@ class Migrate extends CI_Model {
             'type' => 'TEXT'
           ),
           'activeState' => array(
+            'type' => 'BOOLEAN'
+          ),
+          'shop' => array(
             'type' => 'BOOLEAN'
           ),
         ));

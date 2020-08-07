@@ -53,6 +53,14 @@ class Ignite extends CI_Controller {
         $this->load->view('layouts/template', $data);
     }
 
+    public function saleItemSearch(){
+        $key = $this->input->get('keyword');
+        $items = $this->ignite_model->get_saleItemSearch($key);
+
+        header('Content-Type: application/json');
+        echo json_encode($items);
+    }
+
     public function switchLanguage(){
         $key = $this->uri->segment(2);
 
@@ -330,6 +338,13 @@ class Ignite extends CI_Controller {
         $data['currencies'] = $this->ignite_model->get_data('currency_tbl')->result_array();
         $data['content'] = 'pages/newItem';
         $this->load->view('layouts/template', $data);
+    }
+
+    public function getLetterCode(){
+        $catId = $this->input->post('catId');
+
+        $cat = $this->ignite_model->get_limit_data('categories_tbl', 'categoryId', $catId)->row();
+        echo json_encode(array('status' => true, 'code' => $cat->letterCode));
     }
 
     public function addItem(){

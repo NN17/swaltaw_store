@@ -28,7 +28,7 @@
     	<?=form_label($this->lang->line('brand'))?>
     	<div class="ui grid">
 			<div class="twelve wide column">
-				<select name="brand" class="ui search dropdown" id="brand" required>
+				<select name="brand" class="ui search dropdown" required>
 					<option value="">Select</option>
 					<?php foreach($brands as $brand):?>
 						<option value="<?=$brand['brandId']?>"><?=$brand['brandName']?></option>
@@ -68,10 +68,10 @@
         <?=form_input('model',set_value('model'),'placeholder="'.$this->lang->line('item_model').'" required')?>  
     </div>
 
-   	<!-- <div class="field">
+   	<div class="field">
         <?=form_label($this->lang->line('item_code'))?>
-        <?=form_input('code',sprintf('%04d',0).'-'.sprintf('%04d',0).'-'.sprintf('%05d',($code['itemId']+1)),'placeholder="'.$this->lang->line('item_code').'" id="code" data-itemid="'.($code['itemId']+1).'" readonly')?>
-    </div> -->
+        <?=form_input('code','','placeholder="'.$this->lang->line('item_code').'" id="code" data-itemid="'.($code['itemId']+1).'" readonly')?>
+    </div>
 
     <div class="field">
     	<label><?=$this->lang->line('currency')?></label>
@@ -121,10 +121,25 @@
     	<?=$this->lang->line('add_category')?>
   	</div>
   	<div class="content">
-    <?=form_open('ignite/addCategory/new-item/'.$referer, 'class="ui form"')?>
+    <?=form_open('ignite/addCategory/new-item/'.$referer, 'class="ui form" id="catSubmit"')?>
 	    <div class="field">
-	    	<label><?=$this->lang->line('name')?></label>
-	    	<?=form_input('name','','placeholder="'.$this->lang->line('category_name').'" required')?>
+	    	<div class="ui grid">
+	    		<div class="twelve wide column">
+			    	<label><?=$this->lang->line('name')?></label>
+			    	<?=form_input('name','','placeholder="'.$this->lang->line('category_name').'" required')?>
+			    </div>
+			</div>
+	    </div>
+	    <div class="field">
+			<label><?=$this->lang->line('cat_code')?></label>
+	    	<div class="ui grid">
+	    		<div class="twelve wide column">
+			    	<?=form_input('l_code','','placeholder="'.$this->lang->line('cat_code').'" maxlength="2" id="LC_check" onkeypress="return /[a-z]/i.test(event.key)" required')?>
+			    </div>
+			    <div class="four wide column" id="LC_err">
+			    	
+			    </div>
+			</div>
 	    </div>
 	    <div class="field">
 	    	<label><?=$this->lang->line('remark')?> ( Optional )</label>

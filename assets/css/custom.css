@@ -1,3 +1,7 @@
+body{
+	height: auto;
+}
+
 #maincontent {
 	margin-top: 93px;
 	padding: 15px;
@@ -51,4 +55,33 @@ textarea{
 
 .text-capitalize{
 	text-transform: capitalize !important;
+}
+
+#LC_err{
+	line-height: 36px;
+}
+
+.vr_wrapper{
+	padding: 15px;
+	border: 1px solid #bbb;
+	border-radius: 3px;
+	background: #eee;
+	min-height: 500px;
+}
+
+#itemSearch .scrolling.content{
+	height: 500px;
+}
+
+.item{
+	cursor: pointer;
+}
+
+.item:hover{
+	background: #eee;
+}
+
+.itemSearch-header{
+	padding: 15px;
+	background: #fbbd08;
 }
