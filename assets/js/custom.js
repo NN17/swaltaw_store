@@ -9,7 +9,6 @@ function base_url() {
 $(document).ready(function() {
 	$(".ui.dropdown").dropdown();
 	$(".menu .item").tab();
-	// $(":input[type='number']:enabled:visible:first").focus();
 
 	$('.ui.checkbox').checkbox();
 
@@ -43,39 +42,44 @@ $(document).ready(function() {
 	// F2 Shoutcut
 	$("#saleCode, #itemQty, #itemPrice").on('keydown', function(event){
 		var key = event.keyCode;
+		var maxqty = $("#itemQty").data('balance');
+		var qty = $("#itemQty").val();
 		if(key == 113){
 			$("#itemSearch").modal('show');
+		}else if(key == 13){
+			var code = $("#saleCode").val();
+			var name = $("#saleCode").data('name');
+			var qty = $("#itemQty").val();
+			var price = $("#itemPrice").val();
+			if(code == '' || qty == '' || price == ''){
+				$.alert({
+				    title: 'Invalid Input',
+				    content: 'Item Code, Qty and Price must not be null !',
+				    backgroundDismiss: false,
+					columnClass: "custom-confirm-box",
+					animation: "zoom",
+					theme: "material"
+				});
+			}
+				else if(qty > maxqty){
+					$("#itemQty").parent().addClass('error');
+					$.alert({
+					    title: 'Invalid Input',
+					    content: 'Available Quantity is ' + maxqty + ' !',
+					    backgroundDismiss: false,
+						columnClass: "custom-confirm-box",
+						animation: "zoom",
+						theme: "material"
+					});
+				}
+					else{
+						if($("#itemQty").parent().hasClass('error')){
+							$("#itemQty").parent().removeClass('error');
+						}
+						orderAjax.addItem(code, name, qty, price);
+					}
 		}
 	});
-
-	// Sale Item Search..
-	$('#saleItemSearch').on('keyup', function(){
-		let keyword = $(this).val();
-
-		$.ajax({
-			url: base_url() + 'ignite/saleItemSearch',
-			type: "GET",
-			crossDomain: "TRUE",
-			data: {
-				'keyword' : keyword
-			},
-			success: function(result){
-				let html;
-				result.forEach(function(x){
-					html += `<tr onclick="selectItem('${x.codeNumber}', ${x.retailPrice})" class="item">
-							<td>${x.itemName}</td>
-							<td>${x.itemModel}</td>
-							<td class="ui right aligned">${Intl.NumberFormat().format(x.purchasePrice)}</td>
-							<td class="ui right aligned">${Intl.NumberFormat().format(x.retailPrice)}</td>
-							<td class="ui right aligned">${Intl.NumberFormat().format(x.wholesalePrice)}</td>
-						</tr>`;
-				});
-				$("#searchContent").html(html);
-				
-			}
-		});
-	});
-
 
 	/*
 	 * Delete Confirmation
@@ -139,21 +143,6 @@ $(document).ready(function() {
 
 
 	});
-
-	// $('#brand').on('change', function() {
-	// 	var catCode = "0000";
-	// 	var cat = String($('#cat').val());
-	// 	var brand = String($(this).val());
-	// 	var id = String($('#code').data('itemid'));
-	// 	var bCode = format(4, brand);
-	// 	var iCode = format(5, id);
-
-	// 	if (cat != "") {
-	// 		catCode = format(4, cat);
-	// 	}
-
-	// 	$('#code').val(catCode + "-" + bCode + "-" + iCode);
-	// });
 
 	$("#warehouseIssue").on('change', function() {
 		var warehouse = $(this).val();
@@ -348,13 +337,132 @@ function format(size, num) {
 	return fStr;
 }
 
-function selectItem(code, price){
-	$("#saleCode").val(code);
-	$("#itemSearch").modal('hide');
-	$("#itemQty").val(1);
-	$("#itemPrice").val(price);
-	$("#itemQty").focus();
-}
+
+/*
+* Order Ajax
+*/
+var orderAjax = function(){
+	let newOrders = [];
+	let orderObject = {};
+
+	let createItem = function(code, name, qty, price){
+		orderObject = {
+			code: code,
+			name: name,
+			qty: qty,
+			price: price
+		}
+
+		newOrders.push(orderObject);
+
+		console.log(newOrders);
+
+		templateStructure();
+	};
+
+	let templateStructure = function(){
+		let html = '';
+		let total = 0;
+
+		if(newOrders.length > 0){
+			newOrders.forEach(function(x,y){
+				let amount = (x.qty * x.price);
+				total += amount;
+				html += `<tr>
+					<td class="ui right aligned">${y+1}</td>
+					<td>${x.name}</td>
+					<td class="ui right aligned">${Intl.NumberFormat().format(x.price)}</td>
+					<td class="ui right aligned">${x.qty}</td>
+					<td class="ui right aligned">${Intl.NumberFormat().format(amount)}</td>
+					<td><i class="trash alternate icon red" onclick="orderAjax.removeItem(${y})"></i></td>
+					</tr>`;
+			});
+
+		}
+
+		$("#vr_preview").html(html);
+		$("#subTotal").html(Intl.NumberFormat().format(total));
+		$("#saleCode").val('').focus();
+		$("#itemQty").val('');
+		$("#itemPrice").val('');
+	};
+
+	let checkOut = function(){
+
+	};
+
+	let removeItemFunc = function(index){
+		newOrders.splice(index);
+		if($("#itemQty").parent().hasClass('error')){
+			$("#itemQty").parent().removeClass('error');
+		}
+		templateStructure();
+	};
+
+	let searchItem = function(){
+		let keyword = $("#saleItemSearch").val();
+
+		$.ajax({
+			url: base_url() + 'ignite/saleItemSearch',
+			type: "GET",
+			crossDomain: "TRUE",
+			data: {
+				'keyword' : keyword
+			},
+			success: function(result){
+				let html;
+				if(result.length > 0){
+
+					result.forEach(function(x){
+						html += `<tr onclick="orderAjax.itemSelect('${x.itemName}', '${x.codeNumber}', ${x.retailPrice}, ${x.qty})" class="item">
+								<td>${x.itemName}</td>
+								<td>${x.itemModel}</td>
+								<td class="ui right aligned">${Intl.NumberFormat().format(x.purchasePrice)}</td>
+								<td class="ui right aligned">${Intl.NumberFormat().format(x.retailPrice)}</td>
+								<td class="ui right aligned">${Intl.NumberFormat().format(x.wholesalePrice)}</td>
+								<td class="ui right aligned">${x.qty}</td>
+							</tr>`;
+					});
+				}else{
+					html = '';
+				}
+				$("#searchContent").html(html);
+				
+			}
+		});
+	};
+
+	let selectItem = function(name, code, price, qty){
+		$("#saleItemSearch").val('');
+		$("#searchContent").html('');
+		$("#saleCode").val(code).data('name', name);
+		$("#itemSearch").modal('hide');
+		$("#itemQty").val(1).data('balance', qty);
+		$("#itemPrice").val(price);
+		$("#itemQty").focus();
+	}
+
+	return {
+		init: function() {
+			return;
+		},
+		addItem: function(code, name, qty, price) {
+			createItem(code, name, qty, price);
+		},
+		checkOutOrder: function() {
+			checkOut();
+		},
+		removeItem: function(index) {
+			removeItemFunc(index);
+		},
+		itemSearch: function(){
+			searchItem();
+		},
+		itemSelect: function(name, code, price, qty){
+			selectItem(name, code, price, qty);
+		}
+	}
+}();
 
 
 // 

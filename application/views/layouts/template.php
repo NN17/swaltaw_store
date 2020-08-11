@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Padauk|Quicksand&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" media="screen" href="semantic/semantic.min.css" />
+    <link rel="stylesheet" type="text/css" href="semantic/Semantic-UI-Alert.css" />
     <link rel="stylesheet" type="text/css" href="assets/DataTables.SemanticUI/datatables.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/jquery.datetimepicker.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/jquery-confirm.css" />
@@ -48,7 +49,7 @@
                 <!-- Username -->
                 <div class="borderless item">
                     <div class="ui dropdown">
-                        <div class="default text"><i class="icon user circle"></i> <?=$this->session->userdata('username')?></div>
+                        <div class="default text"><i class="icon user circle green"></i> <?=$this->session->userdata('username')?></div>
                         <i class="dropdown icon"></i>
                         <div class="menu">
                             <a href="ignite/logout" class="item" data-value="female"><i class="icon sign-out"></i> <?=$this->lang->line('logout')?></a>
@@ -112,9 +113,24 @@
 
     <script src="assets/js/jquery-3.4.1.min.js"></script>
     <script src="semantic/semantic.min.js"></script>
+    <script type="text/javascript" src="semantic/Semantic-UI-Alert.js"></script>
     <script type="text/javascript" src="assets/DataTables.SemanticUI/datatables.min.js"></script>
     <script src="assets/js/jquery.datetimepicker.js"></script>
     <script src="assets/js/jquery-confirm.js"></script>
     <script src="assets/js/custom.js"></script>
+    <script type="text/javascript">
+        <?php if($this->session->flashdata('success')): ?>
+        var message = '<?=$this->session->flashdata('success')?>';
+        $.uiAlert({
+            textHead: 'Successful !', // header
+            text: message, // Text
+            bgcolor: '#19c3aa', // background-color
+            textcolor: '#fff', // color
+            position: 'bottom-right',// position . top And bottom ||  left / center / right
+            icon: 'checkmark box', // icon in semantic-UI
+            time: 3, // time
+              })
+        <?php endif; ?>
+    </script>
 </body>
 </html>

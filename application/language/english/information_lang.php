@@ -75,6 +75,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['email'] = 'Email';
 	$lang['date'] = 'Date';
 	$lang['quantity'] = 'Quantity';
+	$lang['available_qty'] = 'Available Qty';
 	$lang['from'] = 'From';
 	$lang['to'] = 'To';
 

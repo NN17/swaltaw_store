@@ -18,31 +18,56 @@
 		</div>
 	</div>
 </div>
+<div class="ui divider"></div>
 <div class="ui grid">
 	<div class="ten wide column">
 
 		<div class="vr_wrapper">
-			<table class="ui table">
+			<table class="ui table olive">
 				<thead>
 					<tr>
 						<th class="text-right">#</th>
 						<th>Description</th>
-						<th>Qty</th>
-						<th>Price</th>
-						<th>Amount</th>
+						<th class="text-right">Price</th>
+						<th class="text-right">Qty</th>
+						<th class="text-right">Amount</th>
+						<th>..</th>
 					</tr>
 				</thead>
+				<tbody id="vr_preview">
+					
+				</tbody>
 			</table>
 		</div>
 
 	</div>
-	<div class="six wide column" id="currency">Six</div>
+	<div class="six wide column">
+		<table class="ui table">
+			<tr>
+				<td><strong>Subtotal</strong></td>
+				<td class="ui right aligned"><strong id="subTotal">0</strong></td>
+			</tr>
+			<tr>
+				<td><strong>Discount</strong></td>
+				<td class="ui right aligned"><strong id="discount">0</strong></td>
+			</tr>
+			<tr>
+				<td><strong>Tax (5%)</strong></td>
+				<td class="ui right aligned"><strong id="tax">0</strong></td>
+			</tr>
+			<tr>
+				<td><strong>Grand Total</strong></td>
+				<td class="ui right aligned"><strong id="grandTotal">0</strong></td>
+			</tr>
+		</table>
+	</div>
 </div>
 
+<!-- Search Modal -->
 <div class="ui large modal" id="itemSearch">
 	<div class="itemSearch-header">
   	<div class="ui huge fluid icon input">
-		<input name="itemCode" type="text" placeholder="Item Code .." autofocus id="saleItemSearch">
+		<input name="itemCode" type="text" placeholder="Item Code .." autofocus id="saleItemSearch" onkeyup="orderAjax.itemSearch()">
 		<i class="search icon"></i>
 	</div>
 	</div>
@@ -55,6 +80,7 @@
                 <th class="ui right aligned"><?=$this->lang->line('purchase_price')?></th>
                 <th class="ui right aligned"><?=$this->lang->line('retail_price')?></th>
                 <th class="ui right aligned"><?=$this->lang->line('wholesale_price')?></th>
+                <th class="ui right aligned"><?=$this->lang->line('available_qty')?></th>
             </tr>
         </thead>
         <tbody id="searchContent">

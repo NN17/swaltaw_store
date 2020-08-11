@@ -62,10 +62,10 @@ textarea{
 }
 
 .vr_wrapper{
-	padding: 15px;
+	/*padding: 15px;
 	border: 1px solid #bbb;
 	border-radius: 3px;
-	background: #eee;
+	background: #eee;*/
 	min-height: 500px;
 }
 

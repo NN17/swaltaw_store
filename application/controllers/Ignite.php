@@ -55,7 +55,10 @@ class Ignite extends CI_Controller {
 
     public function saleItemSearch(){
         $key = $this->input->get('keyword');
-        $items = $this->ignite_model->get_saleItemSearch($key);
+        $items = [];
+        if(!empty($key)){
+            $items = $this->ignite_model->get_saleItemSearch($key);
+        }
 
         header('Content-Type: application/json');
         echo json_encode($items);
@@ -121,6 +124,7 @@ class Ignite extends CI_Controller {
         );
 
         $this->db->insert('warehouse_tbl', $arr);
+        $this->session->set_flashdata('success', 'Warehouse Successfully Created.');
         redirect($referer);
     }
 
@@ -166,6 +170,7 @@ class Ignite extends CI_Controller {
 
         $this->db->where('warehouseId', $warehouseId);
         $this->db->update('warehouse_tbl', $arr);
+        $this->session->set_flashdata('success', 'Warehouse Successfully Updated.');
         redirect('warehouse');
     }
 
@@ -174,6 +179,7 @@ class Ignite extends CI_Controller {
 
         $this->db->where('warehouseId', $warehouseId);
         $this->db->delete('warehouse_tbl');
+        $this->session->set_flashdata('success', 'Warehouse Successfully Deleted.');
         redirect('warehouse');
     }
 
@@ -222,6 +228,7 @@ class Ignite extends CI_Controller {
         );
 
         $this->db->insert('supplier_tbl', $arr);
+        $this->session->set_flashdata('success', 'Supplier Successfully Created.');
         if(!empty($referer)){
             redirect($referer.'/'.$seg4);
         }
@@ -268,6 +275,7 @@ class Ignite extends CI_Controller {
 
         $this->db->where('supplierId', $supplierId);
         $this->db->update('supplier_tbl', $arr);
+        $this->session->set_flashdata('success', 'Supplier Successfully Updated.');
         redirect('supplier');
     }
 
@@ -276,6 +284,7 @@ class Ignite extends CI_Controller {
 
         $this->db->where('supplierId', $supplierId);
         $this->db->delete('supplier_tbl');
+        $this->session->set_flashdata('success', 'Supplier Successfully Deleted.');
         redirect('supplier');
     }
 
@@ -379,6 +388,7 @@ class Ignite extends CI_Controller {
         );
 
         $this->db->insert('items_price_tbl', $arr);
+        $this->session->set_flashdata('success', 'New Item Successfully Created.');
         if($referer === '~'){
             redirect('items-price/0');
         }else{

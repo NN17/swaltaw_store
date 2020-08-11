@@ -465,9 +465,10 @@ class Ignite_model extends CI_Model {
             ON ip.itemId = sb.itemId
             LEFT JOIN brands_tbl AS bd
             ON bd.brandId = ip.brandId
-            WHERE ip.itemName LIKE '$key%'
+            WHERE (ip.itemName LIKE '$key%'
             OR ip.itemModel LIKE '$key%'
-            OR bd.brandName LIKE '$key%'
+            OR bd.brandName LIKE '$key%')
+            AND sb.qty > 0
             ");
         return $query->result_array();
     }

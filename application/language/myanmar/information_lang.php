@@ -76,6 +76,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['email'] = 'အီးမေးလ်';
 	$lang['date'] = 'နေ့စွဲ';
 	$lang['quantity'] = 'အရေအတွက်';
+	$lang['available_qty'] = 'လက်ကျန် အရေအတွက်';
 	$lang['from'] = 'မှ';
 	$lang['to'] = 'သို့';
 
