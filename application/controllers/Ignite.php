@@ -49,8 +49,82 @@ class Ignite extends CI_Controller {
     public function home(){
         $this->breadcrumb->add('Home');
 
+        $data['customers'] = $this->ignite_model->get_data('customers_tbl')->result();
+        $data['allLink'] = $this->ignite_model->get_data('link_structure_tbl')->result();
         $data['content'] = 'pages/home';
         $this->load->view('layouts/template', $data);
+    }
+
+    // Checkout
+    public function checkOut(){
+        $type = $this->uri->segment(3);
+
+
+        $arr = json_decode($this->input->raw_input_stream, true);
+
+        $invoice = 0;
+        foreach($arr as $row){
+            if($invoice < 1){
+                $max = $this->ignite_model->max('invoices_tbl', 'invoiceId');
+                $serial = 'INV-'.date('Ymd').sprintf('%07d', $max['invoiceId']+1);
+
+                if($type === 'credit'){
+
+                    $crd_arr = array(
+                        'customerId' => $row['customer'],
+                        'invoiceId' => $max['invoiceId']+1,
+                        'creditAmount' => $row['amount'],
+                        'cashAmount' => $row['cash'],
+                        'balance' => ($row['credit'] + $row['amount']) - $row['cash'],
+                        'created_date' => date('Y-m-d h:i:s A')
+                    );
+
+                    $this->db->insert('credits_tbl', $crd_arr);
+                }
+
+                $invArr = array(
+                    'invoiceSerial' => $serial,
+                    'created_date' => date('Y-m-d'),
+                    'created_time' => date('H:i:s'),
+                    'created_by' => $this->session->userdata('Id')
+                );
+                $this->db->insert('invoices_tbl', $invArr);
+                $invoice ++;
+            }
+
+            $items = array(
+                'invoiceId' => ($max['invoiceId'] + 1),
+                'itemCode' => $row['code'],
+                'itemName' => $row['name'],
+                'itemPrice' => $row['price'],
+                'itemQty' => $row['qty'],
+            );
+
+            $this->db->insert('invoice_detail_tbl', $items);
+        }
+
+        echo ($max['invoiceId']+1);
+    }
+
+    public function checkOutPreview(){
+        $invId = $this->uri->segment(3);
+
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Preview Invoice');
+
+        $data['invoice'] = $this->ignite_model->get_limit_data('invoices_tbl','invoiceId', $invId)->row();
+        $data['items'] = $this->ignite_model->get_limit_data('invoice_detail_tbl', 'invoiceId',$invId)->result();
+        $data['credit'] = $this->ignite_model->get_limit_data('credits_tbl', 'invoiceId', $invId)->row();
+        $data['customer'] = $this->ignite_model->get_limit_data('customers_tbl', 'customerId', @$data['credit']->customerId)->row();
+        $data['content'] = 'pages/invoicePreview';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function getCreditByCustomer(){
+        $customerId = $this->input->get('customerId');
+
+        $credit = $this->ignite_model->getCreditAmount($customerId);
+        echo $credit;
     }
 
     public function saleItemSearch(){
@@ -443,6 +517,7 @@ class Ignite extends CI_Controller {
 
         $this->db->where('itemId', $itemId);
         $this->db->update('items_price_tbl', $arr);
+        $this->session->set_flashdata('success', 'Item Successfully Updated.');
         redirect('items-price/0');
     }
 
@@ -451,6 +526,7 @@ class Ignite extends CI_Controller {
 
         $this->db->where('itemId', $itemId);
         $this->db->delete('items_price_tbl');
+        $this->session->set_flashdata('success', 'Item Successfully Deleted.');
 
         redirect('items-price/0');
     }
@@ -488,6 +564,8 @@ class Ignite extends CI_Controller {
         $this->db->insert('items_price_tbl', $arr);
 
         $this->db->update('items_price_tbl', ['active' => false], ['itemId' => $itemId]);
+
+        $this->session->set_flashdata('success', 'Item Price Successfully Updated.');
         redirect('items-price/0');
     }
 
@@ -527,6 +605,7 @@ class Ignite extends CI_Controller {
         );
 
         $this->db->insert('categories_tbl', $arr);
+        $this->session->set_flashdata('success', 'Category Successfully Created.');
         if(!empty($referer)){
             redirect($referer.'/'.$seg4);
         }
@@ -574,6 +653,8 @@ class Ignite extends CI_Controller {
         $this->db->where('categoryId', $catId);
         $this->db->update('categories_tbl', $arr);
 
+        $this->session->set_flashdata('success', 'Category Successfully Updated.');
+
         redirect('categories');
     }
 
@@ -582,6 +663,8 @@ class Ignite extends CI_Controller {
 
         $this->db->where('categoryId', $catId);
         $this->db->delete('categories_tbl');
+
+        $this->session->set_flashdata('success', 'Category Successfully Deleted.');
 
         redirect('categories');
     }
@@ -621,6 +704,8 @@ class Ignite extends CI_Controller {
 
         $this->db->insert('brands_tbl', $arr);
 
+        $this->session->set_flashdata('success', 'New Brand Successfully Created.');
+
         if(!empty($referer)){
             redirect($referer.'/'.$seg4);
         }
@@ -655,6 +740,8 @@ class Ignite extends CI_Controller {
         $this->db->where('brandId', $brandId);
         $this->db->update('brands_tbl', $arr);
 
+        $this->session->set_flashdata('success', 'Brand Successfully Updated.');
+
         redirect('brands');
     }
 
@@ -663,6 +750,8 @@ class Ignite extends CI_Controller {
 
         $this->db->where('brandId', $brandId);
         $this->db->delete('brands_tbl');
+
+        $this->session->set_flashdata('success', 'Brand Successfully Deleted.');
         redirect('brands');
     }
 
@@ -725,6 +814,9 @@ class Ignite extends CI_Controller {
 
             $this->db->insert('stocks_balance_tbl', $arr);
         }
+
+        $this->session->set_flashdata('success', 'New Purchase Successfully Created.');
+
         redirect('purchase/0');
     }
 
@@ -884,6 +976,8 @@ class Ignite extends CI_Controller {
         $this->db->where('warehouseId', $source);
         $this->db->update('stocks_balance_tbl', $updBalOut);
 
+        $this->session->set_flashdata('success', 'Successfully Transferred.');
+
         redirect('transfer');
     }
     /*
@@ -938,6 +1032,9 @@ class Ignite extends CI_Controller {
 
         $this->db->insert('accounts_tbl', $arr);
         $max = $this->ignite_model->max('accounts_tbl','accId');
+
+        $this->session->set_flashdata('success', 'New User Successfully Created.');
+
         redirect('set-permission/'.$max['accId']);
     }
 
@@ -979,6 +1076,8 @@ class Ignite extends CI_Controller {
         );
 
         $this->db->insert('permission_tbl', $arr);
+
+        $this->session->set_flashdata('success', 'Permission Successfully Defined.');
         redirect('users');
     }
 
@@ -1020,6 +1119,9 @@ class Ignite extends CI_Controller {
 
         $this->db->where('accId', $accId);
         $this->db->update('permission_tbl', $arr);
+
+        $this->session->set_flashdata('success', 'Permission Successfully Updated.');
+
         redirect('users');
     }
 
@@ -1040,6 +1142,8 @@ class Ignite extends CI_Controller {
         $psw = $this->auth->hash_password($this->input->post('psw'));
 
         $this->db->update('accounts_tbl', ['secret' => $psw], ['accId' => $accId]);
+
+        $this->session->set_flashdata('success', 'Password Successfully Updated.');
         redirect('users');
     }
 
@@ -1047,6 +1151,8 @@ class Ignite extends CI_Controller {
         $accId = $this->uri->segment(2);
 
         $this->db->update('accounts_tbl', ['accountState' => false], ['accId' => $accId]);
+
+        $this->session->set_flashdata('success', 'User has been disabled.');
         redirect('users');
     }
 
@@ -1054,7 +1160,88 @@ class Ignite extends CI_Controller {
         $accId = $this->uri->segment(2);
 
         $this->db->update('accounts_tbl', ['accountState' => true], ['accId' => $accId]);
+
+        $this->session->set_flashdata('success', 'User has been enabled.');
         redirect('users');
+    }
+
+    /*
+    * Customers
+    */
+    public function customer(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Customers');
+
+        $data['customers'] = $this->ignite_model->get_data('customers_tbl')->result();
+
+        $data['content'] = 'pages/customers';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function newCustomer(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Customers', 'customers');
+        $this->breadcrumb->add('New Customer');
+
+        $data['content'] = 'pages/newCustomer';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function addCustomer(){
+        $input_arr = $this->input->post();
+
+        $arr = array(
+            'customerName' => $input_arr['name'],
+            'email' => $input_arr['email'],
+            'phone1' => $input_arr['phone1'],
+            'phone2' => $input_arr['phone2'],
+            'address1' => $input_arr['address1'],
+            'address2' => $input_arr['address2'],
+            'remark' => $input_arr['remark']
+        );
+
+        $this->db->insert('customers_tbl', $arr);
+        redirect('customers');
+    }
+
+    public function editCustomer(){
+        $customerId = $this->uri->segment(2);
+
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Edit Customer');
+
+        $data['customer'] = $this->ignite_model->get_limit_data('customers_tbl', 'customerId', $customerId)->row();
+        $data['content'] = 'pages/editCustomer';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function updateCustomer(){
+        $customerId = $this->uri->segment(3);
+
+        $input_arr = $this->input->post();
+
+        $arr = array(
+            'customerName' => $input_arr['name'],
+            'email' => $input_arr['email'],
+            'phone1' => $input_arr['phone1'],
+            'phone2' => $input_arr['phone2'],
+            'address1' => $input_arr['address1'],
+            'address2' => $input_arr['address2'],
+            'remark' => $input_arr['remark']
+        );
+
+        $this->db->where('customerId', $customerId);
+        $this->db->update('customers_tbl', $arr);
+        redirect('customers');
+    }
+
+    public function deleteCustomer(){
+        $customerId = $this->uri->segment(3);
+
+        $this->db->where('customerId', $customerId);
+        $this->db->delete('customers_tbl');
+
+        redirect('customers');
     }
 }
 

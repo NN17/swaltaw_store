@@ -39,6 +39,23 @@ $(document).ready(function() {
 		}
 	})
 
+	// By Customer check
+	$("#byCustomer").on('change', function(){
+		if($(this).prop("checked")){
+			$("#customer").parent().removeClass('disabled');
+			if($("#customer").val() != ''){
+				if($("#credit").parent().hasClass('disabled')){
+					$("#credit").parent().removeClass('disabled');
+				}
+			}
+		}else{
+			$("#customer").parent().addClass('disabled');
+			if(!$("#credit").parent().hasClass('disabled')){
+				$("#credit").parent().addClass('disabled');
+			}
+		}
+	});
+
 	// F2 Shoutcut
 	$("#saleCode, #itemQty, #itemPrice").on('keydown', function(event){
 		var key = event.keyCode;
@@ -337,6 +354,10 @@ function format(size, num) {
 	return fStr;
 }
 
+function openModal(name){
+	$('#' + name).modal({closable: false}).modal('show');
+}
+
 
 /*
 * Order Ajax
@@ -374,10 +395,14 @@ var orderAjax = function(){
 					<td class="ui right aligned">${Intl.NumberFormat().format(x.price)}</td>
 					<td class="ui right aligned">${x.qty}</td>
 					<td class="ui right aligned">${Intl.NumberFormat().format(amount)}</td>
-					<td><i class="trash alternate icon red" onclick="orderAjax.removeItem(${y})"></i></td>
+					<td><button class="ui button icon tiny circular red" onclick="orderAjax.removeItem(${y})"><i class="remove icon"></i></button></td>
 					</tr>`;
 			});
 
+			$("#btnCheckOut").removeClass('disabled');
+		}
+		else{
+			$("#btnCheckOut").addClass('disabled');
 		}
 
 		$("#vr_preview").html(html);
@@ -388,7 +413,36 @@ var orderAjax = function(){
 	};
 
 	let checkOut = function(){
+		if($("#byCustomer").prop("checked") && $("#customer").val() != ''){
+			openModal('cashModal');
+		}
+			else if($("#byCustomer").prop("checked") && $("#customer").val() == ''){
+				$.alert({
+					title: 'Alert !',
+					content: 'Please choose customer or close "by customer" button.',
+					backgroundDismiss: false,
+					columnClass: "custom-confirm-box",
+				});
 
+			}
+			else{
+				fetch('ignite/checkOut/~', {
+					method: 'POST', // or 'PUT'
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(newOrders),
+				})
+				.then(response => response.json())
+				.then(data => {
+					allItems = [];
+					// console.log(data);
+					window.location.href = 'ignite/checkOutPreview/' + data;
+				})
+				.catch((error) => {
+					console.log('Error:', error);
+				});
+			}
 	};
 
 	let removeItemFunc = function(index){
@@ -414,7 +468,7 @@ var orderAjax = function(){
 				if(result.length > 0){
 
 					result.forEach(function(x){
-						html += `<tr onclick="orderAjax.itemSelect('${x.itemName}', '${x.codeNumber}', ${x.retailPrice}, ${x.qty})" class="item">
+						html += `<tr onclick="orderAjax.itemSelect('${x.itemName.replace('"','&quot;')}', '${x.codeNumber}', ${x.retailPrice}, ${x.qty})" class="item">
 								<td>${x.itemName}</td>
 								<td>${x.itemModel}</td>
 								<td class="ui right aligned">${Intl.NumberFormat().format(x.purchasePrice)}</td>
@@ -442,6 +496,71 @@ var orderAjax = function(){
 		$("#itemQty").focus();
 	}
 
+	let getItemByCode = function(){
+		let code = $("#saleCode").val().toUpperCase();
+		$("#saleCode").val(code);
+	}
+
+	let getCredit = function(){
+		let customerId = $("#customer").val();
+		if(customerId != ''){
+			$.ajax({
+				url: base_url() + 'ignite/getCreditByCustomer',
+				type: 'GET',
+				crossDomain: 'TRUE',
+				data: {
+					customerId : customerId
+				},
+				success: function(res){
+					$("#credit").val(res)
+					.parent()
+					.removeClass('disabled');
+				}
+			});
+		}
+	}
+
+	let inCash = function(){
+		key = event.keyCode;
+		if(key == 13){
+			let amount = 0;
+			let cash = $("#cashAmt").val();
+			let credit = $("#credit").val();
+			let customer = $("#customer").val();
+			
+			newOrders.forEach(function(x){
+				amount += x.price * x.qty;
+			});
+
+			newOrders.forEach(function(y){
+				y.amount = amount;
+				y.cash = cash;
+				y.credit = credit;
+				y.customer = customer;
+			});
+
+			// console.log(newOrders);
+
+			fetch('ignite/checkOut/credit', {
+				method: 'POST', // or 'PUT'
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(newOrders),
+			})
+			.then(response => response.json())
+			.then(data => {
+				allItems = [];
+				// console.log(data);
+				window.location.href = 'ignite/checkOutPreview/' + data;
+			})
+			.catch((error) => {
+				console.log('Error:', error);
+			});
+		}
+	}
+
+
 	return {
 		init: function() {
 			return;
@@ -460,6 +579,15 @@ var orderAjax = function(){
 		},
 		itemSelect: function(name, code, price, qty){
 			selectItem(name, code, price, qty);
+		},
+		saleCode: function(){
+			getItemByCode();
+		},
+		credit: function(){
+			getCredit();
+		},
+		addCash: function(){
+			inCash();
 		}
 	}
 }();

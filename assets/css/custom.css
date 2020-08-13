@@ -62,10 +62,7 @@ textarea{
 }
 
 .vr_wrapper{
-	/*padding: 15px;
-	border: 1px solid #bbb;
-	border-radius: 3px;
-	background: #eee;*/
+	margin-top: 20px;
 	min-height: 500px;
 }
 
@@ -84,4 +81,33 @@ textarea{
 .itemSearch-header{
 	padding: 15px;
 	background: #fbbd08;
+}
+
+.all-link a{
+	margin-top: 5px !important;
+	margin-bottom: 5px !important;
+}
+
+#addCash{
+	cursor: pointer;
+}
+
+#addCash:hover{
+	background: #b5cc18 !important;
+	transition: all 0.1s;
+	color: #fff !important;
+}
+
+.ui.modal>.close {
+    cursor: pointer;
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 1;
+    opacity: .8;
+    font-size: 1.25em;
+    color: #db2828;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: .625rem 0 0 0;
 }

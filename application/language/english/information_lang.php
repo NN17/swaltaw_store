@@ -78,6 +78,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['available_qty'] = 'Available Qty';
 	$lang['from'] = 'From';
 	$lang['to'] = 'To';
+	$lang['create_invoice'] = 'Create Invoice';
 
 	// Language for Purchase
 	$lang['new_purchase'] = 'New Purchase';
@@ -98,3 +99,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['password'] = 'Password';
 	$lang['reset_password'] = 'Reset Password';
 	$lang['new_password'] = 'New Password';
+
+	// Language for Customers
+	$lang['customer'] = 'Customers';
+	$lang['new_customer'] = 'New Customer';
+	$lang['edit_customer'] = 'Edit Customer';
+
+	// Language for credits
+	$lang['credit'] = 'Credits';

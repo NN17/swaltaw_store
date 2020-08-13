@@ -473,4 +473,23 @@ class Ignite_model extends CI_Model {
         return $query->result_array();
     }
 
+    function get_invoiceItems($invId){
+        $query = $this->db->query("SELECT * FROM invoice_detail_tbl
+            
+            ");
+    }
+
+    function getCreditAmount($customerID){
+        $query = $this->db->query("SELECT balance FROM credits_tbl
+            WHERE customerId = $customerID
+            AND created_date = (SELECT MAX(created_date) FROM credits_tbl WHERE customerId = $customerID)
+            ")->row();
+        if(!empty($query->balance)){
+            return $query->balance;
+        }else{
+            return 0;
+        }
+
+    }
+
 }

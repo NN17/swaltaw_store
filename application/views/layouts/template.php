@@ -66,7 +66,7 @@
                                 <?php $submenu = $this->ignite_model->get_limit_data('link_structure_tbl', 'sub_menu', true)->result();?>
                                 <?php foreach($submenu as $menu): ?>
                                     <a href="<?=$menu->machine?>" class="item" data-value="female">
-                                        <i class="icon <?=$menu->icon_class?>"></i> <?=$this->lang->line($menu->lang_name)?>
+                                        <i class="icon <?=$menu->icon_class?> <?=$menu->color?>"></i> <?=$this->lang->line($menu->lang_name)?>
                                     </a>
                                 <?php endforeach; ?>
                             </div>

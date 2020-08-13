@@ -52,7 +52,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['wholesale_price'] = 'လက်ကား စျေးနှုန်း';
 	$lang['edit_item'] = 'ကုန်ပစ္စည်းပြင်ဆင်ရန်';
 	$lang['change_price'] = 'စျေးနှုန်းပြင်ဆင်ရန်';
-	
 
 	// Language for Categories
 	$lang['category'] = 'အမျိုးအစား';
@@ -79,6 +78,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['available_qty'] = 'လက်ကျန် အရေအတွက်';
 	$lang['from'] = 'မှ';
 	$lang['to'] = 'သို့';
+	$lang['create_invoice'] = 'ငွေတောင်းခံလွှာ ထုတ်ယူရန်';
 
 	// Language for Purchase
 	$lang['new_purchase'] = 'အဝယ်စာရင်းအသစ်ထည့်ရန်';
@@ -99,4 +99,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['password'] = 'စကားဝှက်';
 	$lang['reset_password'] = 'စကားဝှက် ပြောင်းလဲရန်';
 	$lang['new_password'] = 'စကားဝှက် အသစ်';
+
+	// Language for Customers
+	$lang['customer'] = 'ဖောက်သည်များ';
+	$lang['new_customer'] = 'ဖောက်သည်အသစ် ထည့်သွင်းရန်';
+	$lang['edit_customer'] = 'ဖောက်သည်အချက်အလက် ပြင်ဆင်ရန်';
+
+	// Language for credits
+	$lang['credit'] = 'အကြွေးစာရင်း';
  

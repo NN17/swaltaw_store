@@ -129,3 +129,15 @@ $route['modify-permission/:num'] = 'ignite/modifyPermission';
 $route['reset-password/:num'] = 'ignite/resetPassword';
 $route['disable-user/:num'] = 'ignite/disableUser';
 $route['enable-user/:num'] = 'ignite/enableUser';
+
+/*
+* Routes for Customers
+*/
+$route['customers'] = 'ignite/customer';
+$route['new-customer'] = 'ignite/newCustomer';
+$route['edit-customer/:num'] = 'ignite/editCustomer';
+
+/*
+* Routes for Credits
+*/
+$route['credits'] = 'ignite/credits';

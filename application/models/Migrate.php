@@ -128,16 +128,25 @@ class Migrate extends CI_Model {
                 'name' => 'Reports',
                 'lang_name' => 'reports',
                 'icon_class' => 'clipboard outline',
-                'color' => 'olive',
+                'color' => 'teal',
                 'sub_menu' => false,
                 'description' => 'Reports for sales, stocks in and stock out etc'
+              ),
+              array(
+                'machine' => 'credits',
+                'name' => 'Credits',
+                'lang_name' => 'credit',
+                'icon_class' => 'calculator',
+                'color' => 'violet',
+                'sub_menu' => false,
+                'description' => 'Reports for credits list of by customers'
               ),
               array(
                 'machine' => 'users',
                 'name' => 'Accounts',
                 'lang_name' => 'accounts',
                 'icon_class' => 'user circle',
-                'color' => '',
+                'color' => 'yellow',
                 'sub_menu' => true,
                 'description' => 'User management for Inventory System'
               ),
@@ -146,7 +155,7 @@ class Migrate extends CI_Model {
                 'name' => 'Warehouse',
                 'lang_name' => 'warehouse',
                 'icon_class' => 'warehouse',
-                'color' => '',
+                'color' => 'purple',
                 'sub_menu' => true,
                 'description' => 'Define warehouses for Inventory system'
               ),
@@ -155,7 +164,7 @@ class Migrate extends CI_Model {
                 'name' => 'Supplier',
                 'lang_name' => 'supplier',
                 'icon_class' => 'cart plus',
-                'color' => '',
+                'color' => 'violet',
                 'sub_menu' => true,
                 'description' => 'Define suppliers for import goods'
               ),
@@ -164,7 +173,7 @@ class Migrate extends CI_Model {
                 'name' => 'Currency',
                 'lang_name' => 'currency',
                 'icon_class' => 'pound sign',
-                'color' => '',
+                'color' => 'pink',
                 'sub_menu' => true,
                 'description' => 'Define currency for inventory system'
               ),
@@ -173,7 +182,7 @@ class Migrate extends CI_Model {
                 'name' => 'Category',
                 'lang_name' => 'category',
                 'icon_class' => 'list ol',
-                'color' => '',
+                'color' => 'grey',
                 'sub_menu' => true,
                 'description' => 'Define category list for import items'
               ),
@@ -182,7 +191,7 @@ class Migrate extends CI_Model {
                 'name' => 'Brand',
                 'lang_name' => 'brand',
                 'icon_class' => 'trademark',
-                'color' => '',
+                'color' => 'black',
                 'sub_menu' => true,
                 'description' => 'Define for import items'
               ),
@@ -191,9 +200,18 @@ class Migrate extends CI_Model {
                 'name' => 'Items and Price',
                 'lang_name' => 'itemPrice',
                 'icon_class' => 'clipboard list',
-                'color' => '',
+                'color' => 'teal',
                 'sub_menu' => true,
                 'description' => 'Define prices for items'
+              ),
+              array(
+                'machine' => 'customers',
+                'name' => 'Customers',
+                'lang_name' => 'customer',
+                'icon_class' => 'address book outline',
+                'color' => 'red',
+                'sub_menu' => true,
+                'description' => 'Define customer information'
               ),
            );
            foreach($arr as $row){
@@ -536,6 +554,144 @@ class Migrate extends CI_Model {
 
         $this->dbforge->add_key('tranId', TRUE);
         $this->dbforge->create_table('transfer_tbl', TRUE);
+
+        // Creating customers_tbl
+
+        $this->dbforge->add_field(array(
+          'customerId' => array(
+            'type' => 'INT',
+            'constraint' => 8,
+            'auto_increment' => TRUE
+          ),
+          'customerName' => array(
+            'type' => 'VARCHAR',
+            'constraint' => 255
+          ),
+          'email' => array(
+            'type' => 'VARCHAR',
+            'constraint' => 255
+          ),
+          'phone1' => array(
+            'type' => 'VARCHAR',
+            'constraint' => 15
+          ),
+          'phone2' => array(
+            'type' => 'VARCHAR',
+            'constraint' => 15
+          ),
+          'address1' => array(
+            'type' => 'TEXT'
+          ),
+          'address2' => array(
+            'type' => 'TEXT'
+          ),
+          'remark' => array(
+            'type' => 'TEXT'
+          ),
+        ));
+
+        $this->dbforge->add_key('customerId', TRUE);
+        $this->dbforge->create_table('customers_tbl', TRUE);
+
+        // Create invoices_tbl
+
+      $this->dbforge->add_field(array(
+         'invoiceId' => array(
+            'type' => 'INT',
+            'constraint' => 8,
+            'auto_increment' => TRUE
+         ),
+         'invoiceSerial' => array(
+            'type' => 'VARCHAR',
+            'constraint' => 255
+         ),
+         'created_date' => array(
+            'type' => 'DATE'
+         ),
+         'created_time' => array(
+            'type' => 'TIME'
+         ),
+         'created_by' => array(
+            'type' => 'INT',
+            'constraint' => 8
+         ),
+      ));
+
+      $this->dbforge->add_key('invoiceId', TRUE);
+      $this->dbforge->create_table('invoices_tbl', TRUE);
+
+      // End of invoices_tbl
+
+      // Create invoice_detail_tbl
+
+      $this->dbforge->add_field(array(
+         'detailId' => array(
+            'type' => 'INT',
+            'constraint' => 8,
+            'auto_increment' => TRUE
+         ),
+         'invoiceId' => array(
+            'type' => 'INT',
+            'constraint' => 8
+         ),
+         'itemCode' => array(
+            'type' => 'VARCHAR',
+            'constraint' => 255
+         ),
+         'itemName' => array(
+            'type' => 'VARCHAR',
+            'constraint' => 255
+         ),
+         'itemPrice' => array(
+            'type' => 'INT',
+            'constraint' => 8
+         ),
+         'itemQty' => array(
+            'type' => 'INT',
+            'constraint' => 8
+         ),
+      ));
+
+      $this->dbforge->add_key('detailId', TRUE);
+      $this->dbforge->create_table('invoice_detail_tbl', TRUE);
+
+      // End of invoice_detail_tbl
+
+      // Create credits_tbl
+
+      $this->dbforge->add_field(array(
+          'creditId' => array(
+              'type' => 'INT',
+              'constraint' => 8,
+              'auto_increment' => true
+          ),
+          'customerId' => array(
+              'type' => 'INT',
+              'constraint' => 8
+          ),
+          'invoiceId' => array(
+              'type' => 'INT',
+              'constraint' => 8
+          ),
+          'creditAmount' => array(
+              'type' => 'INT',
+              'constraint' => 8
+          ),
+          'cashAmount' => array(
+              'type' => 'INT',
+              'constraint' => 8
+          ),
+          'balance' => array(
+              'type' => 'INT',
+              'constraint' => 8
+          ),
+          'created_date' => array(
+              'type' => 'DATETIME'
+          ),
+      ));
+
+      $this->dbforge->add_key('creditId', TRUE);
+      $this->dbforge->create_table('credits_tbl', TRUE);
         
         
         // ------------ End of Create Tables ---------------
@@ -543,4 +699,4 @@ class Migrate extends CI_Model {
 
 
 	
-}
+  }
