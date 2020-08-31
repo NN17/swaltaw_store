@@ -1,4 +1,4 @@
-<div class="ui clearing grey segment">
+<div class="ui clearing yellow segment">
   <h3 class="ui left floated header"><?=$this->lang->line('accounts')?></h3>
   <a href="new-user" class="ui button right floated primary"><i class="icon plus circle"></i> <?=$this->lang->line('new')?></a>
 </div>

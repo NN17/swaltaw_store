@@ -1,13 +1,13 @@
-<div class="ui clearing segment">
-	<h3 class="ui left floated header"><?=$this->lang->line('brand')?></h3>
+<div class="ui clearing segment black">
+	<h3 class="ui left floated header black"><?=$this->lang->line('brand')?></h3>
 	
-	<a href="create-brand" class="ui button right floated purple">
+	<a href="create-brand" class="ui button right floated black">
 	    <i class="icon plus circle"></i> <?=$this->lang->line('new')?>
 	</a>
 </div>
 
 
-<table class="ui table" id="dataTable">
+<table class="ui table black" id="dataTable">
 	<thead>
 		<tr>
 			<th>#</th>

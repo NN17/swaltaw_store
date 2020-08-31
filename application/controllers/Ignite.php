@@ -59,7 +59,6 @@ class Ignite extends CI_Controller {
     public function checkOut(){
         $type = $this->uri->segment(3);
 
-
         $arr = json_decode($this->input->raw_input_stream, true);
 
         $invoice = 0;
@@ -101,6 +100,10 @@ class Ignite extends CI_Controller {
             );
 
             $this->db->insert('invoice_detail_tbl', $items);
+
+            $balance = $this->ignite_model->get_balOutbySale($row['code'])->row();
+
+            $this->db->update('stocks_balance_tbl', ['qty' => ($balance->qty - $row['qty'])], ['warehouseId' => $balance->warehouseId, 'itemId' => $balance->itemId]);
         }
 
         echo ($max['invoiceId']+1);
@@ -138,12 +141,34 @@ class Ignite extends CI_Controller {
         echo json_encode($items);
     }
 
+    public function getItemByCode(){
+        $code = $this->input->get('code');
+        $item = [];
+        $item = $this->ignite_model->get_itemByCode($code);
+
+        header('Content-Type: application/json');
+        echo json_encode($item);
+    }
+
     public function switchLanguage(){
         $key = $this->uri->segment(2);
 
         $language = ($key != "") ? $key : "english";
         $this->session->set_userdata('site_lang', $language);
         redirect($_SERVER['HTTP_REFERER']);
+    }
+
+    /*
+    * Credits
+    */
+
+    public function credits(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Credits');
+
+        $data['customers'] = $this->ignite_model->get_data('customers_tbl')->result();
+        $data['content'] = 'pages/credits';
+        $this->load->view('layouts/template', $data);
     }
 
     /*
@@ -1201,6 +1226,8 @@ class Ignite extends CI_Controller {
         );
 
         $this->db->insert('customers_tbl', $arr);
+
+        $this->session->set_flashdata('success', 'Customer successfully created.');
         redirect('customers');
     }
 
@@ -1232,6 +1259,8 @@ class Ignite extends CI_Controller {
 
         $this->db->where('customerId', $customerId);
         $this->db->update('customers_tbl', $arr);
+
+        $this->session->set_flashdata('success', 'Customer successfully updated.');
         redirect('customers');
     }
 
@@ -1242,6 +1271,62 @@ class Ignite extends CI_Controller {
         $this->db->delete('customers_tbl');
 
         redirect('customers');
+    }
+
+    /*
+    * Reports
+    */
+
+    public function reports(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Reports');
+
+        $data['tab'] = $this->uri->segment(2);
+        if(empty($data['tab'])){
+            $data['tab'] = 'daily';
+        }
+
+        $data['dDate'] = $this->input->post('dailyDate');
+        if(empty($data['dDate'])){
+            $data['dDate'] = date('Y-m-d');
+        }
+
+        $data['mMonth'] = $this->input->post('mMonth');
+        if(empty($data['mMonth'])){
+            $data['mMonth'] = date('m');
+        }
+
+        $data['mYear'] = $this->input->post('mYear');
+        if(empty($data['mYear'])){
+            $data['mYear'] = date('Y');
+        }
+
+        $data['yYear'] = $this->input->post('yYear');
+        if(empty($data['yYear'])){
+            $data['yYear'] = date('Y');
+        }
+
+        $data['dailyData'] = $this->ignite_model->get_limit_data('invoices_tbl', 'created_date', $data['dDate'])->result();
+
+        $data['content'] = 'pages/reports';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function printReceipt(){
+        $invId = $this->uri->segment(2);
+        $invoice = $this->ignite_model->get_limit_data('invoices_tbl', 'invoiceId', $invId)->row();
+        $this->load->library('escpos');
+        $items = $this->ignite_model->get_limit_data('invoice_detail_tbl', 'invoiceId', $invId)->result();
+
+        $this->escpos->print_receipt($invoice, $items);
+
+        // $this->session->set_flashdata('success', 'Printer is Printing');
+        redirect('home');
+    }
+
+    public function test_print(){
+        $this->load->library('escpos');
+        $this->escpos->print_order();
     }
 }
 

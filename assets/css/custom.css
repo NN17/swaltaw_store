@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'Zawgyi-One';
+  src: url('../font/Zawgyi-One.eot?#iefix') format('embedded-opentype'),  url('../font/Zawgyi-One.woff') format('woff'), url('../font/Zawgyi-One.ttf')  format('truetype'), url('../font/Zawgyi-One.svg#Zawgyi-One') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body{
 	height: auto;
 }
@@ -41,11 +48,11 @@ textarea{
 	font-size: 12px !important;
 }*/
 
-.myanmar h1, .myanmar h2, .myanmar h3, .myanmar h4, .myanmar h5, .myanmar div, .myanmar li, .myanmar th, .myanmar td, .myanmar a, .myanmar input, .myanmar textarea, .myanmar select, .myanmar button{
+.myanmar h1, .myanmar h2, .myanmar h3, .myanmar h4, .myanmar h5, .myanmar div, .myanmar li, .myanmar th, .myanmar a, .myanmar input, .myanmar textarea, .myanmar select, .myanmar button{
 	font-family: 'Padauk', sans-serif !important;
 }
 
-.english h1, .english h2, .english h3, .english h4, .english h5, .english div, .english li, .english th, .english td, .english a, .english input, .english textarea, .english select, .english button{
+.english h1, .english h2, .english h3, .english h4, .english h5, .english div, .english li, .english th, .english a, .english input, .english textarea, .english select, .english button{
 	font-family: 'Quicksand', sans-serif !important;
 }
 
@@ -110,4 +117,8 @@ textarea{
     width: 2.25rem;
     height: 2.25rem;
     padding: .625rem 0 0 0;
+}
+
+tbody td{
+	font-family: 'Zawgyi-One' !important;
 }

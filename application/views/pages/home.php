@@ -1,13 +1,13 @@
 <div class="ui grid">
 	<div class="ten wide column">
 		<div class="ui huge fluid icon input">
-			<input name="itemCode" type="text" placeholder="Item Code .." id="saleCode" onchange="orderAjax.saleCode()" />
+			<input name="itemCode" type="text" placeholder="Item Code .." id="saleCode" />
 			<i class="barcode icon"></i>
 		</div>
 	</div>
 	<div class="three wide column">
 		<div class="ui huge fluid icon input">
-			<input name="itemQty" type="number" placeholder="Qty" id="itemQty" />
+			<input name="itemQty" type="number" placeholder="Qty" id="itemQty" data-balance="0" />
 			<i class="shopping cart icon"></i>
 		</div>
 	</div>
@@ -26,7 +26,7 @@
 				<div class="field">
 					<div class="ui toggle checkbox" style="padding:6px">
 					  <input type="checkbox" name="public" id="byCustomer">
-					  <label>By Customer</label>
+					  <label><?=$this->lang->line('by_customer')?></label>
 					</div>
 				</div>
 			
@@ -38,10 +38,16 @@
 						<?php endforeach; ?>
 					</select>
 				</div>
-				<div class="field"></div>
 				<div class="inline disabled field">
-					<label>Credit</label>
+					<label><?=$this->lang->line('credit')?></label>
 					<input type="text" name="credit" id="credit" readonly="" />
+				</div>
+
+				<div class="field">
+					<div class="ui slider checkbox">
+					  	<input type="checkbox" name="wholesale" id="wholesale">
+					  	<label><?=$this->lang->line('whole_sale')?></label>
+					</div>
 				</div>
 			
 			</div>
@@ -113,7 +119,7 @@
 <div class="ui large modal" id="itemSearch">
 	<div class="itemSearch-header">
   	<div class="ui huge fluid icon input">
-		<input name="itemCode" type="text" placeholder="Item Code .." autofocus id="saleItemSearch" onkeyup="orderAjax.itemSearch()">
+		<input name="itemCode" type="text" placeholder="Item Code .." autofocus id="saleItemSearch" onkeyup="orderAjax.itemSearch('retail')">
 		<i class="search icon"></i>
 	</div>
 	</div>

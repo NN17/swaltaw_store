@@ -1,4 +1,4 @@
-<div class="ui clearing segment">
+<div class="ui clearing segment blue">
 	<h3 class="ui blue header"><?=$this->lang->line('stocks')?></h3>
 </div>
 
@@ -6,9 +6,11 @@
 	<thead>
 		<tr>
 			<th class="ui right aligned">#</th>
-			<th>Code</th>
-			<th>Name</th>
-			<th>Model</th>
+			<th><?=$this->lang->line('item_code')?></th>
+			<th><?=$this->lang->line('item_name')?></th>
+			<th><?=$this->lang->line('item_model')?></th>
+			<th><?=$this->lang->line('supplier_name')?></th>
+			<th class="ui right aligned"><?=$this->lang->line('purchase_price')?></th>
 			<!-- Loop for warehouse -->
 			<?php foreach($warehouse as $row): ?>
 				<th class="ui right aligned"><?=$row->warehouseName?></th>
@@ -25,6 +27,8 @@
 				<td><?=$item->codeNumber?></td>
 				<td><?=$item->itemName?></td>
 				<td><?=$item->itemModel?></td>
+				<td><?=$item->supplierName?></td>
+				<td class="ui right aligned"><?=number_format($item->purchasePrice)?></td>
 				<!-- Loop for warehouse -->
 				<?php $totalQty = 0; ?>
 				<?php foreach($warehouse as $row): ?>

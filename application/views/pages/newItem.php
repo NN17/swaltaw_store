@@ -58,6 +58,21 @@
 		</div>
     </div>
 
+   	<div class="field">
+        <?=form_label($this->lang->line('item_code'))?>
+        <div class="ui grid">
+        	<div class="twelve wide column">
+        		<?=form_input('code','','placeholder="'.$this->lang->line('item_code').'" id="code" data-itemid="'.($code['itemId']+1).'" readonly required')?>
+        	</div>
+        	<div class="four wide column">
+        		<div class="ui toggle checkbox">
+				  	<input type="checkbox" name="scanner" id="scanner">
+				  	<label><i class="ui icon blue flaticon-barcode-scanner"></i></label>
+				</div>
+        	</div>
+        </div>
+    </div>
+
     <div class="field">
         <?=form_label($this->lang->line('name'))?>
         <?=form_input('name',set_value('name'),'placeholder="'.$this->lang->line('item_name').'" required')?>  
@@ -68,10 +83,6 @@
         <?=form_input('model',set_value('model'),'placeholder="'.$this->lang->line('item_model').'" required')?>  
     </div>
 
-   	<div class="field">
-        <?=form_label($this->lang->line('item_code'))?>
-        <?=form_input('code','','placeholder="'.$this->lang->line('item_code').'" id="code" data-itemid="'.($code['itemId']+1).'" readonly')?>
-    </div>
 
     <div class="field">
     	<label><?=$this->lang->line('currency')?></label>

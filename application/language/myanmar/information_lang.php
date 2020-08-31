@@ -107,4 +107,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 	// Language for credits
 	$lang['credit'] = 'အကြွေးစာရင်း';
+
+	// Language for Home
+	$lang['by_customer'] = 'ဖောက်သည်';
+	$lang['credit'] = 'အကြွေး';
+	$lang['whole_sale'] = 'လက်ကား';
  
+ 	// Language for Reports
+	$lang['inv_serial'] = 'ဘောက်ချာအမှတ်';
+	$lang['total_items'] = 'စုစုပေါင်းပစ္စည်းအရေအတွက်';
+	$lang['total_amount'] = 'ရောင်းရငွေစုစုပေါင်း';
+	$lang['total_inv'] = 'ဘောက်ချာစုစုပေါင်း';

@@ -431,9 +431,11 @@ class Ignite_model extends CI_Model {
     }
 
     function get_stock_items(){
-        $query = $this->db->query("SELECT * FROM items_price_tbl
-            WHERE active = true
-            ORDER BY itemName
+        $query = $this->db->query("SELECT * FROM items_price_tbl AS ip
+            LEFT JOIN supplier_tbl AS sp
+            ON sp.supplierId = ip.supplierId
+            WHERE ip.active = true
+            ORDER BY ip.itemName
             ");
 
         return $query;
@@ -469,8 +471,24 @@ class Ignite_model extends CI_Model {
             OR ip.itemModel LIKE '$key%'
             OR bd.brandName LIKE '$key%')
             AND sb.qty > 0
+            AND wh.shop = true
             ");
         return $query->result_array();
+    }
+
+    function get_itemByCode($code){
+        $query = $this->db->query("SELECT * FROM stocks_balance_tbl AS sb
+            LEFT JOIN warehouse_tbl AS wh
+            ON wh.warehouseId = sb.warehouseId
+            LEFT JOIN items_price_tbl AS ip
+            ON ip.itemId = sb.itemId
+            LEFT JOIN brands_tbl AS bd
+            ON bd.brandId = ip.brandId
+            WHERE ip.codeNumber = '$code'
+            AND sb.qty > 0
+            AND wh.shop = true
+            ");
+        return $query->row_array();
     }
 
     function get_invoiceItems($invId){
@@ -490,6 +508,109 @@ class Ignite_model extends CI_Model {
             return 0;
         }
 
+    }
+
+    function get_balOutbySale($code){
+        $query = $this->db->query("SELECT sb.qty, wh.warehouseId, ip.itemId FROM stocks_balance_tbl AS sb
+            LEFT JOIN items_price_tbl AS ip
+            ON ip.itemId = sb.itemId
+            LEFT JOIN warehouse_tbl AS wh
+            ON wh.warehouseId = sb.warehouseId
+            WHERE ip.codeNumber = '$code'
+            AND wh.shop = true
+            ");
+
+        return $query;
+    }
+
+    function get_credit($customerID){
+        $query = $this->db->query("SELECT * FROM credits_tbl AS crd
+            LEFT JOIN invoices_tbl AS inv
+            ON inv.invoiceId = crd.invoiceId
+            WHERE crd.created_date = (SELECT MAX(created_date) FROM credits_tbl WHERE customerId = $customerID)
+            ");
+
+        return $query;
+    }
+
+    function get_invTotal($customerID){
+        $query = $this->db->query("SELECT COUNT(inv.invoiceId) AS inv FROM credits_tbl AS crd
+            LEFT JOIN invoices_tbl AS inv
+            ON inv.invoiceId = crd.invoiceId
+            WHERE crd.customerId = $customerID
+            ")->row();
+
+        return $query->inv;
+    }
+
+    function get_dTotalItems($invID){
+        $query = $this->db->query("SELECT COUNT(invoiceId) AS total FROM invoice_detail_tbl
+            WHERE invoiceId = $invID
+            ")->row();
+        return $query->total;
+    }
+
+    function get_dTotalAmount($invID){
+        $query = $this->db->query("SELECT * FROM invoice_detail_tbl
+            WHERE invoiceId = $invID
+            ")->result();
+        $total = 0;
+        foreach($query as $row){
+            $total += $row->itemQty * $row->itemPrice;
+        }
+        return $total;
+    }
+
+    function get_M_invTotal($day, $month, $year){
+        $date = $year.'-'.sprintf('%02d',$month).'-'.sprintf('%02d',$day);
+        $query = $this->db->query("SELECT COUNT(invoiceId) AS invoice FROM invoices_tbl
+            WHERE created_date = '$date'
+            ")->row();
+        return $query->invoice;
+    }
+
+    function get_M_Total($day, $month, $year){
+        $date = $year.'-'.sprintf('%02d',$month).'-'.sprintf('%02d',$day);
+        $query = $this->db->query("SELECT * FROM invoices_tbl AS inv
+            LEFT JOIN invoice_detail_tbl AS detail
+            ON detail.invoiceId = inv.invoiceId
+            WHERE inv.created_date = '$date'
+            ")->result();
+
+        $total = 0;
+        foreach($query as $row){
+            $total += $row->itemQty * $row->itemPrice;
+        }
+        return $total;
+    }
+
+    public function get_Y_invTotal($month, $year){
+        $start = $year.'-'.sprintf('%02d', $month).'-01';
+        $end = $year.'-'.sprintf('%02d', $month).'-31';
+
+        $query = $this->db->query("SELECT COUNT(invoiceId) AS invoice FROM invoices_tbl
+            WHERE created_date BETWEEN '$start' AND '$end'
+            ")->row();
+
+        return $query->invoice;
+    }
+
+    public function get_Y_Total($month, $year){
+        $start = $year.'-'.sprintf('%02d', $month).'-01';
+        $end = $year.'-'.sprintf('%02d', $month).'-31';
+
+        $query = $this->db->query("SELECT * FROM invoices_tbl AS inv
+            LEFT JOIN invoice_detail_tbl AS detail
+            ON detail.invoiceId = inv.invoiceId
+            WHERE inv.created_date BETWEEN '$start' AND '$end'
+            ")->result();
+
+        $total = 0;
+        foreach($query as $row){
+            $total += $row->itemQty * $row->itemPrice;
+        }
+
+        return $total;
     }
 
 }

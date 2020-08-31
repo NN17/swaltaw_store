@@ -17,7 +17,17 @@ $(document).ready(function() {
 			inline: false
 		});
 
-	$('#dataTable').DataTable();
+	$('#dataTable').DataTable({
+		"pageLength" : 25
+	});
+
+	$('#dataTable2').DataTable({
+		"pageLength" : 25
+	});
+
+	$('#dataTable3').DataTable({
+		"pageLength" : 25
+	});
 
 	/*
 	 * DateTime Picker
@@ -31,6 +41,14 @@ $(document).ready(function() {
 		value: new Date()
 	});
 
+	$("[id=datepicker2]").datetimepicker({
+		timepicker: false,
+		format: "Y-m-d",
+		formatDate: "Y-m-d",
+		closeOnDateSelect: true,
+		scrollInput: false
+	});
+
 	// Autofocus
 	$(function(){
 		let val = $('#saleCode').val();
@@ -38,6 +56,55 @@ $(document).ready(function() {
 			$('#saleCode').focus();
 		}
 	})
+
+	// Wholesale
+	$("#wholesale").on('change', function(){
+		
+		if($(this).prop('checked')){
+			if($.trim($("#vr_preview").html()) == ''){
+				$("#saleItemSearch").attr('onkeyup', "orderAjax.itemSearch('wholesale')");
+
+				$("#saleCode").val('');
+				$("#itemQty").val('');
+				$("#itemPrice").val('');
+				setTimeout(function(){
+					$("#saleCode").focus();
+				},1000);
+			}else{
+				$.alert({
+				    title: 'Alert !',
+				    content: 'You have already selected items, please remove items first.',
+				    backgroundDismiss: false,
+					columnClass: "custom-confirm-box",
+					animation: "zoom",
+					theme: "material"
+				});
+				$(this).prop('checked', false);
+			}
+		}
+		else{
+			if($.trim($("#vr_preview").html()) == ''){
+				$("#saleItemSearch").attr('onkeyup', "orderAjax.itemSearch('retail')");
+
+				$("#saleCode").val('');
+				$("#itemQty").val('');
+				$("#itemPrice").val('');
+				setTimeout(function(){
+					$("#saleCode").focus();
+				},1000);
+			}else{
+				$.alert({
+				    title: 'Alert !',
+				    content: 'You have already selected items, please remove items first.',
+				    backgroundDismiss: false,
+					columnClass: "custom-confirm-box",
+					animation: "zoom",
+					theme: "material"
+				});
+				$(this).prop('checked', true);
+			}
+		}
+	});
 
 	// By Customer check
 	$("#byCustomer").on('change', function(){
@@ -59,16 +126,16 @@ $(document).ready(function() {
 	// F2 Shoutcut
 	$("#saleCode, #itemQty, #itemPrice").on('keydown', function(event){
 		var key = event.keyCode;
-		var maxqty = $("#itemQty").data('balance');
-		var qty = $("#itemQty").val();
+		var maxqty = parseInt($("#itemQty").data('balance'));
+		var qty = parseInt($("#itemQty").val());
 		if(key == 113){
 			$("#itemSearch").modal('show');
 		}else if(key == 13){
 			var code = $("#saleCode").val();
 			var name = $("#saleCode").data('name');
-			var qty = $("#itemQty").val();
+			var qty = parseInt($("#itemQty").val());
 			var price = $("#itemPrice").val();
-			if(code == '' || qty == '' || price == ''){
+			if(code == '' && qty == '' && price == ''){
 				$.alert({
 				    title: 'Invalid Input',
 				    content: 'Item Code, Qty and Price must not be null !',
@@ -78,25 +145,67 @@ $(document).ready(function() {
 					theme: "material"
 				});
 			}
-				else if(qty > maxqty){
-					$("#itemQty").parent().addClass('error');
-					$.alert({
-					    title: 'Invalid Input',
-					    content: 'Available Quantity is ' + maxqty + ' !',
-					    backgroundDismiss: false,
-						columnClass: "custom-confirm-box",
-						animation: "zoom",
-						theme: "material"
-					});
+				else if(code != '' && (qty == '' || price == '')){
+					orderAjax.saleCode(code);
 				}
 					else{
-						if($("#itemQty").parent().hasClass('error')){
-							$("#itemQty").parent().removeClass('error');
+							if(qty > maxqty){
+								console.log(qty);
+								$("#itemQty").parent().addClass('error');
+								$.alert({
+								    title: 'Invalid Input',
+								    content: 'Available Quantity is ' + maxqty + ' !',
+								    backgroundDismiss: false,
+									columnClass: "custom-confirm-box",
+									animation: "zoom",
+									theme: "material"
+								});
+							}else{
+								if($("#itemQty").parent().hasClass('error')){
+									$("#itemQty").parent().removeClass('error');
+								}
+								// console.log(key);
+								orderAjax.addItem(code, name, qty, price);
+							}
 						}
-						orderAjax.addItem(code, name, qty, price);
-					}
 		}
 	});
+
+
+	// Scanner is on
+
+	$("#scanner").on('change', function(){
+		if($(this).prop('checked')){
+			$("#code")
+				.removeAttr('readonly')
+				.val('');
+
+			setTimeout(function() { 
+				$('input[name="code"]').focus() 
+			}, 1000);
+		}else{
+			$("#code").attr('readonly', 'readonly');
+			var cat = $("#cat").val();
+			var id = String($('#code').data('itemid'));
+			var iCode = format(5, id);
+
+			if(cat != ''){
+
+				$.ajax({
+					url: base_url() + 'ignite/getLetterCode',
+					type: 'POST',
+					crossDomain: 'TRUE',
+					data: {
+						'catId' : cat
+					},
+					success: function(res){
+						let obj = JSON.parse(res);
+						$('#code').val(obj.code + "-" + iCode);
+					}
+				});
+			}
+		}
+	})
 
 	/*
 	 * Delete Confirmation
@@ -384,6 +493,7 @@ var orderAjax = function(){
 	let templateStructure = function(){
 		let html = '';
 		let total = 0;
+		let tax = 0;
 
 		if(newOrders.length > 0){
 			newOrders.forEach(function(x,y){
@@ -407,6 +517,7 @@ var orderAjax = function(){
 
 		$("#vr_preview").html(html);
 		$("#subTotal").html(Intl.NumberFormat().format(total));
+		$("#grandTotal").html(Intl.NumberFormat().format(total+tax));
 		$("#saleCode").val('').focus();
 		$("#itemQty").val('');
 		$("#itemPrice").val('');
@@ -453,7 +564,7 @@ var orderAjax = function(){
 		templateStructure();
 	};
 
-	let searchItem = function(){
+	let searchItem = function(saleType){
 		let keyword = $("#saleItemSearch").val();
 
 		$.ajax({
@@ -468,7 +579,12 @@ var orderAjax = function(){
 				if(result.length > 0){
 
 					result.forEach(function(x){
-						html += `<tr onclick="orderAjax.itemSelect('${x.itemName.replace('"','&quot;')}', '${x.codeNumber}', ${x.retailPrice}, ${x.qty})" class="item">
+						if(saleType == 'wholesale'){
+							price = x.wholesalePrice;
+						}else{
+							price = x.retailPrice;
+						}
+						html += `<tr onclick="orderAjax.itemSelect('${x.itemName.replace('"','&quot;')}', '${x.codeNumber}', ${price}, ${x.qty})" class="item">
 								<td>${x.itemName}</td>
 								<td>${x.itemModel}</td>
 								<td class="ui right aligned">${Intl.NumberFormat().format(x.purchasePrice)}</td>
@@ -493,12 +609,38 @@ var orderAjax = function(){
 		$("#itemSearch").modal('hide');
 		$("#itemQty").val(1).data('balance', qty);
 		$("#itemPrice").val(price);
-		$("#itemQty").focus();
+		setTimeout(function() { 
+				$('input[name="itemQty"]').focus().select();
+			}, 1000);
 	}
 
-	let getItemByCode = function(){
-		let code = $("#saleCode").val().toUpperCase();
-		$("#saleCode").val(code);
+	let getItemByCode = function(code){
+		
+		$.ajax({
+			url: base_url() + 'ignite/getItemByCode',
+			type: 'GET',
+			crossDomain: 'TRUE',
+			data:{
+				code: code
+			},
+			success: function(res){
+				if($("#wholesale").prop('checked')){
+					$("#saleCode").data('name', res.itemName);
+					$("#itemQty").val(1).data('balance', res.qty);
+					$("#itemPrice").val(res.wholesalePrice);
+					setTimeout(function() { 
+							$('input[name="itemQty"]').focus().select();
+						}, 1000);
+				}else{
+					$("#saleCode").data('name', res.itemName);
+					$("#itemQty").val(1).data('balance', res.qty);
+					$("#itemPrice").val(res.retailPrice);
+					setTimeout(function() { 
+							$('input[name="itemQty"]').focus().select();
+						}, 1000);
+				}
+			}
+		});
 	}
 
 	let getCredit = function(){
@@ -539,8 +681,6 @@ var orderAjax = function(){
 				y.customer = customer;
 			});
 
-			// console.log(newOrders);
-
 			fetch('ignite/checkOut/credit', {
 				method: 'POST', // or 'PUT'
 				headers: {
@@ -560,6 +700,10 @@ var orderAjax = function(){
 		}
 	}
 
+	let formSubmit = function(form){
+		$("#"+form).submit();
+	}
+
 
 	return {
 		init: function() {
@@ -574,20 +718,23 @@ var orderAjax = function(){
 		removeItem: function(index) {
 			removeItemFunc(index);
 		},
-		itemSearch: function(){
-			searchItem();
+		itemSearch: function(type){
+			searchItem(type);
 		},
 		itemSelect: function(name, code, price, qty){
 			selectItem(name, code, price, qty);
 		},
-		saleCode: function(){
-			getItemByCode();
+		saleCode: function(code){
+			getItemByCode(code);
 		},
 		credit: function(){
 			getCredit();
 		},
 		addCash: function(){
 			inCash();
+		},
+		submitForm: function(form){
+			formSubmit(form);
 		}
 	}
 }();

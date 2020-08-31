@@ -1,0 +1,283 @@
+    /*
+    Flaticon icon font: Flaticon
+    Creation date: 22/06/2016 15:03
+    */
+
+    @font-face {
+  font-family: "Flaticon";
+  src: url("./Flaticon.eot");
+  src: url("./Flaticon.eot?#iefix") format("embedded-opentype"),
+       url("./Flaticon.woff") format("woff"),
+       url("./Flaticon.ttf") format("truetype"),
+       url("./Flaticon.svg#Flaticon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "Flaticon";
+    src: url("./Flaticon.svg#Flaticon") format("svg");
+  }
+}
+
+    .fi:before{
+        display: inline-block;
+  font-family: "Flaticon";
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-decoration: inherit;
+  text-rendering: optimizeLegibility;
+  text-transform: none;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+    }
+
+    .flaticon-a-note-with-text:before { content: "\f100"; }
+.flaticon-alarm-clock-of-circular-shape-with-old-design:before { content: "\f101"; }
+.flaticon-auction-hammer-variant-tool:before { content: "\f102"; }
+.flaticon-bank-building:before { content: "\f103"; }
+.flaticon-bank-building-of-euros:before { content: "\f104"; }
+.flaticon-banking-credit-card-variant:before { content: "\f105"; }
+.flaticon-barcode-scanner:before { content: "\f106"; }
+.flaticon-barcode-sticker:before { content: "\f107"; }
+.flaticon-box-closed:before { content: "\f108"; }
+.flaticon-box-get-out:before { content: "\f109"; }
+.flaticon-box-open-shape:before { content: "\f10a"; }
+.flaticon-briefcase:before { content: "\f10b"; }
+.flaticon-briefcase-frontal-view:before { content: "\f10c"; }
+.flaticon-cabinet-drawer-opened-with-papers:before { content: "\f10d"; }
+.flaticon-cabinet-of-two-drawers:before { content: "\f10e"; }
+.flaticon-calendar:before { content: "\f10f"; }
+.flaticon-calendar-clock:before { content: "\f110"; }
+.flaticon-calendar-page-on-day-31:before { content: "\f111"; }
+.flaticon-calendar-with-date-number-1:before { content: "\f112"; }
+.flaticon-calendar-with-day-3:before { content: "\f113"; }
+.flaticon-card-terminal:before { content: "\f114"; }
+.flaticon-cash-register:before { content: "\f115"; }
+.flaticon-cashier-of-vintage-design-in-side-view:before { content: "\f116"; }
+.flaticon-central-bank-building-frontal-view:before { content: "\f117"; }
+.flaticon-clock-back-with-circular-arrow:before { content: "\f118"; }
+.flaticon-clock-forward:before { content: "\f119"; }
+.flaticon-clock-of-circular-shape-at-two-o-clock:before { content: "\f11a"; }
+.flaticon-coffee-machine:before { content: "\f11b"; }
+.flaticon-coin-purse:before { content: "\f11c"; }
+.flaticon-coins-money-variant-with-number-1:before { content: "\f11d"; }
+.flaticon-credit-card:before { content: "\f11e"; }
+.flaticon-credit-cards:before { content: "\f11f"; }
+.flaticon-crown:before { content: "\f120"; }
+.flaticon-cut-money-paper-bill:before { content: "\f121"; }
+.flaticon-daily-calendar-on-day-12-page:before { content: "\f122"; }
+.flaticon-daily-calendar-on-page-of-day-7:before { content: "\f123"; }
+.flaticon-day-52-calendar-page:before { content: "\f124"; }
+.flaticon-desk-lamp:before { content: "\f125"; }
+.flaticon-desktop-top-view:before { content: "\f126"; }
+.flaticon-diamond-outlined-shape:before { content: "\f127"; }
+.flaticon-diamond-ring:before { content: "\f128"; }
+.flaticon-document-and-briefcase:before { content: "\f129"; }
+.flaticon-dollar-central-bank-building:before { content: "\f12a"; }
+.flaticon-dollar-invoice:before { content: "\f12b"; }
+.flaticon-dollars-money-bag:before { content: "\f12c"; }
+.flaticon-four-blocks-cube:before { content: "\f12d"; }
+.flaticon-full-items-inside-a-shopping-bag:before { content: "\f12e"; }
+.flaticon-gift:before { content: "\f12f"; }
+.flaticon-hand-truck:before { content: "\f130"; }
+.flaticon-hand-truck-with-a-box:before { content: "\f131"; }
+.flaticon-hand-truck-with-a-suitcase:before { content: "\f132"; }
+.flaticon-hole-punch:before { content: "\f133"; }
+.flaticon-hourglass:before { content: "\f134"; }
+.flaticon-invoice-in-euros:before { content: "\f135"; }
+.flaticon-laser-pointer:before { content: "\f136"; }
+.flaticon-location-pin-for-interface:before { content: "\f137"; }
+.flaticon-market-stand:before { content: "\f138"; }
+.flaticon-megaphone:before { content: "\f139"; }
+.flaticon-message-on-a-sticky-note:before { content: "\f13a"; }
+.flaticon-money:before { content: "\f13b"; }
+.flaticon-money-bags:before { content: "\f13c"; }
+.flaticon-money-bill-and-coins:before { content: "\f13d"; }
+.flaticon-money-bill-on-fire:before { content: "\f13e"; }
+.flaticon-money-bills-multiple-pieces:before { content: "\f13f"; }
+.flaticon-money-coin:before { content: "\f140"; }
+.flaticon-money-dollar-bill:before { content: "\f141"; }
+.flaticon-money-of-euro-bill-paper:before { content: "\f142"; }
+.flaticon-money-refund:before { content: "\f143"; }
+.flaticon-money-stacks-of-coins:before { content: "\f144"; }
+.flaticon-moneybag:before { content: "\f145"; }
+.flaticon-moneybag-euro:before { content: "\f146"; }
+.flaticon-mug:before { content: "\f147"; }
+.flaticon-note-blank-paper-with-one-folded-corner:before { content: "\f148"; }
+.flaticon-note-block:before { content: "\f149"; }
+.flaticon-note-pinned:before { content: "\f14a"; }
+.flaticon-notebook-of-paper-with-spring:before { content: "\f14b"; }
+.flaticon-notebook-of-spring-with-lines-page:before { content: "\f14c"; }
+.flaticon-notebook-of-spring-with-message-text-lines:before { content: "\f14d"; }
+.flaticon-office-buildings:before { content: "\f14e"; }
+.flaticon-office-chair:before { content: "\f14f"; }
+.flaticon-offices-buildings:before { content: "\f150"; }
+.flaticon-packaging-into-a-box:before { content: "\f151"; }
+.flaticon-paper-roll-outline-variant:before { content: "\f152"; }
+.flaticon-paperclip-of-huge-size-outline:before { content: "\f153"; }
+.flaticon-paperclip-tool-or-attachment-interface-symbol:before { content: "\f154"; }
+.flaticon-piggy-bank:before { content: "\f155"; }
+.flaticon-pin:before { content: "\f156"; }
+.flaticon-pin-with-large-head-variant:before { content: "\f157"; }
+.flaticon-platform-truck-empty:before { content: "\f158"; }
+.flaticon-platform-truck-with-a-box:before { content: "\f159"; }
+.flaticon-price-sticker:before { content: "\f15a"; }
+.flaticon-print-calculator:before { content: "\f15b"; }
+.flaticon-purchase-order:before { content: "\f15c"; }
+.flaticon-receipt-book:before { content: "\f15d"; }
+.flaticon-rfid-chip:before { content: "\f15e"; }
+.flaticon-rubber-stamp:before { content: "\f15f"; }
+.flaticon-safe-box:before { content: "\f160"; }
+.flaticon-safe-box-empty-with-open-door:before { content: "\f161"; }
+.flaticon-safe-box-open:before { content: "\f162"; }
+.flaticon-sales-quotation:before { content: "\f163"; }
+.flaticon-saving-into-safe-box:before { content: "\f164"; }
+.flaticon-shelf-full:before { content: "\f165"; }
+.flaticon-shelves-empty:before { content: "\f166"; }
+.flaticon-shopping-bag-with-handle-variant:before { content: "\f167"; }
+.flaticon-shopping-basket:before { content: "\f168"; }
+.flaticon-shopping-cart:before { content: "\f169"; }
+.flaticon-shopping-cart-1:before { content: "\f16a"; }
+.flaticon-shopping-cart-full:before { content: "\f16b"; }
+.flaticon-shredder:before { content: "\f16c"; }
+.flaticon-smartcard:before { content: "\f16d"; }
+.flaticon-stapler-black-silhouette-side-view:before { content: "\f16e"; }
+.flaticon-sticky-note:before { content: "\f16f"; }
+.flaticon-stock-ticker:before { content: "\f170"; }
+.flaticon-stopwatch:before { content: "\f171"; }
+.flaticon-stopwatch-1:before { content: "\f172"; }
+.flaticon-store:before { content: "\f173"; }
+.flaticon-tea-mug:before { content: "\f174"; }
+.flaticon-terminal-card:before { content: "\f175"; }
+.flaticon-timer:before { content: "\f176"; }
+.flaticon-transport-of-flat-surface-platform:before { content: "\f177"; }
+.flaticon-wallet:before { content: "\f178"; }
+.flaticon-withdraw-of-a-safe-box:before { content: "\f179"; }
+    
+    $font-Flaticon-a-note-with-text: "\f100";
+    $font-Flaticon-alarm-clock-of-circular-shape-with-old-design: "\f101";
+    $font-Flaticon-auction-hammer-variant-tool: "\f102";
+    $font-Flaticon-bank-building: "\f103";
+    $font-Flaticon-bank-building-of-euros: "\f104";
+    $font-Flaticon-banking-credit-card-variant: "\f105";
+    $font-Flaticon-barcode-scanner: "\f106";
+    $font-Flaticon-barcode-sticker: "\f107";
+    $font-Flaticon-box-closed: "\f108";
+    $font-Flaticon-box-get-out: "\f109";
+    $font-Flaticon-box-open-shape: "\f10a";
+    $font-Flaticon-briefcase: "\f10b";
+    $font-Flaticon-briefcase-frontal-view: "\f10c";
+    $font-Flaticon-cabinet-drawer-opened-with-papers: "\f10d";
+    $font-Flaticon-cabinet-of-two-drawers: "\f10e";
+    $font-Flaticon-calendar: "\f10f";
+    $font-Flaticon-calendar-clock: "\f110";
+    $font-Flaticon-calendar-page-on-day-31: "\f111";
+    $font-Flaticon-calendar-with-date-number-1: "\f112";
+    $font-Flaticon-calendar-with-day-3: "\f113";
+    $font-Flaticon-card-terminal: "\f114";
+    $font-Flaticon-cash-register: "\f115";
+    $font-Flaticon-cashier-of-vintage-design-in-side-view: "\f116";
+    $font-Flaticon-central-bank-building-frontal-view: "\f117";
+    $font-Flaticon-clock-back-with-circular-arrow: "\f118";
+    $font-Flaticon-clock-forward: "\f119";
+    $font-Flaticon-clock-of-circular-shape-at-two-o-clock: "\f11a";
+    $font-Flaticon-coffee-machine: "\f11b";
+    $font-Flaticon-coin-purse: "\f11c";
+    $font-Flaticon-coins-money-variant-with-number-1: "\f11d";
+    $font-Flaticon-credit-card: "\f11e";
+    $font-Flaticon-credit-cards: "\f11f";
+    $font-Flaticon-crown: "\f120";
+    $font-Flaticon-cut-money-paper-bill: "\f121";
+    $font-Flaticon-daily-calendar-on-day-12-page: "\f122";
+    $font-Flaticon-daily-calendar-on-page-of-day-7: "\f123";
+    $font-Flaticon-day-52-calendar-page: "\f124";
+    $font-Flaticon-desk-lamp: "\f125";
+    $font-Flaticon-desktop-top-view: "\f126";
+    $font-Flaticon-diamond-outlined-shape: "\f127";
+    $font-Flaticon-diamond-ring: "\f128";
+    $font-Flaticon-document-and-briefcase: "\f129";
+    $font-Flaticon-dollar-central-bank-building: "\f12a";
+    $font-Flaticon-dollar-invoice: "\f12b";
+    $font-Flaticon-dollars-money-bag: "\f12c";
+    $font-Flaticon-four-blocks-cube: "\f12d";
+    $font-Flaticon-full-items-inside-a-shopping-bag: "\f12e";
+    $font-Flaticon-gift: "\f12f";
+    $font-Flaticon-hand-truck: "\f130";
+    $font-Flaticon-hand-truck-with-a-box: "\f131";
+    $font-Flaticon-hand-truck-with-a-suitcase: "\f132";
+    $font-Flaticon-hole-punch: "\f133";
+    $font-Flaticon-hourglass: "\f134";
+    $font-Flaticon-invoice-in-euros: "\f135";
+    $font-Flaticon-laser-pointer: "\f136";
+    $font-Flaticon-location-pin-for-interface: "\f137";
+    $font-Flaticon-market-stand: "\f138";
+    $font-Flaticon-megaphone: "\f139";
+    $font-Flaticon-message-on-a-sticky-note: "\f13a";
+    $font-Flaticon-money: "\f13b";
+    $font-Flaticon-money-bags: "\f13c";
+    $font-Flaticon-money-bill-and-coins: "\f13d";
+    $font-Flaticon-money-bill-on-fire: "\f13e";
+    $font-Flaticon-money-bills-multiple-pieces: "\f13f";
+    $font-Flaticon-money-coin: "\f140";
+    $font-Flaticon-money-dollar-bill: "\f141";
+    $font-Flaticon-money-of-euro-bill-paper: "\f142";
+    $font-Flaticon-money-refund: "\f143";
+    $font-Flaticon-money-stacks-of-coins: "\f144";
+    $font-Flaticon-moneybag: "\f145";
+    $font-Flaticon-moneybag-euro: "\f146";
+    $font-Flaticon-mug: "\f147";
+    $font-Flaticon-note-blank-paper-with-one-folded-corner: "\f148";
+    $font-Flaticon-note-block: "\f149";
+    $font-Flaticon-note-pinned: "\f14a";
+    $font-Flaticon-notebook-of-paper-with-spring: "\f14b";
+    $font-Flaticon-notebook-of-spring-with-lines-page: "\f14c";
+    $font-Flaticon-notebook-of-spring-with-message-text-lines: "\f14d";
+    $font-Flaticon-office-buildings: "\f14e";
+    $font-Flaticon-office-chair: "\f14f";
+    $font-Flaticon-offices-buildings: "\f150";
+    $font-Flaticon-packaging-into-a-box: "\f151";
+    $font-Flaticon-paper-roll-outline-variant: "\f152";
+    $font-Flaticon-paperclip-of-huge-size-outline: "\f153";
+    $font-Flaticon-paperclip-tool-or-attachment-interface-symbol: "\f154";
+    $font-Flaticon-piggy-bank: "\f155";
+    $font-Flaticon-pin: "\f156";
+    $font-Flaticon-pin-with-large-head-variant: "\f157";
+    $font-Flaticon-platform-truck-empty: "\f158";
+    $font-Flaticon-platform-truck-with-a-box: "\f159";
+    $font-Flaticon-price-sticker: "\f15a";
+    $font-Flaticon-print-calculator: "\f15b";
+    $font-Flaticon-purchase-order: "\f15c";
+    $font-Flaticon-receipt-book: "\f15d";
+    $font-Flaticon-rfid-chip: "\f15e";
+    $font-Flaticon-rubber-stamp: "\f15f";
+    $font-Flaticon-safe-box: "\f160";
+    $font-Flaticon-safe-box-empty-with-open-door: "\f161";
+    $font-Flaticon-safe-box-open: "\f162";
+    $font-Flaticon-sales-quotation: "\f163";
+    $font-Flaticon-saving-into-safe-box: "\f164";
+    $font-Flaticon-shelf-full: "\f165";
+    $font-Flaticon-shelves-empty: "\f166";
+    $font-Flaticon-shopping-bag-with-handle-variant: "\f167";
+    $font-Flaticon-shopping-basket: "\f168";
+    $font-Flaticon-shopping-cart: "\f169";
+    $font-Flaticon-shopping-cart-1: "\f16a";
+    $font-Flaticon-shopping-cart-full: "\f16b";
+    $font-Flaticon-shredder: "\f16c";
+    $font-Flaticon-smartcard: "\f16d";
+    $font-Flaticon-stapler-black-silhouette-side-view: "\f16e";
+    $font-Flaticon-sticky-note: "\f16f";
+    $font-Flaticon-stock-ticker: "\f170";
+    $font-Flaticon-stopwatch: "\f171";
+    $font-Flaticon-stopwatch-1: "\f172";
+    $font-Flaticon-store: "\f173";
+    $font-Flaticon-tea-mug: "\f174";
+    $font-Flaticon-terminal-card: "\f175";
+    $font-Flaticon-timer: "\f176";
+    $font-Flaticon-transport-of-flat-surface-platform: "\f177";
+    $font-Flaticon-wallet: "\f178";
+    $font-Flaticon-withdraw-of-a-safe-box: "\f179";

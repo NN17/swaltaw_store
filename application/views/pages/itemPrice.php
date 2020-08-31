@@ -1,12 +1,12 @@
-<div class="ui clearing segment">
-	<h3 class="ui navy left floated header"><?=$this->lang->line('itemPrice')?></h3>
-	<a href="new-item/~" class="ui right floated button violet">
+<div class="ui clearing segment teal">
+	<h3 class="ui teal left floated header"><?=$this->lang->line('itemPrice')?></h3>
+	<a href="new-item/~" class="ui right floated button teal">
 	    <i class="icon plus circle"></i> <?=$this->lang->line('new')?>
 	</a>
 </div>
 
 
-<table class="ui violet table" id="dataTable">
+<table class="ui teal table" id="dataTable">
 	<thead>
 		<tr>
 			<th>#</th>

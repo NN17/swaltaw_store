@@ -64,7 +64,7 @@
 			<div class="text-center">
 				<div class="three ui buttons">
 					<a href="home" class="ui button large red">Exit</a>
-					<a href="" class="ui button large green">Print Receipt</a>
+					<a href="print/<?=$invoice->invoiceId?>" class="ui button large green">Print Receipt</a>
 				</div>
 			</div>
 		</div>

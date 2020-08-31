@@ -1,12 +1,12 @@
-<div class="ui clearing segment">
-	<h3 class="ui violet left floated header"><?=$this->lang->line('warehouse')?></h3>
-	<a href="create-warehouse" class="ui button right floated violet">
+<div class="ui clearing segment purple">
+	<h3 class="ui purple left floated header"><?=$this->lang->line('warehouse')?></h3>
+	<a href="create-warehouse" class="ui button right floated purple">
 	    <i class="icon plus circle"></i> <?=$this->lang->line('new')?>
 	</a>
 </div>
 
 
-<table class="ui padded violet table" id="dataTable">
+<table class="ui padded purple table" id="dataTable">
 	<thead>
 		<tr>
 			<th>#</th>

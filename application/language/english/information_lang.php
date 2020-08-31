@@ -107,3 +107,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 	// Language for credits
 	$lang['credit'] = 'Credits';
+
+	// Language for Home
+	$lang['by_customer'] = 'By Customer';
+	$lang['credit'] = 'Credit';
+	$lang['whole_sale'] = 'Wholesale';
+
+	// Language for Reports
+	$lang['inv_serial'] = 'Invoice Serial';
+	$lang['total_items'] = 'Total Items';
+	$lang['total_amount'] = 'Total Amount';
+	$lang['total_inv'] = 'Invoice Total';

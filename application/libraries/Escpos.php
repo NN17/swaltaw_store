@@ -1,4 +1,6 @@
 <?php
+header('Content-type: text/html; charset=utf-8');
+mb_internal_encoding("UTF-8");
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\EscposImage;
 use Mike42\Escpos\ImagickEscposImage;
@@ -6,7 +8,6 @@ use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\CapabilityProfile;
-use Mike42\Escpos\Experimental\Unifont\UnifontPrintBuffer;
 use Mike42\Escpos\PrintBuffers\EscposPrintBuffer;
 use Mike42\Escpos\PrintBuffers\ImagePrintBuffer;
 defined('BASEPATH') OR exit('No direct script access allowed');
@@ -23,51 +24,43 @@ class Escpos
         $this->CI->load->helper('url');
     }
 
-    public function print_receipt($invoice, $itemBuy, $itemSell){
+    public function print_receipt($invoice, $items){
+
         $newDate = getDate();
         header('Content-type: text/html; charset=utf-8');
         mb_internal_encoding("UTF-8");
-        $profile = CapabilityProfile::load("simple");
-        $connector = new WindowsPrintConnector("XP");
+        $profile = CapabilityProfile::load("TM-T88III");
+        $connector = new WindowsPrintConnector("EPSON-T81III");
         $printer = new Printer($connector, $profile);
 
-        
-        // $date = date('d M Y h:i:s A', $newDate[0]);
-        
-        $logo = EscposImage::load(__DIR__."/resources/imgs/unity-logo.png", false);
         $imageBuffer = new ImagePrintBuffer();
-        // $imageBuffer -> setFont(__DIR__ . "/../../assets/fonts/unicode.ttf");
+        $imageBuffer -> setFont(__DIR__ . "/../../assets/font/zawgyi.ttf");
         $textBuffer = new EscposPrintBuffer();
-        // $textBuffer->setFont(__DIR__."/../../assets/fonts/unicode.ttf");
-
 
         try {
             $printer = new Printer($connector, $profile);
-            $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-
-            /* Print top logo */
-            if ($profile->getSupportsGraphics()) {
-                $printer->graphics($logo);
-            }
-            if ($profile->getSupportsBitImageRaster() && !$profile->getSupportsGraphics()) {
-                $printer->bitImage($logo);
-            }
-
-            $printer->feed();
+            $printer -> setPrintBuffer($imageBuffer);
 
             /* Name of shop */
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-            $printer->text("Unity Collection \n");
-            $printer->selectPrintMode();
-            $printer->text("Authorized Money Changer \n");
+            $printer->setEmphasis(true);
+            $imageBuffer->setFontSize(32);
+            $printer->text("ေ႐ႊညီကို စတိုး \n");
+            $imageBuffer->setFontSize(24);
             $printer->feed();
-            $printer->text("No-148, Anawrahta Road, Corner of 35th Street, \nKyauktada Township, Yangon, Myanmar.\n");
+            $printer->selectPrintMode();
+            $printer->text("အခ်ိဳရည္ႏွင့္ ပင္လယ္စာ ျဖန႔္ခ်ီေရး \n");
+            $printer->feed();
+
+            $printer->text("ဆိုင္အမွတ္(၈)၊ ေရလဲလမ္း ခ႐ိုင္အားကစား႐ုံေရွ႕ မအူပင္ၿမိဳ႕။\n");
+            $printer->text("TEL: 09970166233\n");
+            $printer->text("________________________________________________\n");
             $printer->feed();
 
             /* Title of receipt */
             $printer->setEmphasis(true);
+            $printer->setPrintBuffer($textBuffer);
             $printer->text("SALES INVOICE\n");
             $printer->setEmphasis(false);
             $printer->feed();
@@ -80,111 +73,39 @@ class Escpos
             /* Items */
             $printer->text("------------------------------------------------\n");
             $printer->setEmphasis(true);
-            $printer->text($this->printOption('Description', 'Qty', 'Amount', 48));
+            $left = str_pad('Description', 30, ' ', STR_PAD_RIGHT);
+            $center = str_pad('Qty', 8, ' ', STR_PAD_LEFT);
+            $right = str_pad('Amount', 10, ' ', STR_PAD_LEFT);
+            $printer->text("$left$center$right\n");
             $printer->setEmphasis(false);
             $printer->text("------------------------------------------------\n");
             $printer->setJustification(Printer::JUSTIFY_LEFT);
-            
-            $subTotal_buy = 0;
-            $subTotal_sell = 0;
 
-            if(count($itemBuy) > 0){
+            $total = 0;
+            foreach($items as $item){
+                $amount = $item->itemQty * $item->itemPrice;
+                $total += $amount;
+                $itemDetail = $this->CI->ignite_model->get_limit_data('items_price_tbl', 'codeNumber', $item->itemCode)->row();
 
-                $printer->setEmphasis(true);
-                $printer->text("Buy \n");
-                $printer->setEmphasis(false);
-
-                foreach ($itemBuy as $bItem) {
-                    $rows = $this->CI->ignite_model->get_limit_datas('invoice_detail_tbl', ['invoiceId' => $bItem->invoiceId, 'itemName' => $bItem->itemName])->result();
-                    $cTotal_buy = 0;
-
-                    foreach($rows as $row){
-
-                        $bItemName = $row->itemName .' '. $row->itemAmount .' ( '.$row->itemPrice.' ) ';
-                        $bTotal = ($row->itemPrice * $row->itemQty);
-                        $printer->text($this->printOption($bItemName, $row->itemQty, $bTotal, 48)); // for 58mm Font A
-                        $subTotal_buy += $bTotal;
-                        $cTotal_buy += $row->itemQty;
-                    }
-
-                    if(count($rows) > 1){
-                        $printer->setEmphasis(true);
-                        $printer->text($this->printOption('Total ' .$bItem->itemName, $cTotal_buy, '', 48)); 
-                        $printer->setEmphasis(false);
-                    }
-                }
+                $printer->setPrintBuffer($imageBuffer);
+                $printer->text($item->itemName);
+                
+                $printer->setPrintBuffer($textBuffer);
+                $printer->text($this->print_option($itemDetail->itemModel, $item->itemQty, $amount, 48)); // for 58mm Font A
             }
 
-            $printer->feed();
-            if(count($itemSell) > 0){
-
-                $printer->setEmphasis(true);
-                $printer->text("Sell \n");
-                $printer->setEmphasis(false);
-
-                foreach ($itemSell as $sItem) {
-                    $rows = $this->CI->ignite_model->get_limit_datas('invoice_detail_tbl', ['invoiceId' => $sItem->invoiceId, 'itemName' => $sItem->itemName])->result();
-                    $cTotal_sell = 0;
-
-                    foreach($rows as $row){
-
-                        $sItemName = $row->itemName .' '. $row->itemAmount .' ( '.$row->itemPrice.' ) ';
-                        $sTotal = ($row->itemPrice * $row->itemQty);
-                        
-                        $printer->text($this->printOption($sItemName, $row->itemQty, $sTotal, 48)); // for 58mm Font A
-                        $subTotal_sell += $sTotal;
-                        $cTotal_sell += $row->itemQty;
-                    } // End of rows
-
-                    if(count($rows) > 1){
-                        $printer->setEmphasis(true);
-                        $printer->text($this->printOption('Total ' .$sItem->itemName, $cTotal_sell, '', 48)); 
-                        $printer->setEmphasis(false);
-                    }
-                }
-            }
-
-            $printer->text("------------------------------------------------\n");
-           
-            if($invoice->type === "CE"){                
-                $printer->setEmphasis(false);
-                $printer->text($this->printOption('Total Buy ', '', $subTotal_buy, 48));
-                $printer->feed();
-
-                /* Tax and total */
-                $printer->text($this->printOption('Total Sell ', '', $subTotal_sell, 48));
-                $printer->feed();
-                // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-                $printer->setEmphasis(true);
-                $printer->text($this->printOption('Total Balance ','', ($subTotal_buy - $subTotal_sell), 48));
-                $printer->selectPrintMode();
-            }
-            else{
-                $printer->setEmphasis(true);
-                $printer->text($this->printOption('Total ','', ($subTotal_sell), 48));
-                $printer->selectPrintMode();
-            }
-
+            $printer->setPrintBuffer($textBuffer);
             $printer->text("================================================\n");
-
-            $printer->feed();
-            $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->text("https://www.facebook.com/UnityMoneyChanger\n");
-
-            /* Footer */
-            $printer->feed(2);
-            $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->text("09 760133427, 09 31469082, 09 790222570, \n01-8378035, 01-8370225\n");
-            // $printer->feed(2);
+            
+            $printer->setEmphasis(true);
+            $printer->text($this->print_option('Total ','', $total, 48));
             
 
+            
+            $printer->feed();
 
-            // Demo that alignment QRcode is the same as text
-            // $printer2 = new Printer($connector); // dirty printer profile hack !!
-            // $printer2->setJustification(Printer::JUSTIFY_CENTER);
-            // $printer2->qrCode($checkIn['r_invoice_serial'], Printer::QR_ECLEVEL_M, 8);
-            // $printer2->setJustification();
-            // $printer2->feed();
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->text("- Thank You - \n");
 
 
             /* Cut the receipt and open the cash drawer */
@@ -200,47 +121,70 @@ class Escpos
     }
 
     public function print_order(){
-        header('Content-type: text/html; charset=utf-8');
-        mb_internal_encoding("UTF-8");
-        $profile = CapabilityProfile::load("SP2000");
-        // $printPDF = __DIR__.'/../../assets/resources/document.pdf';
-        $connector = new NetworkPrintConnector("192.168.1.101", 9100);
-        $printer = new Printer($connector, $profile);
+        $newDate = getDate();
         
-        // Use Unifont to render text
-        // $unifontBuffer = new UnifontPrintBuffer("/usr/share/unifont/unifont.hex");
-        // $printer -> setPrintBuffer($unifontBuffer);
+        $connector = new WindowsPrintConnector("nippon");
+        $printer = new Printer($connector);
 
-        // Most simple example
-        $printer->text("မြန်မာစာသည်တို့စာ\n");
-        $printer->cut();
+        $imageBuffer = new ImagePrintBuffer();
+        $imageBuffer -> setFont(__DIR__ . "/../../assets/font/zawgyi.ttf");
+        
+        $printer->text('testing');
         $printer->close();
     }
 
-    public function printOption($name, $qty, $price, $width = 48){
-        $rightCols = 15;
-        $centerCols = 7;
-        if(!empty($qty)){
-            $leftCols = $width - ($rightCols + $centerCols);
-            if(is_numeric($qty) && is_numeric($price)){
-                $center = str_pad($qty, $centerCols, ' ', STR_PAD_BOTH);
-                $left = str_pad($name, $leftCols, ' ', STR_PAD_RIGHT);
-                $right = str_pad(number_format($price, 2), $rightCols, ' ', STR_PAD_LEFT);
-                return "$left$center$right\n";
-            }else{
-                $center = str_pad($qty, $centerCols, ' ', STR_PAD_BOTH);
-                $left = str_pad($name, $leftCols, ' ', STR_PAD_RIGHT);
-                $right = str_pad($price, $rightCols, ' ', STR_PAD_LEFT);
-                return "$left$center$right\n";
-            }
-        }else{
-            $leftCols = $width - $rightCols;
-            $left = str_pad($name, $leftCols, ' ', STR_PAD_LEFT);
-            $right = str_pad(number_format($price,2), $rightCols, ' ', STR_PAD_LEFT);
-            return "$left$right\n";
+    public function print_option($left, $center, $right, $width=48){
+        $cCol = 8;
+        $rCol = 10;
+
+        if(empty($center) && empty($right)){
+            $lCol = $width;
+            $str_left = str_pad($left, $lCol);
+            return "$str_left\n";
         }
+        elseif(empty($center)){
+            $lCol = $width - $rCol;
+            $str_left = str_pad($left, $lCol);
+            $str_right = str_pad($right, $rCol, ' ', STR_PAD_LEFT);
+            return "$str_left$str_right\n";
+        }
+        else{
+            $lCol = $width - ($cCol+$rCol);
 
+            $str_left = $this->str_pad_unicode($left, $lCol, ' ', STR_PAD_RIGHT);
+            $str_center = $this->str_pad_unicode($center, $cCol, ' ', STR_PAD_LEFT);
+            $str_right = $this->str_pad_unicode($right, $rCol, ' ', STR_PAD_LEFT);
+            return "$str_left$str_center$str_right\n";
+        }
+    }
 
+    function str_pad_unicode($str, $pad_len, $pad_str = ' ', $dir = STR_PAD_RIGHT) {
+        $str_len = mb_strlen($str);
+        $pad_str_len = mb_strlen($pad_str);
+        if (!$str_len && ($dir == STR_PAD_RIGHT || $dir == STR_PAD_LEFT)) {
+            $str_len = 1; // @debug
+        }
+        if (!$pad_len || !$pad_str_len || $pad_len <= $str_len) {
+            return $str;
+        }
+       
+        $result = null;
+        $repeat = ceil($str_len - $pad_str_len + $pad_len);
+        if ($dir == STR_PAD_RIGHT) {
+            $result = $str . str_repeat($pad_str, $repeat);
+            $result = mb_substr($result, 0, $pad_len);
+        } else if ($dir == STR_PAD_LEFT) {
+            $result = str_repeat($pad_str, $repeat) . $str;
+            $result = mb_substr($result, -$pad_len);
+        } else if ($dir == STR_PAD_BOTH) {
+            $length = ($pad_len - $str_len) / 2;
+            $repeat = ceil($length / $pad_str_len);
+            $result = mb_substr(str_repeat($pad_str, $repeat), 0, floor($length))
+                        . $str
+                           . mb_substr(str_repeat($pad_str, $repeat), 0, ceil($length));
+        }
+       
+        return $result;
     }
 
     

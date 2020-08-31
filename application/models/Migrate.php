@@ -124,7 +124,7 @@ class Migrate extends CI_Model {
                 'description' => 'Outgoing Or Transfer Stocks ..'
               ),
               array(
-                'machine' => 'reports',
+                'machine' => 'reports/daily',
                 'name' => 'Reports',
                 'lang_name' => 'reports',
                 'icon_class' => 'clipboard outline',

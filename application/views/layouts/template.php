@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="assets/DataTables.SemanticUI/datatables.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/jquery.datetimepicker.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/jquery-confirm.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/flaticon.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/custom.css" />
 </head>
@@ -96,7 +97,7 @@
     <div class="breadcrumb-wrap">
         <div class="ui container fluid">
             <div class="ui breadcrumb">
-                <i class="icon flag checkered grey"></i> | <?php $this->breadcrumb->show()?>
+                <i class="icon map signs grey"></i> | <?php $this->breadcrumb->show()?>
             </div>
         </div>
     </div>

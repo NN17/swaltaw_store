@@ -141,3 +141,13 @@ $route['edit-customer/:num'] = 'ignite/editCustomer';
 * Routes for Credits
 */
 $route['credits'] = 'ignite/credits';
+
+/*
+* Routes for print Receipt
+*/
+$route['print/:num'] = 'ignite/printReceipt';
+
+/*
+* Routes for Reports
+*/
+$route['reports/:any'] = 'ignite/reports';

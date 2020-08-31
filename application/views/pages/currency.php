@@ -1,10 +1,11 @@
-<h3><?=$this->lang->line('currency')?></h3>
-<div class="ui divider"></div>
+<div class="ui clearing segment pink">
+<h3 class="ui pink header"><?=$this->lang->line('currency')?></h3>
+</div>
 
 <div class="ui grid">
 	<div class="six wide column">
 		
-		<table class="ui table padded">
+		<table class="ui table padded pink">
 			<thead>
 				<tr>
 					<th>#</th>
