@@ -477,9 +477,6 @@ class Ignite extends CI_Controller {
             'codeNumber' => $code,
             'brandId' => $brand,
             'currency' => $currency,
-            'purchasePrice' => $p_price,
-            'retailPrice' => $r_price,
-            'wholesalePrice' => $w_price,
             'supplierId' => $supplier,
             'remark' => $remark,
             'referId' => 0,
@@ -487,13 +484,50 @@ class Ignite extends CI_Controller {
         );
 
         $this->db->insert('items_price_tbl', $arr);
+        $max = $this->ignite_model->max('items_price_tbl', 'itemId');
         $this->session->set_flashdata('success', 'New Item Successfully Created.');
-        if($referer === '~'){
-            redirect('items-price/0');
-        }else{
-            redirect($referer);
-        }
+        redirect('define-price/'. $max['itemId'] .'/'. $referer);
+        // if($referer === '~'){
+        //     redirect('items-price/0');
+        // }else{
+        //     redirect($referer);
+        // }
         
+    }
+
+    public function defineItemPrice(){
+        $itemId = $this->uri->segment(2);
+        $referer = $this->uri->segment(3);
+
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Items & price', 'items-price/0');
+        $this->breadcrumb->add('Define Price');
+
+        $data['item'] = $this->ignite_model->get_limit_data('items_price_tbl', 'itemId', $itemId)->row();
+        $data['content'] = 'pages/definePrice';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function addPrice(){
+        $itemId = $this->uri->segment(3);
+        $arr = json_decode($this->input->raw_input_stream, true);
+
+        foreach($arr as $row){
+            $price_arr = array(
+                'related_item_id' => $itemId,
+                'type' => $row['type'],
+                'count_type' => $row['countType'],
+                'qty' => $row['qty'],
+                'price' => $row['price'],
+                'remark' => $row['remark'],
+                'created_at' => date('Y-m-d H:i:s A')
+            );
+
+            $this->db->insert('count_type_tbl', $price_arr);
+        }
+
+        $result = $this->ignite_model->get_data('count_type_tbl')->result();
+        echo json_encode($result);
     }
 
     public function editItem(){

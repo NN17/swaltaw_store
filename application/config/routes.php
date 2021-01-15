@@ -98,6 +98,7 @@ $route['edit-brand/(:num)'] = 'ignite/editBrand';
 * Routes for Items & Price
 */
 $route['items-price/(:num)'] = 'ignite/itemsPrice';
+$route['define-price/(:num)/(:any)'] = 'ignite/defineItemPrice';
 $route['new-item/(:any)'] = 'ignite/newItem';
 $route['edit-item/(:num)'] = 'ignite/editItem';
 

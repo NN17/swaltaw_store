@@ -109,7 +109,7 @@
 
 		<div class="ui segment all-link text-center">
 			<?php foreach($allLink as $link): ?>
-				<a href="<?=$link->machine?>" class="ui button icon <?=$link->color?>"><i class="icon <?=$link->icon_class?> "></i></a>
+				<a href="<?=$link->machine?>" class="ui button icon <?=$link->color?>" id="popup_link" data-content="<?=$link->linkName?>"><i class="icon <?=$link->icon_class?> "></i></a>
 			<?php endforeach; ?>
 		</div>
 	</div>

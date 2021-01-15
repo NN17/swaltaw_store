@@ -17,6 +17,13 @@ $(document).ready(function() {
 			inline: false
 		});
 
+	$('[id="popup_link"]')
+		.popup({
+			inline     : true,
+		    hoverable  : true,
+		    position   : 'top left',
+		});
+
 	$('#dataTable').DataTable({
 		"pageLength" : 25
 	});
@@ -434,6 +441,21 @@ function item_modal() {
 		.modal('show');
 }
 
+function purchase_price_modal() {
+	$('.tiny.modal.purchase')
+		.modal('show');
+}
+
+function sale_price_modal() {
+	$('.tiny.modal.sale')
+		.modal('show');
+}
+
+function sale_price_modal() {
+	$('.tiny.modal.sale')
+		.modal('show');
+}
+
 function changePriceModal(itemId) {
 	$.ajax({
 		url: base_url() + 'ignite/getPrice/' + itemId,
@@ -484,8 +506,6 @@ var orderAjax = function(){
 		}
 
 		newOrders.push(orderObject);
-
-		console.log(newOrders);
 
 		templateStructure();
 	};
@@ -739,7 +759,241 @@ var orderAjax = function(){
 	}
 }();
 
+// *************** Price Ajax *****************
 
+var priceAjax = function(){
+
+	let purchasePrice = [];
+	let purchaseObj = {};
+	let salePrice = [];
+	let saleObj = {};
+	let allPrice = [];
+
+	let newPrice = function(type){
+		if(type == 'P'){
+			let p_type = $('#p_countType').val();
+			let p_qty = $('#p_qty').val();
+			let p_price = $("#p_price").val();
+			let p_remark = $("#p_remark").val();
+
+			if(p_type == ''){
+				$("#p_countType").parent().addClass('error');
+			}else{
+				if($("#p_countType").parent().hasClass('error')){
+					$("#p_countType").parent().removeClass('error');
+				}
+			}
+
+			if(p_qty == ''){
+				$('#p_qty').parent().addClass('error');
+			}else{
+				if($("#p_qty").parent().hasClass('error')){
+					$("#p_qty").parent().removeClass('error');
+				}
+			}
+
+			if(p_price == ''){
+				$("#p_price").parent().addClass('error');
+			}else{
+				if($("#p_price").parent().hasClass('error')){
+					$("#p_price").parent().removeClass('error');
+				}
+			}
+
+			if(p_type != '' && p_qty != '' && p_price != ''){
+				purchaseObj = {
+					type: 'P',
+					countType : p_type,
+					qty : p_qty,
+					price : p_price,
+					remark : p_remark
+				}
+
+				purchasePrice.push(purchaseObj);
+
+				priceTemplate('P');
+			}else{
+				console.log('false');
+			}
+		}else if(type == 'S'){
+			let s_type = $('#s_countType').val();
+			let s_qty = $('#s_qty').val();
+			let s_price = $("#s_price").val();
+			let s_remark = $("#s_remark").val();
+
+			if(s_type == ''){
+				$("#s_countType").parent().addClass('error');
+			}else{
+				if($("#s_countType").parent().hasClass('error')){
+					$("#s_countType").parent().removeClass('error');
+				}
+			}
+
+			if(s_qty == ''){
+				$('#s_qty').parent().addClass('error');
+			}else{
+				if($("#s_qty").parent().hasClass('error')){
+					$("#s_qty").parent().removeClass('error');
+				}
+			}
+
+			if(s_price == ''){
+				$("#s_price").parent().addClass('error');
+			}else{
+				if($("#s_price").parent().hasClass('error')){
+					$("#s_price").parent().removeClass('error');
+				}
+			}
+
+			if(s_type != '' && s_qty != '' && s_price != ''){
+				saleObj = {
+					type: 'S',
+					countType : s_type,
+					qty : s_qty,
+					price : s_price,
+					remark : s_remark
+				}
+
+				salePrice.push(saleObj);
+
+				priceTemplate('S');
+			}else{
+				console.log('false');
+			}
+		}
+	}
+
+	let priceTemplate = function(type){
+		if(type == 'P'){
+			let html = '';
+
+			if(purchasePrice.length > 0){
+				purchasePrice.forEach(function(x,y){
+					html += `<tr>
+						<td>${x.countType}</td>
+						<td class="ui right aligned">${x.qty}</td>
+						<td class="ui right aligned">${x.price}</td>
+						<td><button class="ui button icon tiny circular red" onclick="priceAjax.removeItem(${y}, 'P')"><i class="remove icon"></i></button></td>
+					</tr>`;
+				});
+			}
+				else{
+					html += `<tr>
+						<td>-</td>
+						<td class="ui right aligned">-</td>
+						<td class="ui right aligned">-</td>
+						<td>-</td>
+					</tr>`;
+				}
+
+			$("#p_body").html(html);
+			$(".tiny.modal.purchase").modal('hide');
+		}
+			else if(type == 'S'){
+				let html = '';
+
+				if(salePrice.length > 0){
+					salePrice.forEach(function(x,y){
+						html += `<tr>
+							<td>${x.countType}</td>
+							<td class="ui right aligned">${x.qty}</td>
+							<td class="ui right aligned">${x.price}</td>
+							<td><button class="ui button icon tiny circular red" onclick="priceAjax.removeItem(${y}, 'S')"><i class="remove icon"></i></button></td>
+						</tr>`;
+					});
+				}
+					else{
+						html += `<tr>
+							<td>-</td>
+							<td class="ui right aligned">-</td>
+							<td class="ui right aligned">-</td>
+							<td>-</td>
+						</tr>`;
+					}
+
+				$("#s_body").html(html);
+				$(".tiny.modal.sale").modal('hide');
+			}
+	}
+
+	let removeItemFunc = function(index, type){
+		if(type == 'P'){
+			purchasePrice.splice(index);
+		}
+			else if(type == 'S'){
+				salePrice.splice(index);
+			}
+
+		priceTemplate(type);
+	}
+
+	let savePriceFunc = function(item){
+		let temp_obj = {};
+
+		if(purchasePrice.length > 0){
+			purchasePrice.forEach(function(x){
+				temp_obj = {
+					itemId: item,
+					type: x.type,
+					countType: x.countType,
+					qty: x.qty,
+					price: x.price,
+					remark: x.remark
+				}
+
+				allPrice.push(temp_obj);
+			});
+		}
+
+		if(salePrice.length > 0){
+			salePrice.forEach(function(y){
+				temp_obj = {
+					itemId: item,
+					type: y.type,
+					countType: y.countType,
+					qty: y.qty,
+					price: y.price,
+					remark: y.remark
+				}
+
+				allPrice.push(temp_obj);
+			});
+		}
+
+		// console.log(allPrice);
+		fetch('ignite/addPrice/' + item, {
+			method: 'POST', // or 'PUT'
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(allPrice),
+		})
+		.then(response => response.json())
+		.then(data => {
+			allItems = [];
+			console.log(data);
+			// window.location.href = 'ignite/checkOutPreview/' + data;
+		})
+		.catch((error) => {
+			console.log('Error:', error);
+		});
+	}
+
+	return {
+		init: function(){
+			return;
+		},
+		addPrice: function(type){
+			return newPrice(type);
+		},
+		removeItem: function(index, type){
+			return removeItemFunc(index, type);
+		},
+		savePrice: function(item){
+			return savePriceFunc(item);
+		}
+	}
+}();
 // 
 
 // function isOnline(no, yes) {

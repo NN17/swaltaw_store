@@ -432,18 +432,6 @@ class Migrate extends CI_Model {
             'type' => 'INT',
             'constraint' => 8
           ),
-          'purchasePrice' => array(
-            'type' => 'INT',
-            'constraint' => 8
-          ),
-          'retailPrice' => array(
-            'type' => 'INT',
-            'constraint' => 8
-          ),
-          'wholesalePrice' => array(
-            'type' => 'INT',
-            'constraint' => 8
-          ),
           'supplierId' => array(
             'type' => 'INT',
             'constraint' => 8
@@ -692,6 +680,49 @@ class Migrate extends CI_Model {
 
       $this->dbforge->add_key('creditId', TRUE);
       $this->dbforge->create_table('credits_tbl', TRUE);
+
+      // End of Credit table
+
+      // Create count_type_tbl
+
+      $this->dbforge->add_field(array(
+        'count_type_id' => array(
+            'type' => 'INT',
+            'constraint' => 8,
+            'auto_increment' => TRUE
+        ),
+        'related_item_id' => array(
+            'type' => 'INT',
+            'constraint' => 8
+        ),
+        'type' => array(
+          'type' => 'CHAR',
+          'constraint' => 1
+        ),
+        'count_type' => array(
+            'type' => 'VARCHAR',
+            'constraint' => 255
+        ),
+        'qty' => array(
+            'type' => 'INT',
+            'constraint' => 8
+        ),
+        'price' => array(
+            'type' => 'INT',
+            'constraint' => 8
+        ),
+        'remark' => array(
+          'type' => 'TEXT'
+        ),
+        'created_at' => array(
+          'type' => 'DATETIME'
+        )
+      ));
+
+      $this->dbforge->add_key('count_type_id', TRUE);
+      $this->dbforge->create_table('count_type_tbl', TRUE);
+
+      // End of count_type_tbl
         
         
         // ------------ End of Create Tables ---------------

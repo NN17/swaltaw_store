@@ -94,23 +94,6 @@
     	</select>
     </div>
 
-    <h4 class="ui olive dividing header">Price Information</h4>
-
-   	<div class="field">
-        <?=form_label($this->lang->line('purchase_price'))?>
-        <?=form_number('p_price', '','placeholder="'.$this->lang->line('purchase_price').'" required')?>
-    </div>
-
-    <div class="field">
-        <?=form_label($this->lang->line('retail_price'))?>
-        <?=form_number('r_price', '','placeholder="'.$this->lang->line('retail_price').'" required')?>
-    </div>
-
-    <div class="field">
-        <?=form_label($this->lang->line('wholesale_price'))?>
-        <?=form_number('w_price', '','placeholder="'.$this->lang->line('wholesale_price').'" required')?>
-    </div>
-
     <h4 class="ui blue dividing header">Other Information</h4>
 
     <div class="field">
