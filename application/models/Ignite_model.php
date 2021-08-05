@@ -309,7 +309,7 @@ class Ignite_model extends CI_Model {
                 LEFT JOIN supplier_tbl AS supplier
                 ON supplier.supplierId = ip.supplierId
                 WHERE ip.active = TRUE
-                ORDER BY cat.categoryName ASC, brand.brandName ASC
+                ORDER BY ip.itemId DESC, cat.categoryName ASC, brand.brandName ASC
                 LIMIT $start, $limit
         ");
         return $data->result_array();
@@ -584,7 +584,7 @@ class Ignite_model extends CI_Model {
         return $total;
     }
 
-    public function get_Y_invTotal($month, $year){
+    function get_Y_invTotal($month, $year){
         $start = $year.'-'.sprintf('%02d', $month).'-01';
         $end = $year.'-'.sprintf('%02d', $month).'-31';
 
@@ -595,7 +595,7 @@ class Ignite_model extends CI_Model {
         return $query->invoice;
     }
 
-    public function get_Y_Total($month, $year){
+    function get_Y_Total($month, $year){
         $start = $year.'-'.sprintf('%02d', $month).'-01';
         $end = $year.'-'.sprintf('%02d', $month).'-31';
 
@@ -611,6 +611,24 @@ class Ignite_model extends CI_Model {
         }
 
         return $total;
+    }
+
+    function checkPrice($itemId){
+        $this->db->where('related_item_id', $itemId);
+        $query = $this->db->get('count_type_tbl')->result();
+        if(count($query) > 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    function getCountType($itemId){
+        $this->db->where('related_item_id', $itemId);
+        $this->db->where('type', 'P');
+        $this->db->order_by('qty', 'asc');
+        $query = $this->db->get('count_type_tbl');
+        return $query;
     }
 
 }

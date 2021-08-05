@@ -35,10 +35,20 @@
 
     <style type="text/css">
         body {
-        background-color: #404040;
+        background: url('./assets/imgs/backgrounds/back4.jpg');
         }
         body > .grid {
         height: 100%;
+        }
+        .auth-form-body{
+            background: #ffffff38 !important;
+        }
+        .ignite-logo{
+            margin: 40px;
+        }
+        .version{
+            color: #fff;
+            margin-bottom: 20px;
         }
         .header{
             color: #eee !important;
@@ -96,14 +106,17 @@
 
     <div class="ui middle aligned center aligned grid">
         <div class="column">
-            <h2 class="ui teal image header">
-            <img src="assets/imgs/ignite-logo-circle.png" class="image">
+            <h2 class="ui olive image header">
+            <img src="assets/imgs/ignite-logo-circle.png" class="image ignite-logo"><br/>
             <div class="content">
                 Ignite Source POS System
             </div>
             </h2>
+            <div class="version">
+                Version 1.0.1
+            </div>
             <?=form_open('ignite/login','class="ui large form"')?>
-            <div class="ui stacked segment">
+            <div class="ui stacked segment auth-form-body">
                 <div class="field">
                 <div class="ui left icon input">
                     <i class="user icon"></i>
@@ -118,7 +131,7 @@
                     <?=form_password('psw', set_value('psw'), 'placeholder="Password"')?>
                 </div>
                 </div>
-                <?=form_submit('save','Login', 'class="ui fluid large teal submit button"')?>
+                <?=form_submit('save','Login', 'class="ui fluid large red submit button"')?>
                 <!-- <div class="ui fluid large teal submit button">Login</div> -->
             </div>
 
@@ -126,8 +139,9 @@
 
             <?=form_close()?>
 
+            
             <div class="copy">
-                Copyright all-right reserved 2019-2020.
+                Copyright all-right reserved by Ignitesource <?=date('Y')?>.
             </div>
         </div>
     </div>

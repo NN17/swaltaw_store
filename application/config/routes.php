@@ -101,6 +101,7 @@ $route['items-price/(:num)'] = 'ignite/itemsPrice';
 $route['define-price/(:num)/(:any)'] = 'ignite/defineItemPrice';
 $route['new-item/(:any)'] = 'ignite/newItem';
 $route['edit-item/(:num)'] = 'ignite/editItem';
+$route['get-defined-price/(:num)'] = 'ignite/getDefinedPrice';
 
 /*
 * Routes for Purchase
@@ -152,3 +153,8 @@ $route['print/:num'] = 'ignite/printReceipt';
 * Routes for Reports
 */
 $route['reports/:any'] = 'ignite/reports';
+
+/*
+* Routes for Settings
+*/
+$route['setting'] = 'ignite/setting';

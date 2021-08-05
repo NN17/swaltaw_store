@@ -29,12 +29,12 @@
   			<td><?=$user->created_at?></td>
   			<td><?=$pCount?> Permission has allowed.</td>
   			<td>
-  				<a href="modify-permission/<?=$user->permissionId?>" class="ui button circle rounded icon teal" id="popup" data-content="Change Permission for user"><i class="user secret icon"></i></a>
-  				<a href="reset-password/<?=$user->accId?>" class="ui button circle rounded icon yellow" id="popup" data-content="Reset Password"><i class="key icon"></i></a>
+  				<a href="modify-permission/<?=$user->permissionId?>" class="ui button icon teal" id="popup_link" data-content="Change Permission for user"><i class="user secret icon"></i></a>
+  				<a href="reset-password/<?=$user->accId?>" class="ui button icon yellow" id="popup_link" data-content="Reset Password"><i class="key icon"></i></a>
   				<?php if($user->accountState): ?>
-  				<a href="disable-user/<?=$user->accId?>" class="ui button circle rounded icon negative" id="popup" data-content="Disable User"><i class="trash alternate icon"></i></a>
+  				<a href="disable-user/<?=$user->accId?>" class="ui button icon negative" id="popup_link" data-content="Disable User"><i class="trash alternate icon"></i></a>
   				<?php else: ?>
-				  <a href="enable-user/<?=$user->accId?>" class="ui button circle rounded icon green" id="popup" data-content="Enable User"><i class="user circle icon"></i></a>
+				  <a href="enable-user/<?=$user->accId?>" class="ui button icon green" id="popup_link" data-content="Enable User"><i class="user circle icon"></i></a>
   				<?php endif; ?>
   			</td>
   		</tr>

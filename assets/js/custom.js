@@ -7,6 +7,9 @@ function base_url() {
 // }, 5000);
 
 $(document).ready(function() {
+
+	priceAjax.init();
+
 	$(".ui.dropdown").dropdown();
 	$(".menu .item").tab();
 
@@ -341,6 +344,24 @@ $(document).ready(function() {
 			}
 		}, 1000);
 		$(this).val(lc);
+	});
+
+	// Get Count Type
+	$("#item").on('change', function(){
+		var itemId = $("#item").val();
+
+		console.log(itemId);
+		$.ajax({
+			url: base_url() + 'ignite/getCountType',
+			type: 'GET',
+			crossDomain: true,
+			data: {
+				'itemId': itemId
+			},
+			success: function(res){
+				$("#countType").html(res);
+			}
+		});
 	});
 
 
@@ -769,6 +790,54 @@ var priceAjax = function(){
 	let saleObj = {};
 	let allPrice = [];
 
+	let thisPath = function(){
+		let currentPath = window.location.pathname;
+		let arr = currentPath.split('/');
+		let itemId = arr[arr.length - 2];
+		if (currentPath.indexOf('inventory/define-price') > 0) {
+			// console.log(getPrices(itemId));
+			getPrices(itemId);
+		} else {
+			console.log("don't have")
+		}
+	};
+
+	let getPrices = function(itemId){
+		fetch('http://localhost/inventory/get-defined-price/' + itemId).then(function(res) {
+			return res.json();
+		}).then(function(data) {
+
+			data.forEach(function(x){
+				if(x.type == 'P'){
+
+					purchaseObj = {
+						type: x.type,
+						countType : x.count_type,
+						qty : x.qty,
+						price : x.price,
+						remark : x.remark
+					}
+
+					purchasePrice.push(purchaseObj);
+					priceTemplate(x.type);
+				}
+					else if(x.type == 'S'){
+						saleObj = {
+							type: x.type,
+							countType : x.count_type,
+							qty : x.qty,
+							price : x.price,
+							remark : x.remark
+						}
+
+						salePrice.push(saleObj);
+						priceTemplate(x.type);
+					}
+			});
+			
+		});
+	}
+
 	let newPrice = function(type){
 		if(type == 'P'){
 			let p_type = $('#p_countType').val();
@@ -864,6 +933,12 @@ var priceAjax = function(){
 	}
 
 	let priceTemplate = function(type){
+		if(purchasePrice.length > 0 || salePrice.length > 0){
+				$("#definePriceBth").removeClass('disabled');
+			}else{
+				$("#definePriceBth").addClass('disabled');
+			}
+
 		if(type == 'P'){
 			let html = '';
 
@@ -972,7 +1047,7 @@ var priceAjax = function(){
 		.then(data => {
 			allItems = [];
 			console.log(data);
-			// window.location.href = 'ignite/checkOutPreview/' + data;
+			window.location.href = 'items-price/0';
 		})
 		.catch((error) => {
 			console.log('Error:', error);
@@ -981,18 +1056,18 @@ var priceAjax = function(){
 
 	return {
 		init: function(){
-			return;
+			thisPath();
 		},
 		addPrice: function(type){
-			return newPrice(type);
+			newPrice(type);
 		},
 		removeItem: function(index, type){
-			return removeItemFunc(index, type);
+			removeItemFunc(index, type);
 		},
 		savePrice: function(item){
-			return savePriceFunc(item);
+			savePriceFunc(item);
 		}
-	}
+	};
 }();
 // 
 

@@ -512,6 +512,16 @@ class Ignite extends CI_Controller {
         $itemId = $this->uri->segment(3);
         $arr = json_decode($this->input->raw_input_stream, true);
 
+        // Check If price has define
+        $checkPrice = $this->ignite_model->get_limit_data('count_type_tbl', 'related_item_id', $itemId)->result();
+
+        // Delete the prev prices
+        if(count($checkPrice) > 0){
+            $this->db->where('related_item_id', $itemId);
+            $this->db->delete('count_type_tbl');
+        }
+
+        // Add new price
         foreach($arr as $row){
             $price_arr = array(
                 'related_item_id' => $itemId,
@@ -527,6 +537,13 @@ class Ignite extends CI_Controller {
         }
 
         $result = $this->ignite_model->get_data('count_type_tbl')->result();
+        echo count($result);
+    }
+
+    public function getDefinedPrice(){
+        $itemId = $this->uri->segment(2);
+
+        $result = $this->ignite_model->get_limit_data('count_type_tbl', 'related_item_id', $itemId)->result();
         echo json_encode($result);
     }
 
@@ -836,8 +853,20 @@ class Ignite extends CI_Controller {
         $this->load->view('layouts/template', $data);
     }
 
+    public function getCountType(){
+        $itemId = $this->input->get('itemId');
+
+        $countTypes = $this->ignite_model->getCountType($itemId)->result();
+
+        echo '<option value="">Select CountType</option>';
+        foreach($countTypes as $countType){
+            echo '<option value="'.$countType->count_type_id.'"> ( '.$countType->qty.' Piece / s ) '.$countType->count_type.'</option>';
+        }
+    }
+
     public function addPurchase(){
         $itemId = $this->input->post('item');
+        $countType = $this->input->post('countType');
         $warehouse = $this->input->post('warehouse');
         $date = $this->input->post('pDate');
         $qty = $this->input->post('qty');
@@ -845,6 +874,7 @@ class Ignite extends CI_Controller {
 
         $arr = array(
             'itemId' => $itemId,
+            'count_type_id' => $countType,
             'warehouseId' => $warehouse,
             'purchaseDate' => $date,
             'quantity' => $qty,
@@ -1361,6 +1391,17 @@ class Ignite extends CI_Controller {
     public function test_print(){
         $this->load->library('escpos');
         $this->escpos->print_order();
+    }
+
+    /*
+    * Settings Section
+    */
+    public function setting(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Settings');
+
+        $data['content'] = 'pages/settings';
+        $this->load->view('layouts/template', $data);
     }
 }
 

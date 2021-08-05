@@ -53,6 +53,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['item_price'] = 'Price';
 	$lang['purchase_price'] = 'Purchase Price';
 	$lang['retail_price'] = 'Retail Price';
+	$lang['sell_price'] = 'Sell Price';
 	$lang['wholesale_price'] = 'Wholesale price';
 	$lang['edit_item'] = 'Edit Item';
 	$lang['change_price'] = 'Change Price';
@@ -122,3 +123,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['total_items'] = 'Total Items';
 	$lang['total_amount'] = 'Total Amount';
 	$lang['total_inv'] = 'Invoice Total';
+
+	// Language for Settings
+	$lang['setting'] = 'Settings';

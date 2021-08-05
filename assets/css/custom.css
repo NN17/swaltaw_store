@@ -1,8 +1,23 @@
 @font-face {
   font-family: 'Zawgyi-One';
-  src: url('../font/Zawgyi-One.eot?#iefix') format('embedded-opentype'),  url('../font/Zawgyi-One.woff') format('woff'), url('../font/Zawgyi-One.ttf')  format('truetype'), url('../font/Zawgyi-One.svg#Zawgyi-One') format('svg');
+  src: 	url('../font/Zawgyi-One.eot?#iefix') format('embedded-opentype'),  
+  		url('../font/Zawgyi-One.woff') format('woff'), 
+  		url('../font/Zawgyi-One.ttf')  format('truetype'), 
+  		url('../font/Zawgyi-One.svg#Zawgyi-One') format('svg');
   font-weight: normal;
   font-style: normal;
+}
+
+@font-face {
+  font-family: 'Padauk';
+  src: url('../font/Padauk.woff2') format('woff2'),
+       url('../font/Padauk.woff') format('woff'),
+       url('../font/Padauk.ttf')  format('truetype');
+}
+
+@font-face{
+	font-family: 'ZawDcode';
+	src: url('../font/ZawDcode.ttf');
 }
 
 body{
@@ -49,11 +64,15 @@ textarea{
 }*/
 
 .myanmar h1, .myanmar h2, .myanmar h3, .myanmar h4, .myanmar h5, .myanmar div, .myanmar li, .myanmar th, .myanmar a, .myanmar input, .myanmar textarea, .myanmar select, .myanmar button{
-	font-family: 'Padauk', sans-serif !important;
+	font-family: 'ZawDcode', sans-serif !important;
 }
 
 .english h1, .english h2, .english h3, .english h4, .english h5, .english div, .english li, .english th, .english a, .english input, .english textarea, .english select, .english button{
 	font-family: 'Quicksand', sans-serif !important;
+}
+
+.myanmar th, .myanmar td, .myanmar input, .myanmar textarea, .myanmar select, .english th, .english td, .english input, .english textarea, .english select{
+	font-family: 'ZawDcode' !important;
 }
 
 .pagination{

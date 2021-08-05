@@ -1,4 +1,4 @@
-<h3><?=$this->lang->line('define_price') .' ( '.$item->itemName.' )'?></h3>
+<h3><?=$this->lang->line('define_price') .' <i class="ui icon yellow chevron circle right"></i> '.$item->itemName?></h3>
 <div class="ui divider"></div>
 
 <div class="ui grid">
@@ -54,7 +54,8 @@
     </table>
 
     <div class="ui center aligned">
-    	<button class="ui button green" onclick="priceAjax.savePrice(<?=$item->itemId?>)">Save</button>
+    	<button class="ui button green disabled" id="definePriceBth" onclick="priceAjax.savePrice(<?=$item->itemId?>)">Save</button>
+    	<a href="items-price/0" class="ui button secondary">Cancel</a>
     </div>
 	</div>
 </div>

@@ -213,6 +213,15 @@ class Migrate extends CI_Model {
                 'sub_menu' => true,
                 'description' => 'Define customer information'
               ),
+              array(
+                'machine' => 'setting',
+                'name' => 'Settings',
+                'lang_name' => 'setting',
+                'icon_class' => 'cogs',
+                'color' => 'black',
+                'sub_menu' => true,
+                'description' => 'Adjust settings for POS system, such as Discount %, GOV Tax, etc..'
+              ),
            );
            foreach($arr as $row){
               $this->db->insert('link_structure_tbl', ['machine' => $row['machine'], 'linkName' => $row['name'], 'lang_name' => $row['lang_name'], 'icon_class' => $row['icon_class'], 'color' => $row['color'], 'sub_menu' => $row['sub_menu'], 'description' => $row['description']]);
@@ -462,6 +471,10 @@ class Migrate extends CI_Model {
             'type' => 'INT',
             'constraint' => 8
           ),
+          'count_type_id' => array(
+            'type' => 'INT',
+            'constraint' => 8
+          ),
           'warehouseId' => array(
             'type' => 'INT',
             'constraint' => 8
@@ -492,6 +505,10 @@ class Migrate extends CI_Model {
             'type' => 'INT',
             'constraint' => 8
           ),
+          'count_type_id' => array(
+            'type' => 'INT',
+            'constraint' => 8
+          ),
           'qty' => array(
             'type' => 'INT',
             'constraint' => 8
@@ -513,6 +530,10 @@ class Migrate extends CI_Model {
             'auto_increment' => TRUE
           ),
           'itemId' => array(
+            'type' => 'INT',
+            'constraint' => 8
+          ),
+          'count_type_id' => array(
             'type' => 'INT',
             'constraint' => 8
           ),

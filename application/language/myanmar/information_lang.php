@@ -53,6 +53,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['item_price'] = 'စျေးနှုန်း';
 	$lang['purchase_price'] = 'ဝယ်ယူ စျေးနှုန်း';
 	$lang['retail_price'] = 'လက်လီ စျေးနှုန်း';
+	$lang['sell_price'] = 'ရောင်းစျေး';
 	$lang['wholesale_price'] = 'လက်ကား စျေးနှုန်း';
 	$lang['edit_item'] = 'ကုန်ပစ္စည်းပြင်ဆင်ရန်';
 	$lang['change_price'] = 'စျေးနှုန်းပြင်ဆင်ရန်';
@@ -122,3 +123,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['total_items'] = 'စုစုပေါင်းပစ္စည်းအရေအတွက်';
 	$lang['total_amount'] = 'ရောင်းရငွေစုစုပေါင်း';
 	$lang['total_inv'] = 'ဘောက်ချာစုစုပေါင်း';
+
+	// Language for Settings
+	$lang['setting'] = 'ချိန်ညှိရန်';
