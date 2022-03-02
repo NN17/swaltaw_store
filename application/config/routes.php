@@ -155,6 +155,11 @@ $route['print/:num'] = 'ignite/printReceipt';
 $route['reports/:any'] = 'ignite/reports';
 
 /*
+* Routes for Services
+*/
+$route['services'] = 'ignite/services';
+
+/*
 * Routes for Settings
 */
 $route['setting'] = 'ignite/setting';

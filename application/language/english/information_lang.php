@@ -117,6 +117,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['by_customer'] = 'By Customer';
 	$lang['credit'] = 'Credit';
 	$lang['whole_sale'] = 'Wholesale';
+	$lang['price'] = 'Price';
 
 	// Language for Reports
 	$lang['inv_serial'] = 'Invoice Serial';

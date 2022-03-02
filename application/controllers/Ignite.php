@@ -885,7 +885,8 @@ class Ignite extends CI_Controller {
 
         // Check balance exist
         $balance = $this->ignite_model->get_limit_datas('stocks_balance_tbl', ['itemId' => $itemId, 'warehouseId' => $warehouse])->row_array();
-        if(count($balance) > 0){
+        
+        if(!empty($balance)){
             $arr = array(
                 'qty' => $qty + $balance['qty'],
             );
@@ -1379,18 +1380,13 @@ class Ignite extends CI_Controller {
     public function printReceipt(){
         $invId = $this->uri->segment(2);
         $invoice = $this->ignite_model->get_limit_data('invoices_tbl', 'invoiceId', $invId)->row();
-        $this->load->library('escpos');
         $items = $this->ignite_model->get_limit_data('invoice_detail_tbl', 'invoiceId', $invId)->result();
+        $this->load->library('escpos');
 
         $this->escpos->print_receipt($invoice, $items);
 
         // $this->session->set_flashdata('success', 'Printer is Printing');
         redirect('home');
-    }
-
-    public function test_print(){
-        $this->load->library('escpos');
-        $this->escpos->print_order();
     }
 
     /*
@@ -1402,6 +1398,51 @@ class Ignite extends CI_Controller {
 
         $data['content'] = 'pages/settings';
         $this->load->view('layouts/template', $data);
+    }
+
+    /*
+    * Services Section
+    */
+    public function services(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Settings');
+
+        $data['content'] = 'pages/settings';
+        $this->load->view('layouts/template', $data);
+    }
+
+
+    public function test_print(){
+        $this->load->library('escpos');
+        $this->escpos->test_print();
+    }
+
+
+    public function insertBalance(){
+        $purchase = $this->ignite_model->get_data('purchase_tbl')->result();
+        foreach($purchase as $ps){
+
+            $balance = $this->ignite_model->get_limit_datas('stocks_balance_tbl', ['itemId' => $ps->itemId, 'warehouseId' => $ps->warehouseId])->row_array();
+            
+            if(!empty($balance)){
+                $arr = array(
+                    'qty' => $ps->quantity + $balance['qty'],
+                );
+
+                $this->db->where('itemId', $ps->itemId);
+                $this->db->where('warehouseId', $ps->warehouseId);
+                $this->db->update('stocks_balance_tbl', $arr);
+            }
+            else{
+                $arr = array(
+                    'itemId' => $ps->itemId,
+                    'qty' => $ps->quantity,
+                    'warehouseId' => $ps->warehouseId,
+                );
+
+                $this->db->insert('stocks_balance_tbl', $arr);
+            }
+        }
     }
 }
 

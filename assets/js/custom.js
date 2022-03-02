@@ -141,11 +141,15 @@ $(document).ready(function() {
 		if(key == 113){
 			$("#itemSearch").modal('show');
 		}else if(key == 13){
+
 			var code = $("#saleCode").val();
 			var name = $("#saleCode").data('name');
 			var qty = parseInt($("#itemQty").val());
 			var price = $("#itemPrice").val();
-			if(code == '' && qty == '' && price == ''){
+
+			console.log('code='+code+'/name='+name+'/qty='+qty);
+			if(code == '' || qty == '' || price == '' || qty == NaN || name == undefined){
+
 				$.alert({
 				    title: 'Invalid Input',
 				    content: 'Item Code, Qty and Price must not be null !',
@@ -620,17 +624,10 @@ var orderAjax = function(){
 				if(result.length > 0){
 
 					result.forEach(function(x){
-						if(saleType == 'wholesale'){
-							price = x.wholesalePrice;
-						}else{
-							price = x.retailPrice;
-						}
-						html += `<tr onclick="orderAjax.itemSelect('${x.itemName.replace('"','&quot;')}', '${x.codeNumber}', ${price}, ${x.qty})" class="item">
+						html += `<tr onclick="orderAjax.itemSelect('${x.itemName.replace('"','&quot;')}', '${x.itemModel}', '${x.codeNumber}', ${x.price}, ${x.qty})" class="item">
 								<td>${x.itemName}</td>
 								<td>${x.itemModel}</td>
-								<td class="ui right aligned">${Intl.NumberFormat().format(x.purchasePrice)}</td>
-								<td class="ui right aligned">${Intl.NumberFormat().format(x.retailPrice)}</td>
-								<td class="ui right aligned">${Intl.NumberFormat().format(x.wholesalePrice)}</td>
+								<td class="ui right aligned">${Intl.NumberFormat().format(x.price)}</td>
 								<td class="ui right aligned">${x.qty}</td>
 							</tr>`;
 					});
@@ -643,12 +640,13 @@ var orderAjax = function(){
 		});
 	};
 
-	let selectItem = function(name, code, price, qty){
+	let selectItem = function(name, model, code, price, qty){
+		
 		$("#saleItemSearch").val('');
 		$("#searchContent").html('');
-		$("#saleCode").val(code).data('name', name);
+		$("#saleCode").val(code).attr('data-name', name);
 		$("#itemSearch").modal('hide');
-		$("#itemQty").val(1).data('balance', qty);
+		$("#itemQty").val(1).attr('data-balance', qty);
 		$("#itemPrice").val(price);
 		setTimeout(function() { 
 				$('input[name="itemQty"]').focus().select();
@@ -762,8 +760,8 @@ var orderAjax = function(){
 		itemSearch: function(type){
 			searchItem(type);
 		},
-		itemSelect: function(name, code, price, qty){
-			selectItem(name, code, price, qty);
+		itemSelect: function(name, model, code, price, qty){
+			selectItem(name, model, code, price, qty);
 		},
 		saleCode: function(code){
 			getItemByCode(code);

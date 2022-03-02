@@ -7,7 +7,7 @@
 	</div>
 	<div class="three wide column">
 		<div class="ui huge fluid icon input">
-			<input name="itemQty" type="number" placeholder="Qty" id="itemQty" data-balance="0" />
+			<input name="itemQty" type="number" placeholder="Qty" id="itemQty" />
 			<i class="shopping cart icon"></i>
 		</div>
 	</div>
@@ -44,7 +44,7 @@
 				</div>
 
 				<div class="field">
-					<div class="ui slider checkbox">
+					<div class="ui slider checkbox disabled">
 					  	<input type="checkbox" name="wholesale" id="wholesale">
 					  	<label><?=$this->lang->line('whole_sale')?></label>
 					</div>
@@ -129,9 +129,7 @@
             <tr>
                 <th><?=$this->lang->line('item_name')?></th>
                 <th><?=$this->lang->line('item_model')?></th>
-                <th class="ui right aligned"><?=$this->lang->line('purchase_price')?></th>
-                <th class="ui right aligned"><?=$this->lang->line('retail_price')?></th>
-                <th class="ui right aligned"><?=$this->lang->line('wholesale_price')?></th>
+                <th class="ui right aligned"><?=$this->lang->line('price')?></th>
                 <th class="ui right aligned"><?=$this->lang->line('available_qty')?></th>
             </tr>
         </thead>

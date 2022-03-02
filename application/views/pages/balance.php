@@ -28,7 +28,7 @@
 				<td><?=$item->itemName?></td>
 				<td><?=$item->itemModel?></td>
 				<td><?=$item->supplierName?></td>
-				<td class="ui right aligned"><?=number_format($item->purchasePrice)?></td>
+				<td class="ui right aligned"><?=number_format($item->price)?></td>
 				<!-- Loop for warehouse -->
 				<?php $totalQty = 0; ?>
 				<?php foreach($warehouse as $row): ?>

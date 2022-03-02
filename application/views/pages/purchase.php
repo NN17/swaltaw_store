@@ -30,7 +30,7 @@
 			<td><?=$item['codeNumber']?></td>
 			<td><?=$item['itemName']?> ( <?=$item['brandName']?> )</td>
 			<td><?=$item['itemModel']?></td>
-			<td class="ui right aligned"><?=number_format($item['purchasePrice'])?></td>
+			<td class="ui right aligned"><?=number_format($item['price'])?></td>
 			<td class="ui right aligned"><?=number_format($item['quantity'])?></td>
 			<td><?=$item['warehouseName']?></td>
 			<td>

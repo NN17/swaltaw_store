@@ -117,6 +117,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['by_customer'] = 'ဖောက်သည်';
 	$lang['credit'] = 'အကြွေး';
 	$lang['whole_sale'] = 'လက်ကား';
+	$lang['price'] = 'စျေးနှုန်း';
  
  	// Language for Reports
 	$lang['inv_serial'] = 'ဘောက်ချာအမှတ်';

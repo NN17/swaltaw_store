@@ -29,32 +29,32 @@ class Escpos
         $newDate = getDate();
         header('Content-type: text/html; charset=utf-8');
         mb_internal_encoding("UTF-8");
-        $profile = CapabilityProfile::load("TM-T88III");
-        $connector = new WindowsPrintConnector("EPSON-T81III");
-        $printer = new Printer($connector, $profile);
+        // $profile = CapabilityProfile::load("XP-80C");
+        $connector = new NetworkPrintConnector("192.168.1.199", 9100);
+        $printer = new Printer($connector);
 
         $imageBuffer = new ImagePrintBuffer();
-        $imageBuffer -> setFont(__DIR__ . "/../../assets/font/zawgyi.ttf");
+        $imageBuffer -> setFont(__DIR__ . "/../../assets/font/ZawDcode.ttf");
         $textBuffer = new EscposPrintBuffer();
 
         try {
-            $printer = new Printer($connector, $profile);
+            $printer = new Printer($connector);
             $printer -> setPrintBuffer($imageBuffer);
 
             /* Name of shop */
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
             $printer->setEmphasis(true);
-            $imageBuffer->setFontSize(32);
-            $printer->text("ေ႐ႊညီကို စတိုး \n");
+            $imageBuffer->setFontSize(60);
+            $printer->text("NEW SKY \n");
             $imageBuffer->setFontSize(24);
             $printer->feed();
             $printer->selectPrintMode();
-            $printer->text("အခ်ိဳရည္ႏွင့္ ပင္လယ္စာ ျဖန႔္ခ်ီေရး \n");
+            $printer->text("Digital Photo Printing & IT Service \n");
             $printer->feed();
 
-            $printer->text("ဆိုင္အမွတ္(၈)၊ ေရလဲလမ္း ခ႐ိုင္အားကစား႐ုံေရွ႕ မအူပင္ၿမိဳ႕။\n");
-            $printer->text("TEL: 09970166233\n");
+            $printer->text("အမှတ်(၂၃)၊ စျေးလမ်း၊ မအူပင်မြို့။\n");
+            $printer->text("TEL: 09 254 093 727 / 09 973 158 768\n");
             $printer->text("________________________________________________\n");
             $printer->feed();
 
@@ -91,14 +91,14 @@ class Escpos
                 $printer->text($item->itemName);
                 
                 $printer->setPrintBuffer($textBuffer);
-                $printer->text($this->print_option($itemDetail->itemModel, $item->itemQty, $amount, 48)); // for 58mm Font A
+                $printer->text($this->print_option($itemDetail->itemModel, $item->itemQty, number_format($amount), 48)); // for 58mm Font A
             }
 
             $printer->setPrintBuffer($textBuffer);
             $printer->text("================================================\n");
             
             $printer->setEmphasis(true);
-            $printer->text($this->print_option('Total ','', $total, 48));
+            $printer->text($this->print_option('Total ','', number_format($total), 48));
             
 
             
@@ -123,7 +123,7 @@ class Escpos
     public function print_order(){
         $newDate = getDate();
         
-        $connector = new WindowsPrintConnector("nippon");
+        $connector = new NetworkPrintConnector("nippon");
         $printer = new Printer($connector);
 
         $imageBuffer = new ImagePrintBuffer();
@@ -156,6 +156,16 @@ class Escpos
             $str_right = $this->str_pad_unicode($right, $rCol, ' ', STR_PAD_LEFT);
             return "$str_left$str_center$str_right\n";
         }
+    }
+
+    function test_print(){
+        $connector = new NetworkPrintConnector("192.168.1.199", 9100);
+        $printer = new Printer($connector);
+
+        $printer->text("Hello World \n");
+        $printer->feed();
+        $printer->cut();
+        $printer->close();
     }
 
     function str_pad_unicode($str, $pad_len, $pad_str = ' ', $dir = STR_PAD_RIGHT) {

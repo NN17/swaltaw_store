@@ -351,10 +351,13 @@ class Ignite_model extends CI_Model {
         $data = $this->db->query("SELECT * FROM purchase_tbl AS purchase
             LEFT JOIN items_price_tbl AS item
             ON item.itemId = purchase.itemId
+            LEFT JOIN count_type_tbl AS ctype
+            ON item.itemId = ctype.related_item_id
             LEFT JOIN warehouse_tbl AS warehouse
             ON warehouse.warehouseId = purchase.warehouseId
             LEFT JOIN brands_tbl AS brand
             ON brand.brandId = item.brandId
+            WHERE ctype.type = 'P'
             ORDER BY purchase.purchaseDate DESC, warehouse.serial ASC
             ");
         return $data->result_array();
@@ -434,7 +437,10 @@ class Ignite_model extends CI_Model {
         $query = $this->db->query("SELECT * FROM items_price_tbl AS ip
             LEFT JOIN supplier_tbl AS sp
             ON sp.supplierId = ip.supplierId
+            LEFT JOIN count_type_tbl AS ctype
+            ON ip.itemId = ctype.related_item_id
             WHERE ip.active = true
+            AND ctype.type = 'P'
             ORDER BY ip.itemName
             ");
 
@@ -460,11 +466,13 @@ class Ignite_model extends CI_Model {
     }
 
     function get_saleItemSearch($key){
-        $query = $this->db->query("SELECT * FROM stocks_balance_tbl AS sb
+        $query = $this->db->query("SELECT sb.qty AS qty, ct.price AS price, ip.itemName AS itemName, ip.itemModel AS itemModel, ip.codeNumber AS codeNumber  FROM stocks_balance_tbl AS sb
             LEFT JOIN warehouse_tbl AS wh
             ON wh.warehouseId = sb.warehouseId
             LEFT JOIN items_price_tbl AS ip
             ON ip.itemId = sb.itemId
+            LEFT JOIN count_type_tbl AS ct
+            ON ip.itemId = ct.related_item_id
             LEFT JOIN brands_tbl AS bd
             ON bd.brandId = ip.brandId
             WHERE (ip.itemName LIKE '$key%'
@@ -472,6 +480,7 @@ class Ignite_model extends CI_Model {
             OR bd.brandName LIKE '$key%')
             AND sb.qty > 0
             AND wh.shop = true
+            AND ct.type = 'S'
             ");
         return $query->result_array();
     }
