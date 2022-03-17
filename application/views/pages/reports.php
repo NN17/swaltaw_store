@@ -20,6 +20,10 @@
 			$dailyTotal += $dTotalAmount;			
 		}
 	?>
+	<!-- Chart for Daily records -->
+	<canvas id="dailyChart" style="width:70vw; height: 35vh"></canvas>
+
+	<div class="ui divider"></div>
 	<div class="filter ui form">
 		<?=form_open('reports/daily', 'id="dailyFilter"')?>
 		<div class="ui grid">
@@ -49,6 +53,8 @@
 				<th><?=$this->lang->line('inv_serial')?></th>
 				<th class="ui right aligned"><?=$this->lang->line('total_items')?></th>
 				<th class="ui right aligned"><?=$this->lang->line('total_amount')?></th>
+				<th class="ui right aligned"><?=$this->lang->line('gross_profit')?></th>
+				<th class="ui center aligned"><?=$this->lang->line('margin')?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -57,6 +63,7 @@
 				foreach($dailyData as $dRow):
 					$dTotalItems = $this->ignite_model->get_dTotalItems($dRow->invoiceId);
 					$dTotalAmount = $this->ignite_model->get_dTotalAmount($dRow->invoiceId);
+					$dNetProfit = $this->ignite_model->get_dNetProfit($dRow->invoiceId);
 			?>
 				<tr>
 					<td class="ui right aligned"><?=$i?></td>
@@ -64,6 +71,8 @@
 					<td><?=$dRow->invoiceSerial?></td>
 					<td class="ui right aligned"><?=number_format($dTotalItems)?></td>
 					<td class="ui right aligned"><?=number_format($dTotalAmount)?></td>
+					<td class="ui right aligned"><?=number_format($dNetProfit->sTotal - $dNetProfit->pTotal)?></td>
+					<td class="ui center aligned"><?=round((($dNetProfit->sTotal - $dNetProfit->pTotal)/$dNetProfit->pTotal) * 100, 2)?> %</td>
 				</tr>
 			<?php
 				$i ++; 
@@ -76,6 +85,11 @@
 
 <!-- Monthly Tab -->
 <div class="ui bottom attached <?=$tab == 'monthly'?'active':''?> tab segment" data-tab="monthly">
+	<!-- Chart Canvas -->
+	<canvas id="mChart" style="width:70vw; height: 35vh"></canvas>
+
+	<div class="ui divider"></div>
+
 	<div class="search">
 		<form class="ui form" method="POST" action="reports/monthly" id="monthlyFilter">
 		<div class="ui six column grid">
@@ -105,7 +119,7 @@
 					for($i = 1; $i <= $days; $i++){
 						$invTotal = $this->ignite_model->get_M_invTotal($i, $mMonth, $mYear);
 						$amtTotal = $this->ignite_model->get_M_Total($i, $mMonth, $mYear);
-						$monthlyTotal += $amtTotal;
+						$monthlyTotal += $amtTotal['total'];
 					}
 				?>
 				<div class="ui tag label green">
@@ -124,7 +138,9 @@
 				<th>#</th>
 				<th><?=$this->lang->line('date')?></th>
 				<th><?=$this->lang->line('total_inv')?></th>
-				<th><?=$this->lang->line('total_amount')?></th>
+				<th class="ui right aligned"><?=$this->lang->line('total_amount')?></th>
+				<th class="ui right aligned"><?=$this->lang->line('gross_profit')?></th>
+				<th class="ui center aligned"><?=$this->lang->line('margin')?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -137,7 +153,9 @@
 					<td><?=$i?></td>
 					<td><?=date('d M Y', strtotime($mYear.'-'.$mMonth.'-'.$i))?></td>
 					<td><?=$invTotal?></td>
-					<td><?=number_format($amtTotal)?></td>
+					<td class="ui right aligned"><?=number_format($amtTotal['total'])?></td>
+					<td class="ui right aligned"><?=number_format($amtTotal['profit'])?></td>
+					<td class="ui center aligned"><?=$amtTotal['pTotal'] > 0 ?round(($amtTotal['profit'] / $amtTotal['pTotal']) * 100, 2): '0'?> %</td>
 				</tr>
 			<?php 
 				endfor;
@@ -148,6 +166,10 @@
 
 <!-- Yearly Tab -->
 <div class="ui bottom attached <?=$tab == 'yearly'?'active':''?> tab segment" data-tab="yearly">
+	<!-- Chart for Yearly Data -->
+	<canvas id="yChart" style="width:70vw; height: 35vh !important"></canvas>
+	<div class="ui divider"></div>
+
 	<div class="search">
 		<form class="ui form" method="POST" action="reports/yearly" id="yearlyFilter">
 		<div class="ui six column grid">
@@ -167,9 +189,10 @@
 			<div class="column">
 				<?php 
 					$yearlyTotal = 0;
+					
 					for($k = 1; $k <= 12; $k++){
 						$y_Total = $this->ignite_model->get_Y_Total($k, $yYear);
-						$yearlyTotal += $y_Total;
+						$yearlyTotal += $y_Total['total'];
 					}
 				?>
 				<div class="ui tag label green">
@@ -186,8 +209,9 @@
 			<tr>
 				<th>#</th>
 				<th><?=$this->lang->line('date')?></th>
-				<th><?=$this->lang->line('total_inv')?></th>
-				<th><?=$this->lang->line('total_amount')?></th>
+				<th class="ui right aligned"><?=$this->lang->line('total_inv')?></th>
+				<th class="ui right aligned"><?=$this->lang->line('total_amount')?></th>
+				<th class="ui right aligned"><?=$this->lang->line('gross_profit')?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -199,8 +223,9 @@
 				<tr>
 					<td><?=$k?></td>
 					<td><?=$this->ignite_model->getMonth($k)?></td>
-					<td><?=$y_invTotal?></td>
-					<td><?=number_format($y_Total)?></td>
+					<td class="ui right aligned"><?=$y_invTotal?></td>
+					<td class="ui right aligned"><?=number_format($y_Total['total'])?></td>
+					<td class="ui right aligned"><?=number_format($y_Total['total'] - $y_Total['gpTotal'])?></td>
 				</tr>
 			<?php endfor; ?>
 		</tbody>

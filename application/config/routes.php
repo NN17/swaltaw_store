@@ -158,8 +158,14 @@ $route['reports/:any'] = 'ignite/reports';
 * Routes for Services
 */
 $route['services'] = 'ignite/services';
+$route['newService'] = 'ignite/newService';
 
 /*
 * Routes for Settings
 */
 $route['setting'] = 'ignite/setting';
+
+/*
+* Routes for Logout
+*/
+$route['logout'] = 'ignite/signOut';

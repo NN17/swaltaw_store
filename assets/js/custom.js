@@ -2,6 +2,147 @@ function base_url() {
 	return "http://" + location.hostname + "/inventory/";
 }
 
+// Daily Report Charts
+var dt = new Date();
+$.ajax({
+	url: base_url() + 'ignite/getDailyChart',
+	type: 'GET',
+	crossDomain: 'TRUE',
+	data:{
+		month: dt.getMonth(),
+		year: dt.getFullYear()
+	},
+	success: function(res){
+		var obj = JSON.parse(res);
+		var xValues = obj.days;
+		var yValues = obj.datas;
+
+		new Chart("dailyChart", {
+		  type: "bar",
+		  data: {
+		    labels: xValues,
+		    datasets: [
+		    	{
+		      		backgroundColor: 'lightgreen',
+		      		data: obj.datas
+		    	},
+		    	{
+		      		backgroundColor: 'slategrey',
+		      		data: obj.gross
+		    	},
+		    ]
+		  },
+		  options: {
+		    legend: {display: false},
+		    scales: {
+		      yAxes: [{
+		        ticks: {
+		        	stepSize: 5000,
+		          	beginAtZero: true
+		        }
+		      }],
+		    }
+		  }
+		});
+	}
+});
+
+// Monthly Report Charts
+var dt = new Date();
+$.ajax({
+	url: base_url() + 'ignite/getMonthlyChart',
+	type: 'GET',
+	crossDomain: 'TRUE',
+	data:{
+		month: dt.getMonth(),
+		year: dt.getFullYear()
+	},
+	success: function(res){
+		var obj = JSON.parse(res);
+		var xValues = obj.months;
+		var barColors = "lightgreen";
+
+		new Chart("mChart", {
+		  type: "line",
+		  data: {
+		    labels: xValues,
+		    datasets: [
+			    {
+			      	borderColor: barColors,
+			      	data: obj.datas,
+			      	fill: false
+			    },
+			    {
+			    	borderColor: "slategrey",
+			      	data: obj.gross,
+			      	fill: false
+			    }
+		    ]
+		  },
+		  options: {
+		    legend: {display: false},
+		    scales: {
+		      yAxes: [{
+		        ticks: {
+		        	stepSize : 10000,
+		          	beginAtZero: true
+		        }
+		      }],
+		    }
+		  }
+		});
+	}
+});
+
+// Yearly Report Charts
+var dt = new Date();
+$.ajax({
+	url: base_url() + 'ignite/getYearlyChart',
+	type: 'GET',
+	crossDomain: 'TRUE',
+	data:{
+		month: dt.getMonth(),
+		year: dt.getFullYear()
+	},
+	success: function(res){
+		var obj = JSON.parse(res);
+		var xValues = obj.years;
+		var yValues = obj.data;
+		var barColors = "blueviolet";
+
+		new Chart("yChart", {
+		  type: "line",
+		  data: {
+		    labels: xValues,
+		    datasets: [
+			    { 
+			    	borderColor: "blueviolet",
+			      	data: obj.data,
+			      	fill: false
+			  	},
+			  	{ 
+			    	borderColor: "slategrey",
+			      	data: obj.gross,
+			      	fill: false
+			  	},
+		    ]
+		  },
+		  options: {
+		    legend: {display: false},
+		    scales: {
+		      yAxes: [{
+		        ticks: {
+		        	stepSize : 50000,
+		          	beginAtZero: true
+		        }
+		      }],
+		    }
+		  }
+		});
+	}
+});
+	
+
 // setInterval(() => {
 //     isOnline();
 // }, 5000);
@@ -136,7 +277,8 @@ $(document).ready(function() {
 	// F2 Shoutcut
 	$("#saleCode, #itemQty, #itemPrice").on('keydown', function(event){
 		var key = event.keyCode;
-		var maxqty = parseInt($("#itemQty").data('balance'));
+
+		var maxqty = parseInt($("#itemQty").attr('data-balance'));
 		var qty = parseInt($("#itemQty").val());
 		if(key == 113){
 			$("#itemSearch").modal('show');
@@ -164,7 +306,7 @@ $(document).ready(function() {
 				}
 					else{
 							if(qty > maxqty){
-								console.log(qty);
+								console.log('Qty' + qty + '/ MaxQty: ' + maxqty);
 								$("#itemQty").parent().addClass('error');
 								$.alert({
 								    title: 'Invalid Input',
@@ -622,7 +764,7 @@ var orderAjax = function(){
 			success: function(result){
 				let html;
 				if(result.length > 0){
-
+					console.log(result);
 					result.forEach(function(x){
 						html += `<tr onclick="orderAjax.itemSelect('${x.itemName.replace('"','&quot;')}', '${x.itemModel}', '${x.codeNumber}', ${x.price}, ${x.qty})" class="item">
 								<td>${x.itemName}</td>

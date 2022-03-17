@@ -113,6 +113,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	// Language for credits
 	$lang['credit'] = 'အကြွေးစာရင်း';
 
+	// Language for Services
+	$lang['service'] = 'ဝန်ဆောင်မှုများ';
+	$lang['new_service'] = 'ဝန်ဆောင်မှုအသစ်';
+
 	// Language for Home
 	$lang['by_customer'] = 'ဖောက်သည်';
 	$lang['credit'] = 'အကြွေး';
@@ -124,6 +128,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['total_items'] = 'စုစုပေါင်းပစ္စည်းအရေအတွက်';
 	$lang['total_amount'] = 'ရောင်းရငွေစုစုပေါင်း';
 	$lang['total_inv'] = 'ဘောက်ချာစုစုပေါင်း';
+	$lang['net_profit'] = 'အသားတင်အမြတ်';
+	$lang['margin'] = 'နှုန်းထား';
+	$lang['gross_profit'] = 'အမြတ်';
 
 	// Language for Settings
 	$lang['setting'] = 'ချိန်ညှိရန်';

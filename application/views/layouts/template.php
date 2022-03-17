@@ -53,7 +53,7 @@
                         <div class="default text"><i class="icon user circle green"></i> <?=$this->session->userdata('username')?></div>
                         <i class="dropdown icon"></i>
                         <div class="menu">
-                            <a href="ignite/logout" class="item" data-value="female"><i class="icon sign-out"></i> <?=$this->lang->line('logout')?></a>
+                            <a href="logout" class="item" data-value="female"><i class="icon sign-out"></i> <?=$this->lang->line('logout')?></a>
                         </div>
                         </div>
                 </div>
@@ -114,6 +114,7 @@
 
     <script src="assets/js/jquery-3.4.1.min.js"></script>
     <script src="semantic/semantic.min.js"></script>
+    <script type="text/javascript" src="assets/js/Chart.js"></script>
     <script type="text/javascript" src="semantic/Semantic-UI-Alert.js"></script>
     <script type="text/javascript" src="assets/DataTables.SemanticUI/datatables.min.js"></script>
     <script src="assets/js/jquery.datetimepicker.js"></script>

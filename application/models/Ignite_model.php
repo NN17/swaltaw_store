@@ -278,6 +278,49 @@ class Ignite_model extends CI_Model {
         }
     }
 
+    // Get Short Month Names
+
+    function getShortMonth($month){
+        switch($month){
+            case 1:
+                return 'JAN';
+                break;
+            case 2:
+                return 'FEB';
+                break;
+            case 3:
+                return 'MAR';
+                break;
+            case 4:
+                return 'APR';
+                break;
+            case 5:
+                return 'MAY';
+                break;
+            case 6:
+                return 'JUN';
+                break;
+            case 7:
+                return 'JUL';
+                break;
+            case 8:
+                return 'AUG';
+                break;
+            case 9:
+                return 'SEP';
+                break;
+            case 10:
+                return 'OCT';
+                break;
+            case 11:
+                return 'NOV';
+                break;
+            case 12:
+                return 'DEC';
+                break;
+        }
+    }
+
     // Custom Functions ..
 
     function get_suppliers(){
@@ -570,6 +613,22 @@ class Ignite_model extends CI_Model {
         return $total;
     }
 
+    function get_dNetProfit($invID){
+        $query = $this->db->query("SELECT SUM(ct.price) AS pTotal, SUM(idetail.itemPrice) AS sTotal FROM invoice_detail_tbl AS idetail
+            LEFT JOIN items_price_tbl AS ip
+            ON ip.codeNumber = idetail.itemCode
+            LEFT JOIN count_type_tbl AS ct
+            ON ct.related_item_id = ip.itemId
+            WHERE idetail.invoiceId = $invID
+            AND ct.type = 'p'
+            ")->row();
+        return $query;
+    }
+
+    function get_dMarginRate($invID){
+
+    }
+
     function get_M_invTotal($day, $month, $year){
         $date = $year.'-'.sprintf('%02d',$month).'-'.sprintf('%02d',$day);
         $query = $this->db->query("SELECT COUNT(invoiceId) AS invoice FROM invoices_tbl
@@ -583,14 +642,23 @@ class Ignite_model extends CI_Model {
         $query = $this->db->query("SELECT * FROM invoices_tbl AS inv
             LEFT JOIN invoice_detail_tbl AS detail
             ON detail.invoiceId = inv.invoiceId
+            LEFT JOIN items_price_tbl AS ip
+            ON ip.codeNumber =  detail.itemCode
+            LEFT JOIN count_type_tbl AS ct
+            ON ct.related_item_id = ip.itemId
             WHERE inv.created_date = '$date'
+            AND ct.type = 'P'
             ")->result();
 
         $total = 0;
+        $profit = 0;
+        $pTotal = 0;
         foreach($query as $row){
             $total += $row->itemQty * $row->itemPrice;
+            $profit +=  ($row->itemQty * $row->itemPrice)-($row->itemQty * $row->price);
+            $pTotal += $row->itemQty * $row->price;
         }
-        return $total;
+        return ['total' => $total, 'profit' => $profit, 'pTotal' => $pTotal];
     }
 
     function get_Y_invTotal($month, $year){
@@ -611,15 +679,47 @@ class Ignite_model extends CI_Model {
         $query = $this->db->query("SELECT * FROM invoices_tbl AS inv
             LEFT JOIN invoice_detail_tbl AS detail
             ON detail.invoiceId = inv.invoiceId
+            LEFT JOIN items_price_tbl AS ip
+            ON ip.codeNumber = detail.itemCode
+            LEFT JOIN count_type_tbl AS ct
+            ON ct.related_item_id = ip.itemId
             WHERE inv.created_date BETWEEN '$start' AND '$end'
+            AND ct.type = 'P'
             ")->result();
 
         $total = 0;
+        $gpTotal = 0;
         foreach($query as $row){
             $total += $row->itemQty * $row->itemPrice;
+            $gpTotal += $row->itemQty * $row->price;
         }
 
-        return $total;
+        return ['total' => $total, 'gpTotal' => $gpTotal];
+    }
+
+    function get_yChart($year){
+        $start = $year.'-01-01';
+        $end = $year.'-12-31';
+    
+        $query = $this->db->query("SELECT * FROM invoices_tbl AS inv
+            LEFT JOIN invoice_detail_tbl AS detail
+            ON detail.invoiceId = inv.invoiceId
+            LEFT JOIN items_price_tbl AS ip
+            ON ip.codeNumber = detail.itemCode
+            LEFT JOIN count_type_tbl AS ct
+            ON ct.related_item_id = ip.itemId
+            WHERE inv.created_date BETWEEN '$start' AND '$end'
+            AND ct.type = 'P'
+            ")->result();
+
+        $total = 0;
+        $gpTotal = 0;
+        foreach($query as $row){
+            $total += $row->itemQty * $row->itemPrice;
+            $gpTotal += $row->itemQty * $row->price;
+        }
+
+        return ['total' => $total, 'gpTotal' => $gpTotal];
     }
 
     function checkPrice($itemId){

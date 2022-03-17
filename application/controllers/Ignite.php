@@ -1377,6 +1377,61 @@ class Ignite extends CI_Controller {
         $this->load->view('layouts/template', $data);
     }
 
+    public function getDailyChart(){
+        $month = date('m');
+        $year = date('Y');
+        $days = cal_days_in_month(CAL_GREGORIAN,$month, $year);
+
+        $chartData['days'] = [];
+        $chartData['datas'] = [];
+        $chartData['gross'] = [];
+
+        for($i = 1; $i <= $days; $i++){
+            $amtTotal = $this->ignite_model->get_M_Total($i, $month, $year);
+            
+            array_push($chartData['days'], date('M').' '.$i);
+            array_push($chartData['datas'], $amtTotal['total']);
+            array_push($chartData['gross'], $amtTotal['profit']);
+        }
+
+        echo json_encode($chartData);
+    }
+
+    public function getMonthlyChart(){
+        $year = date('Y');
+
+        $chartData['months'] = [];
+        $chartData['datas'] = [];
+        $chartData['gross'] = [];
+
+        for($i = 1; $i <= 12; $i++){
+
+            $y_data = $this->ignite_model->get_Y_Total($i, $year);
+            array_push($chartData['months'], $this->ignite_model->getShortMonth($i));
+            array_push($chartData['datas'], $y_data['total']);
+            array_push($chartData['gross'], ($y_data['total'] - $y_data['gpTotal']));
+        }
+
+        echo json_encode($chartData);
+    }
+
+    public function getYearlyChart(){
+        $year = date('Y');
+
+        $chartData['years'] = [];
+        $chartData['data'] = [];
+        $chartData['gross'] = [];
+
+        for($i=($year-10); $i<= $year; $i++){
+            $y_data = $this->ignite_model->get_yChart($i);
+            array_push($chartData['years'], $i);
+            array_push($chartData['data'], $y_data['total']);
+            array_push($chartData['gross'], ($y_data['total'] - $y_data['gpTotal']));
+        }
+
+        echo json_encode($chartData);
+    }
+
     public function printReceipt(){
         $invId = $this->uri->segment(2);
         $invoice = $this->ignite_model->get_limit_data('invoices_tbl', 'invoiceId', $invId)->row();
@@ -1405,12 +1460,34 @@ class Ignite extends CI_Controller {
     */
     public function services(){
         $this->breadcrumb->add('Home', 'home');
-        $this->breadcrumb->add('Settings');
+        $this->breadcrumb->add('Services');
 
-        $data['content'] = 'pages/settings';
+        $data['content'] = 'pages/services';
         $this->load->view('layouts/template', $data);
     }
 
+    public function newService(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Services', 'services');
+        $this->breadcrumb->add('Create');
+
+        $data['categories'] = $this->ignite_model->get_data_order('categories_tbl', 'categoryName', 'asc')->result_array();
+        $data['content'] = 'pages/newService';
+        $this->load->view('layouts/template', $data);
+    }
+
+    /*
+    * Logout Section
+    */
+    public function signOut(){
+        session_destroy();
+
+        redirect(base_url());
+    }
+
+    /*
+    * Testing and Inserting Data
+    */
 
     public function test_print(){
         $this->load->library('escpos');

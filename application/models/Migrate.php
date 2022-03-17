@@ -205,6 +205,15 @@ class Migrate extends CI_Model {
                 'description' => 'Define prices for items'
               ),
               array(
+                'machine' => 'services',
+                'name' => 'Services',
+                'lang_name' => 'service',
+                'icon_class' => 'braille',
+                'color' => 'green',
+                'sub_menu' => true,
+                'description' => 'Services, Suchs as Printing and Other services ..'
+              ),
+              array(
                 'machine' => 'customers',
                 'name' => 'Customers',
                 'lang_name' => 'customer',

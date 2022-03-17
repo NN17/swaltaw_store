@@ -113,6 +113,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	// Language for credits
 	$lang['credit'] = 'Credits';
 
+	// Language for Services
+	$lang['service'] = 'Services';
+	$lang['new_service'] = 'New Service';
+
 	// Language for Home
 	$lang['by_customer'] = 'By Customer';
 	$lang['credit'] = 'Credit';
@@ -124,6 +128,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['total_items'] = 'Total Items';
 	$lang['total_amount'] = 'Total Amount';
 	$lang['total_inv'] = 'Invoice Total';
+	$lang['net_profit'] = 'Net Profit';
+	$lang['margin'] = 'Margin';
+	$lang['gross_profit'] = 'Gross Profit';
 
 	// Language for Settings
 	$lang['setting'] = 'Settings';

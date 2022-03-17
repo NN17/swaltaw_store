@@ -30,7 +30,7 @@ class Escpos
         header('Content-type: text/html; charset=utf-8');
         mb_internal_encoding("UTF-8");
         // $profile = CapabilityProfile::load("XP-80C");
-        $connector = new NetworkPrintConnector("192.168.1.199", 9100);
+        $connector = new NetworkPrintConnector("192.168.0.199", 9100);
         $printer = new Printer($connector);
 
         $imageBuffer = new ImagePrintBuffer();
