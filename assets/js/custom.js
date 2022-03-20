@@ -285,7 +285,7 @@ $(document).ready(function() {
 		}else if(key == 13){
 
 			var code = $("#saleCode").val();
-			var name = $("#saleCode").data('name');
+			var name = $("#saleCode").attr('data-name');
 			var qty = parseInt($("#itemQty").val());
 			var price = $("#itemPrice").val();
 
