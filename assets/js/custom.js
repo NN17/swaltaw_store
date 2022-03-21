@@ -1209,6 +1209,61 @@ var priceAjax = function(){
 		}
 	};
 }();
+
+var igniteAjax = function (){
+
+	let invDetail = function (invId){
+		$.ajax({
+			url: base_url() + 'ignite/getInvoice',
+			type: 'GET',
+			crossDomain: 'TRUE',
+			data: {
+				invId : invId
+			},
+			success: function(res){
+				let html = '';
+				var inv = $.parseJSON(res);
+				var i = 1;
+				let total = 0;
+				let invId = '';
+				let invDate = '';
+				inv.forEach(function(x){
+					let amount = x.itemQty * x.itemPrice;
+					total += amount;
+					invDate = x.created_date + '( '+x.created_time+' )';
+					invId = x.invoiceSerial;
+					html += `<tr>
+							<td>${i}</td>
+							<td>${x.itemName}</td>
+							<td class="ui right aligned">${Intl.NumberFormat().format(x.itemPrice)}</td>
+							<td class="ui right aligned">${x.itemQty}</td>
+							<td class="ui right aligned">${Intl.NumberFormat().format(amount)}</td>
+						</tr>`;
+					i++;
+				});
+
+				html += `<tr>
+						<td colspan="4" class="ui right aligned">Total</td>
+						<td class="ui right aligned">${Intl.NumberFormat().format(total)}</td>
+					</tr>`;
+
+				$('#invDetailHead').html('Invoice Detail ( '+invId+' )');
+				$('#invDate').html(invDate);
+				$('#invDetailBody').html(html);
+				$('#invDetail').modal().modal('show');
+			}
+		});
+	}
+
+	return {
+		init: function (){
+			thisPath();
+		},
+		detailInv: function (invId){
+			invDetail(invId);
+		}
+	}
+}();
 // 
 
 // function isOnline(no, yes) {

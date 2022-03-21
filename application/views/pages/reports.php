@@ -68,7 +68,7 @@
 				<tr>
 					<td class="ui right aligned"><?=$i?></td>
 					<td><?=date('d M Y',strtotime($dRow->created_date))?></td>
-					<td><?=$dRow->invoiceSerial?></td>
+					<td><a href="javascript:void(0)" onclick="igniteAjax.detailInv('<?=$dRow->invoiceId?>')"><?=$dRow->invoiceSerial?></a></td>
 					<td class="ui right aligned"><?=number_format($dTotalItems)?></td>
 					<td class="ui right aligned"><?=number_format($dTotalAmount)?></td>
 					<td class="ui right aligned"><?=number_format($dNetProfit->sTotal - $dNetProfit->pTotal)?></td>
@@ -230,4 +230,28 @@
 			<?php endfor; ?>
 		</tbody>
 	</table>
+</div>
+
+<!-- Invoice Detail Modal -->
+<div class="ui large modal" id="invDetail">
+	<div class="itemSearch-header">
+  		<h3 id="invDetailHead">Invoice Detail</h3>
+	</div>
+  	<div class="scrolling content">
+  			<div id="invDate" class="text-right"></div>
+    		<table class="ui table">
+    				<thead>
+    						<tr>
+    							<th>No</th>
+    							<th>Description</th>
+    							<th class="ui right aligned">Rate</th>
+    							<th class="ui right aligned">Qty</th>
+    							<th class="ui right aligned">Amount</th>
+    						</tr>
+    				</thead>
+    				<tbody id="invDetailBody">
+    					
+    				</tbody>
+    		</table>
+  	</div>
 </div>

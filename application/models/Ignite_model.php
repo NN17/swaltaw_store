@@ -740,4 +740,13 @@ class Ignite_model extends CI_Model {
         return $query;
     }
 
+    function get_invoiceDetail($invID){
+        $query = $this->db->query("SELECT * FROM invoices_tbl AS ivtbl
+                        LEFT JOIN invoice_detail_tbl AS ivdetail
+                        ON ivtbl.invoiceId = ivdetail.invoiceId
+                        WHERE ivtbl.invoiceId = $invID
+                        ");
+        return $query;
+    }
+
 }

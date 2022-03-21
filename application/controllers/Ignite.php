@@ -1377,6 +1377,13 @@ class Ignite extends CI_Controller {
         $this->load->view('layouts/template', $data);
     }
 
+    public function getInvoice(){
+        $invId = $this->input->get('invId');
+
+        $invData = $this->ignite_model->get_invoiceDetail($invId)->result();
+        echo json_encode($invData);
+    }
+
     public function getDailyChart(){
         $month = date('m');
         $year = date('Y');
