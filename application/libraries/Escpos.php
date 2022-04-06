@@ -99,6 +99,8 @@ class Escpos
             
             $printer->setEmphasis(true);
             $printer->text($this->print_option('Total ','', number_format($total), 48));
+            $printer->text($this->print_option('Discount ','', number_format($invoice->discountAmt), 48));
+            $printer->text($this->print_option('GrandTotal ','', number_format($total - $invoice->discountAmt), 48));
             
 
             

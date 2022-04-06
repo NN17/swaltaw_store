@@ -109,12 +109,24 @@ class Ignite extends CI_Controller {
         echo ($max['invoiceId']+1);
     }
 
+    public function addDiscountInv(){
+        $invId = $this->input->post('invId');
+        $discountAmt = $this->input->post('discount');
+
+        $arr = array('discountAmt' => $discountAmt);
+        $this->db->where('invoiceId', $invId);
+        $this->db->update('invoices_tbl', $arr);
+
+        echo 'success';
+    }
+
     public function checkOutPreview(){
-        $invId = $this->uri->segment(3);
+        $invId = $this->uri->segment(2);
 
         $this->breadcrumb->add('Home', 'home');
         $this->breadcrumb->add('Preview Invoice');
 
+        $data['discounts'] = $this->ignite_model->get_limit_data('discounts_tbl', 'active', true)->result();
         $data['invoice'] = $this->ignite_model->get_limit_data('invoices_tbl','invoiceId', $invId)->row();
         $data['items'] = $this->ignite_model->get_limit_data('invoice_detail_tbl', 'invoiceId',$invId)->result();
         $data['credit'] = $this->ignite_model->get_limit_data('credits_tbl', 'invoiceId', $invId)->row();
@@ -223,7 +235,7 @@ class Ignite extends CI_Controller {
         );
 
         $this->db->insert('warehouse_tbl', $arr);
-        $this->session->set_flashdata('success', 'Warehouse Successfully Created.');
+        $this->session->set_tempdata('success', 'Warehouse Successfully Created.', 5);
         redirect($referer);
     }
 
@@ -269,7 +281,7 @@ class Ignite extends CI_Controller {
 
         $this->db->where('warehouseId', $warehouseId);
         $this->db->update('warehouse_tbl', $arr);
-        $this->session->set_flashdata('success', 'Warehouse Successfully Updated.');
+        $this->session->set_tempdata('success', 'Warehouse Successfully Updated.', 5);
         redirect('warehouse');
     }
 
@@ -278,7 +290,7 @@ class Ignite extends CI_Controller {
 
         $this->db->where('warehouseId', $warehouseId);
         $this->db->delete('warehouse_tbl');
-        $this->session->set_flashdata('success', 'Warehouse Successfully Deleted.');
+        $this->session->set_tempdata('success', 'Warehouse Successfully Deleted.', 5);
         redirect('warehouse');
     }
 
@@ -327,7 +339,7 @@ class Ignite extends CI_Controller {
         );
 
         $this->db->insert('supplier_tbl', $arr);
-        $this->session->set_flashdata('success', 'Supplier Successfully Created.');
+        $this->session->set_tempdata('success', 'Supplier Successfully Created.', 5);
         if(!empty($referer)){
             redirect($referer.'/'.$seg4);
         }
@@ -374,7 +386,7 @@ class Ignite extends CI_Controller {
 
         $this->db->where('supplierId', $supplierId);
         $this->db->update('supplier_tbl', $arr);
-        $this->session->set_flashdata('success', 'Supplier Successfully Updated.');
+        $this->session->set_tempdata('success', 'Supplier Successfully Updated.', 5);
         redirect('supplier');
     }
 
@@ -383,7 +395,7 @@ class Ignite extends CI_Controller {
 
         $this->db->where('supplierId', $supplierId);
         $this->db->delete('supplier_tbl');
-        $this->session->set_flashdata('success', 'Supplier Successfully Deleted.');
+        $this->session->set_tempdata('success', 'Supplier Successfully Deleted.', 5);
         redirect('supplier');
     }
 
@@ -485,7 +497,7 @@ class Ignite extends CI_Controller {
 
         $this->db->insert('items_price_tbl', $arr);
         $max = $this->ignite_model->max('items_price_tbl', 'itemId');
-        $this->session->set_flashdata('success', 'New Item Successfully Created.');
+        $this->session->set_tempdata('success', 'New Item Successfully Created.', 5);
         redirect('define-price/'. $max['itemId'] .'/'. $referer);
         // if($referer === '~'){
         //     redirect('items-price/0');
@@ -593,7 +605,7 @@ class Ignite extends CI_Controller {
 
         $this->db->where('itemId', $itemId);
         $this->db->update('items_price_tbl', $arr);
-        $this->session->set_flashdata('success', 'Item Successfully Updated.');
+        $this->session->set_tempdata('success', 'Item Successfully Updated.', 5);
         redirect('items-price/0');
     }
 
@@ -602,7 +614,7 @@ class Ignite extends CI_Controller {
 
         $this->db->where('itemId', $itemId);
         $this->db->delete('items_price_tbl');
-        $this->session->set_flashdata('success', 'Item Successfully Deleted.');
+        $this->session->set_tempdata('success', 'Item Successfully Deleted.', 5);
 
         redirect('items-price/0');
     }
@@ -641,7 +653,7 @@ class Ignite extends CI_Controller {
 
         $this->db->update('items_price_tbl', ['active' => false], ['itemId' => $itemId]);
 
-        $this->session->set_flashdata('success', 'Item Price Successfully Updated.');
+        $this->session->set_tempdata('success', 'Item Price Successfully Updated.', 5);
         redirect('items-price/0');
     }
 
@@ -681,7 +693,7 @@ class Ignite extends CI_Controller {
         );
 
         $this->db->insert('categories_tbl', $arr);
-        $this->session->set_flashdata('success', 'Category Successfully Created.');
+        $this->session->set_tempdata('success', 'Category Successfully Created.', 5);
         if(!empty($referer)){
             redirect($referer.'/'.$seg4);
         }
@@ -729,7 +741,7 @@ class Ignite extends CI_Controller {
         $this->db->where('categoryId', $catId);
         $this->db->update('categories_tbl', $arr);
 
-        $this->session->set_flashdata('success', 'Category Successfully Updated.');
+        $this->session->set_tempdata('success', 'Category Successfully Updated.', 5);
 
         redirect('categories');
     }
@@ -740,7 +752,7 @@ class Ignite extends CI_Controller {
         $this->db->where('categoryId', $catId);
         $this->db->delete('categories_tbl');
 
-        $this->session->set_flashdata('success', 'Category Successfully Deleted.');
+        $this->session->set_tempdata('success', 'Category Successfully Deleted.', 5);
 
         redirect('categories');
     }
@@ -780,7 +792,7 @@ class Ignite extends CI_Controller {
 
         $this->db->insert('brands_tbl', $arr);
 
-        $this->session->set_flashdata('success', 'New Brand Successfully Created.');
+        $this->session->set_tempdata('success', 'New Brand Successfully Created.', 5);
 
         if(!empty($referer)){
             redirect($referer.'/'.$seg4);
@@ -816,7 +828,7 @@ class Ignite extends CI_Controller {
         $this->db->where('brandId', $brandId);
         $this->db->update('brands_tbl', $arr);
 
-        $this->session->set_flashdata('success', 'Brand Successfully Updated.');
+        $this->session->set_tempdata('success', 'Brand Successfully Updated.', 5);
 
         redirect('brands');
     }
@@ -827,7 +839,7 @@ class Ignite extends CI_Controller {
         $this->db->where('brandId', $brandId);
         $this->db->delete('brands_tbl');
 
-        $this->session->set_flashdata('success', 'Brand Successfully Deleted.');
+        $this->session->set_tempdata('success', 'Brand Successfully Deleted.', 5);
         redirect('brands');
     }
 
@@ -905,7 +917,7 @@ class Ignite extends CI_Controller {
             $this->db->insert('stocks_balance_tbl', $arr);
         }
 
-        $this->session->set_flashdata('success', 'New Purchase Successfully Created.');
+        $this->session->set_tempdata('success', 'New Purchase Successfully Created.', 5);
 
         redirect('purchase/0');
     }
@@ -1066,7 +1078,7 @@ class Ignite extends CI_Controller {
         $this->db->where('warehouseId', $source);
         $this->db->update('stocks_balance_tbl', $updBalOut);
 
-        $this->session->set_flashdata('success', 'Successfully Transferred.');
+        $this->session->set_tempdata('success', 'Successfully Transferred.', 5);
 
         redirect('transfer');
     }
@@ -1123,7 +1135,7 @@ class Ignite extends CI_Controller {
         $this->db->insert('accounts_tbl', $arr);
         $max = $this->ignite_model->max('accounts_tbl','accId');
 
-        $this->session->set_flashdata('success', 'New User Successfully Created.');
+        $this->session->set_tempdata('success', 'New User Successfully Created.', 5);
 
         redirect('set-permission/'.$max['accId']);
     }
@@ -1167,7 +1179,7 @@ class Ignite extends CI_Controller {
 
         $this->db->insert('permission_tbl', $arr);
 
-        $this->session->set_flashdata('success', 'Permission Successfully Defined.');
+        $this->session->set_tempdata('success', 'Permission Successfully Defined.', 5);
         redirect('users');
     }
 
@@ -1210,7 +1222,7 @@ class Ignite extends CI_Controller {
         $this->db->where('accId', $accId);
         $this->db->update('permission_tbl', $arr);
 
-        $this->session->set_flashdata('success', 'Permission Successfully Updated.');
+        $this->session->set_tempdata('success', 'Permission Successfully Updated.', 5);
 
         redirect('users');
     }
@@ -1233,7 +1245,7 @@ class Ignite extends CI_Controller {
 
         $this->db->update('accounts_tbl', ['secret' => $psw], ['accId' => $accId]);
 
-        $this->session->set_flashdata('success', 'Password Successfully Updated.');
+        $this->session->set_tempdata('success', 'Password Successfully Updated.', 5);
         redirect('users');
     }
 
@@ -1242,7 +1254,7 @@ class Ignite extends CI_Controller {
 
         $this->db->update('accounts_tbl', ['accountState' => false], ['accId' => $accId]);
 
-        $this->session->set_flashdata('success', 'User has been disabled.');
+        $this->session->set_tempdata('success', 'User has been disabled.', 5);
         redirect('users');
     }
 
@@ -1251,7 +1263,7 @@ class Ignite extends CI_Controller {
 
         $this->db->update('accounts_tbl', ['accountState' => true], ['accId' => $accId]);
 
-        $this->session->set_flashdata('success', 'User has been enabled.');
+        $this->session->set_tempdata('success', 'User has been enabled.', 5);
         redirect('users');
     }
 
@@ -1292,7 +1304,7 @@ class Ignite extends CI_Controller {
 
         $this->db->insert('customers_tbl', $arr);
 
-        $this->session->set_flashdata('success', 'Customer successfully created.');
+        $this->session->set_tempdata('success', 'Customer successfully created.', 5);
         redirect('customers');
     }
 
@@ -1325,7 +1337,7 @@ class Ignite extends CI_Controller {
         $this->db->where('customerId', $customerId);
         $this->db->update('customers_tbl', $arr);
 
-        $this->session->set_flashdata('success', 'Customer successfully updated.');
+        $this->session->set_tempdata('success', 'Customer successfully updated.', 5);
         redirect('customers');
     }
 
@@ -1447,7 +1459,7 @@ class Ignite extends CI_Controller {
 
         $this->escpos->print_receipt($invoice, $items);
 
-        // $this->session->set_flashdata('success', 'Printer is Printing');
+        // $this->session->set_tempdata('success', 'Printer is Printing', 5);
         redirect('home');
     }
 
@@ -1459,6 +1471,123 @@ class Ignite extends CI_Controller {
         $this->breadcrumb->add('Settings');
 
         $data['content'] = 'pages/settings';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function discounts() {
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Discounts');
+
+        $data['content'] = 'pages/discounts';
+        $data['discounts'] = $this->ignite_model->get_data('discounts_tbl')->result();
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function newDiscount() {
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Discounts', 'discounts');
+        $this->breadcrumb->add('Create');
+
+        $data['content'] = 'pages/newDiscount';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function addDiscount(){
+        $title = $this->input->post('title');
+        $type = $this->input->post('discountType');
+        if($type == 'DF'){
+            $rate = 0;
+        }else{
+            $rate = $this->input->post('discountRate');
+        }
+        $remark = $this->input->post('discountRemark');
+        if($this->input->post('active')){
+            $active = true;
+        }else{
+            $active = false;
+        }
+
+        $insert = array(
+            'discountTitle' => $title,
+            'discountType' => $type,
+            'discountRate' => $rate,
+            'remark' => $remark,
+            'active' => $active,
+            'created_at' => date('Y-m-d H:i:s A')
+        );
+
+        $this->db->insert('discounts_tbl', $insert);
+        $this->session->set_tempdata('success', 'Discount successfully Created.', 5);
+        redirect('discounts');
+    }
+
+    public function editDiscount(){
+        $discountId = $this->uri->segment(2);
+
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Discounts', 'discounts');
+        $this->breadcrumb->add('Modify');
+
+        $data['discount'] = $this->ignite_model->get_limit_data('discounts_tbl', 'discountId', $discountId)->row();
+        $data['content'] = 'pages/editDiscount';
+        $this->load->view('layouts/template', $data);
+
+    }
+
+    public function updateDiscount() {
+        $discountId = $this->uri->segment(3);
+
+        $title = $this->input->post('title');
+        $type = $this->input->post('discountType');
+        if($type == 'DF'){
+            $rate = 0;
+        }else{
+            $rate = $this->input->post('discountRate');
+        }
+        $remark = $this->input->post('discountRemark');
+        if($this->input->post('active')){
+            $active = true;
+        }else{
+            $active = false;
+        }
+
+        $update = array(
+            'discountTitle' => $title,
+            'discountType' => $type,
+            'discountRate' => $rate,
+            'remark' => $remark,
+            'active' => $active,
+            'created_at' => date('Y-m-d H:i:s A')
+        );
+
+        $this->db->where('discountId', $discountId);
+        $this->db->update('discounts_tbl', $update);
+        $this->session->set_tempdata('success', 'Discount successfully Upadated.', 5);
+        redirect('discounts');
+    }
+
+    public function deleteDiscount(){
+        $discountId = $this->uri->segment(2);
+
+        $this->db->where('discountId', $discountId);
+        $this->db->delete('discounts_tbl');
+
+        $this->session->set_tempdata('success', 'Discount successfully Deleted.');
+        redirect('discounts','refresh');
+    }
+
+    public function getDiscount(){
+        $id = $this->input->post('disId');
+
+        $discount = $this->ignite_model->get_limit_data('discounts_tbl', 'discountId', $id)->row();
+        echo json_encode($discount);
+    }
+
+    public function extraCharges() {
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Extra Charges');
+
+        $data['content'] = 'pages/extraCharges';
         $this->load->view('layouts/template', $data);
     }
 

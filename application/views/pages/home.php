@@ -75,11 +75,7 @@
 		<table class="ui striped table teal">
 			<tr>
 				<td><strong>Subtotal</strong></td>
-				<td class="ui right aligned"><strong id="subTotal">0</strong></td>
-			</tr>
-			<tr>
-				<td><strong>Discount</strong></td>
-				<td class="ui right aligned"><strong id="discount">0</strong></td>
+				<td class="ui right aligned"><strong id="subTotal" >0</strong></td>
 			</tr>
 			<tr>
 				<td><strong>Gov Tax (5%)</strong></td>
@@ -105,11 +101,11 @@
 			</tr>
 		</table> -->
 
-		<button class="ui button green huge fluid disabled" id="btnCheckOut" onclick="orderAjax.checkOutOrder()"><?=$this->lang->line('create_invoice')?></button>
+		<button class="ui button circular green huge fluid disabled" id="btnCheckOut" onclick="orderAjax.checkOutOrder()"><?=$this->lang->line('create_invoice')?></button>
 
 		<div class="ui segment all-link text-center">
 			<?php foreach($allLink as $link): ?>
-				<a href="<?=$link->machine?>" class="ui button icon <?=$link->color?>" id="popup_link" data-content="<?=$link->linkName?>"><i class="icon <?=$link->icon_class?> "></i></a>
+				<a href="<?=$link->machine?>" class="ui button circular icon <?=$link->color?>" id="popup_link" data-content="<?=$link->linkName?>"><i class="icon <?=$link->icon_class?> "></i></a>
 			<?php endforeach; ?>
 		</div>
 	</div>
@@ -153,3 +149,4 @@
     	</div>
   	</div>
 </div>
+

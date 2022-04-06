@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 	// Language Setting for main menu
-	$lang['home'] = 'မူလစာမျက်နှာ';
+	$lang['home'] = 'ဈေးရောင်း';
 	$lang['stocks'] = 'ကုန်ပစ္စည်းလက်ကျန်';
 	$lang['purchase'] = 'ကုန်ပစ္စည်း အဝင်';
 	$lang['stock_out'] = 'ကုန်ပစ္စည်း အထွက်';
@@ -12,6 +12,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['lang_mm'] =  'မြန်မာ';
 	$lang['accounts'] = 'အကောင့်များ';
 	$lang['warehouse'] = 'သိုလှောင်ရုံ';
+	$lang['voucher'] = 'ဘောက်ချာများ';
+	$lang['damages'] = 'အပျက်အဆီး';
 	$lang['supplier'] = 'ကုန်သွင်းသူ';
 	$lang['currency'] = 'ငွေကြေး';
 	$lang['logout'] = 'ထွက်မည်';
@@ -134,3 +136,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 	// Language for Settings
 	$lang['setting'] = 'ချိန်ညှိရန်';
+	$lang['discounts'] = 'ဈေးလျော့ပေးခြင်း';
+	$lang['extra_charges'] = 'ကုန်ကျစရိတ်';
+	$lang['title'] = 'ခေါင်းစဥ်';
+	$lang['discount_type'] = 'လျော့ဈေးအမျိုးအစား';
+	$lang['discount_rate'] = 'လျော့ဈေးနှုန်းထား';
+	$lang['new_discount'] = 'လျော့ဈေးအသစ်';
+	$lang['edit_discount'] = 'လျော့ဈေးပြင်ဆင်ရန်';

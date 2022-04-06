@@ -196,6 +196,15 @@ class Migrate extends CI_Model {
                 'description' => 'Define for import items'
               ),
               array(
+                'machine' => 'vouchers',
+                'name' => 'Vouchers',
+                'lang_name' => 'voucher',
+                'icon_class' => 'file alternate outline',
+                'color' => 'purple',
+                'sub_menu' => true,
+                'description' => 'Purchase Vouchers'
+              ),
+              array(
                 'machine' => 'items-price/0',
                 'name' => 'Items and Price',
                 'lang_name' => 'itemPrice',
@@ -212,6 +221,15 @@ class Migrate extends CI_Model {
                 'color' => 'green',
                 'sub_menu' => true,
                 'description' => 'Services, Suchs as Printing and Other services ..'
+              ),
+              array(
+                'machine' => 'damages',
+                'name' => 'Damage',
+                'lang_name' => 'damages',
+                'icon_class' => 'trash',
+                'color' => 'orange',
+                'sub_menu' => true,
+                'description' => 'Damages of the stocks'
               ),
               array(
                 'machine' => 'customers',
@@ -623,6 +641,10 @@ class Migrate extends CI_Model {
             'type' => 'VARCHAR',
             'constraint' => 255
          ),
+         'discountAmt' => array(
+            'type' => 'INT',
+            'constraint' => 8
+         ),
          'created_date' => array(
             'type' => 'DATE'
          ),
@@ -753,6 +775,40 @@ class Migrate extends CI_Model {
       $this->dbforge->create_table('count_type_tbl', TRUE);
 
       // End of count_type_tbl
+
+
+      // Creating Discounts Tables
+      $this->dbforge->add_field(array(
+        'discountId' => array(
+            'type' => 'INT',
+            'constraint' => 8,
+            'auto_increment' => TRUE
+        ),
+        'discountTitle' => array(
+            'type' => 'VARCHAR',
+            'constraint' => 255
+        ),
+        'discountType' => array(
+            'type' => 'CHAR',
+            'constraint' => 2
+        ),
+        'discountRate' => array(
+            'type' => 'INT',
+            'constraint' => 8
+        ),
+        'remark' => array(
+            'type' => 'TEXT'
+        ),
+        'active' => array(
+            'type' => 'BOOLEAN'
+        ),
+        'created_at' => array(
+            'type' => 'DATETIME'
+        )
+      ));
+
+      $this->dbforge->add_key('discountId', TRUE);
+      $this->dbforge->create_table('discounts_tbl', TRUE);
         
         
         // ------------ End of Create Tables ---------------

@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 	// Language for Main Menu
-	$lang['home'] = 'HOME';
+	$lang['home'] = 'POS';
 	$lang['stocks'] = 'Stock Balance';
 	$lang['purchase'] = 'Stocks In';
 	$lang['stock_out'] = 'Stocks Out';
@@ -12,6 +12,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['lang_mm'] = 'Myanmar';
 	$lang['accounts'] = 'Accounts';
 	$lang['warehouse'] = 'Warehouse';
+	$lang['voucher'] = 'Vouchers';
+	$lang['damages'] = 'Damages';
 	$lang['supplier'] = 'Supplier';
 	$lang['currency'] = 'Currency';
 	$lang['logout'] = 'Logout';
@@ -134,3 +136,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 	// Language for Settings
 	$lang['setting'] = 'Settings';
+	$lang['discounts'] = 'Discounts';
+	$lang['extra_charges'] = 'Extra Charges';
+	$lang['title'] = 'Title';
+	$lang['discount_type'] = 'Discount Type';
+	$lang['discount_rate'] = 'Discount Rate';
+	$lang['new_discount'] = 'New Discount';
+	$lang['edit_discount'] = 'Modify Discount';

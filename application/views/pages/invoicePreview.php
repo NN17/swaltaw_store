@@ -44,6 +44,14 @@
 						<td colspan="4" class="ui right aligned"><strong>Total</strong></td>
 						<td class="ui right aligned"><strong><?=number_format($total)?></strong></td>
 					</tr>
+					<tr>
+						<td colspan="4" class="ui right aligned"><a href="javascript:void(0);" onclick="openModal('discountModal')" > <i class="ui icon plus pink"></i></a>&nbsp;&nbsp;&nbsp; <strong>Discount</strong></td>
+						<td class="ui right aligned red"><strong id="disTotal">0</strong></td>
+					</tr>
+					<tr>
+						<td colspan="4" class="ui right aligned"><strong>Grand Total</strong></td>
+						<td class="ui right aligned"><strong id="gTotal"><?=number_format($total)?></strong></td>
+					</tr>
 					<?php if(isset($credit->balance)): ?>
 					<tr>
 						<td colspan="4" class="ui right aligned"><strong>Credit</strong></td>
@@ -69,4 +77,31 @@
 			</div>
 		</div>
 	</div>
+</div>
+
+
+<!-- Discount Modal -->
+<div class="ui mini modal" id="discountModal">
+	<i class="close icon"></i>
+  	<div class="ui icon header">
+    	<i class="icon tags orange"></i> Discount
+  	</div>
+  	<div class="content ui form">
+  		<div class="field">
+  			<label>Discount Type</label>
+  			<select class="ui search dropdown" name="disType" id="disType" data-total="<?=$total?>">
+  				<option>-- Select Discount --</option>
+  				<?php foreach($discounts as $discount): ?>
+  					<option value="<?=$discount->discountId?>"><?=$discount->discountTitle?></option>
+  				<?php endforeach; ?>
+  			</select>
+    	</div>
+  		<div class="field disabled" id="disAmt">
+  			<label>Amount</label>
+    		<input type="number" value=0 />
+    	</div>
+	  	<div class="action text-center">
+	  		<button class="ui circular button green" onclick="orderAjax.addDiscount(<?=$total?>, <?=$invoice->invoiceId?>)">Add Discount</button>
+	  	</div>
+  	</div>
 </div>

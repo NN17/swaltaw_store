@@ -26,7 +26,7 @@
             <a href="ignite/home" class="header item">
             <img src="assets/imgs/ignite-logo-circle.png" />
             &nbsp; &nbsp; IGNITE SOURCE &nbsp;
-            <small class="text-grey">Inventory</small>
+            <small class="text-grey">POS System</small>
             </a>
             <?php $main_menu = $this->ignite_model->get_limit_data('link_structure_tbl', 'sub_menu', false)->result(); ?>
             <?php foreach($main_menu as $row): ?>
@@ -121,8 +121,10 @@
     <script src="assets/js/jquery-confirm.js"></script>
     <script src="assets/js/custom.js"></script>
     <script type="text/javascript">
-        <?php if($this->session->flashdata('success')): ?>
-        var message = '<?=$this->session->flashdata('success')?>';
+        <?php 
+            if($this->session->tempdata('success')): 
+        ?>
+        var message = '<?=$this->session->tempdata('success')?>';
         $.uiAlert({
             textHead: 'Successful !', // header
             text: message, // Text
@@ -132,7 +134,9 @@
             icon: 'checkmark box', // icon in semantic-UI
             time: 3, // time
               })
-        <?php endif; ?>
+        <?php
+            endif; 
+        ?>
     </script>
 </body>
 </html>

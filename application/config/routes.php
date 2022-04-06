@@ -54,13 +54,26 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['home'] = 'ignite/home';
+$route['preview/(:num)'] = 'ignite/checkOutPreview';
 
 /*
 * Route for Language Switching
 */
 $route['language/(:any)'] = 'ignite/switchLanguage';
 
+/*
+* Routes for Discounts
+*/
+$route['discounts'] = 'ignite/discounts';
+$route['create-discount'] = 'ignite/newDiscount';
+$route['modify-discount/(:num)'] = 'ignite/editDiscount';
+$route['delete-discount/(:num)'] = 'ignite/deleteDiscount';
+$route['add-discount'] = 'ignite/addDiscountInv';
 
+/*
+* Routes for Charges
+*/
+$route['extra-charges'] = 'ignite/extraCharges';
 /*
 * Routes for setting
 */
@@ -93,6 +106,11 @@ $route['edit-category/(:num)'] = 'ignite/editCategory';
 $route['brands'] = 'ignite/brands';
 $route['create-brand'] = 'ignite/createBrand';
 $route['edit-brand/(:num)'] = 'ignite/editBrand';
+
+/*
+* Routes for Vouchers
+*/
+$route['vouchers'] = 'ignite/vouchers';
 
 /*
 * Routes for Items & Price

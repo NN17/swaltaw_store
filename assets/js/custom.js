@@ -200,6 +200,49 @@ $(document).ready(function() {
 		scrollInput: false
 	});
 
+	// Discount Type
+	$("#dType").on("change", function(){
+		if($(this).val() == 'DP' || $(this).val() == 'DA'){
+			$("#dRate").removeClass('disabled');
+			$("#dRate input").attr('required', 'required');
+		}else{
+			$("#dRate").addClass('disabled');
+			$("#dRate input").removeAttr('required');
+		}
+	});
+
+	$("#disType").on("change", function(){
+		var typeId = $(this).val();
+
+		$.ajax({
+			url: base_url() + 'ignite/getDiscount',
+			type: 'POST',
+			crossDomain: 'TRUE',
+			data: {
+				'disId' : typeId
+			},
+			success: function(res){
+				let obj = JSON.parse(res);
+				var total = $("#disType").data('total');
+				console.log($("#disType").data('total'));
+				if(obj.discountType == "DF"){
+					$("#disAmt").removeClass('disabled');
+					$("#disAmt input").html(0).focus().select();
+				}
+					else if(obj.discountType == "DP") {
+
+						$("#disAmt").addClass('disabled');
+						$("#disAmt input").val(parseInt(total * (obj.discountRate / 100)));
+						console.log((obj.discountRate / 100));
+					}
+						else{
+							$("#disAmt").addClass('disabled');
+							$("#disAmt input").val(obj.discountRate);
+						}
+			}
+		});
+	});
+
 	// Autofocus
 	$(function(){
 		let val = $('#saleCode').val();
@@ -282,49 +325,54 @@ $(document).ready(function() {
 		var qty = parseInt($("#itemQty").val());
 		if(key == 113){
 			$("#itemSearch").modal('show');
-		}else if(key == 13){
 
-			var code = $("#saleCode").val();
-			var name = $("#saleCode").attr('data-name');
-			var qty = parseInt($("#itemQty").val());
-			var price = $("#itemPrice").val();
-
-			console.log('code='+code+'/name='+name+'/qty='+qty);
-			if(code == '' || qty == '' || price == '' || qty == NaN || name == undefined){
-
-				$.alert({
-				    title: 'Invalid Input',
-				    content: 'Item Code, Qty and Price must not be null !',
-				    backgroundDismiss: false,
-					columnClass: "custom-confirm-box",
-					animation: "zoom",
-					theme: "material"
-				});
-			}
-				else if(code != '' && (qty == '' || price == '')){
-					orderAjax.saleCode(code);
-				}
-					else{
-							if(qty > maxqty){
-								console.log('Qty' + qty + '/ MaxQty: ' + maxqty);
-								$("#itemQty").parent().addClass('error');
-								$.alert({
-								    title: 'Invalid Input',
-								    content: 'Available Quantity is ' + maxqty + ' !',
-								    backgroundDismiss: false,
-									columnClass: "custom-confirm-box",
-									animation: "zoom",
-									theme: "material"
-								});
-							}else{
-								if($("#itemQty").parent().hasClass('error')){
-									$("#itemQty").parent().removeClass('error');
-								}
-								// console.log(key);
-								orderAjax.addItem(code, name, qty, price);
-							}
-						}
 		}
+			else if (key == 115){
+				console.log('f3 pressed');
+			}
+				else if(key == 13){
+
+					var code = $("#saleCode").val();
+					var name = $("#saleCode").attr('data-name');
+					var qty = parseInt($("#itemQty").val());
+					var price = $("#itemPrice").val();
+
+					console.log('code='+code+'/name='+name+'/qty='+qty);
+					if(code == '' || qty == '' || price == '' || qty == NaN || name == undefined){
+
+						$.alert({
+						    title: 'Invalid Input',
+						    content: 'Item Code, Qty and Price must not be null !',
+						    backgroundDismiss: false,
+							columnClass: "custom-confirm-box",
+							animation: "zoom",
+							theme: "material"
+						});
+					}
+						else if(code != '' && (qty == '' || price == '')){
+							orderAjax.saleCode(code);
+						}
+							else{
+									if(qty > maxqty){
+										console.log('Qty' + qty + '/ MaxQty: ' + maxqty);
+										$("#itemQty").parent().addClass('error');
+										$.alert({
+										    title: 'Invalid Input',
+										    content: 'Available Quantity is ' + maxqty + ' !',
+										    backgroundDismiss: false,
+											columnClass: "custom-confirm-box",
+											animation: "zoom",
+											theme: "material"
+										});
+									}else{
+										if($("#itemQty").parent().hasClass('error')){
+											$("#itemQty").parent().removeClass('error');
+										}
+										// console.log(key);
+										orderAjax.addItem(code, name, qty, price);
+									}
+								}
+				}
 	});
 
 
@@ -465,7 +513,7 @@ $(document).ready(function() {
 	$("#LC_check").on('keyup', function(event) {
 		var lc = $(this).val().toUpperCase();
 		var key = event.keyCode;
-		console.log(lc);
+		// console.log(lc);
 		$("#LC_err").html('<div class="ui active inline loader"></div>');
 		setTimeout(function() {
 			if (lc != '') {
@@ -519,7 +567,7 @@ $(document).ready(function() {
 
 		$("#qtyErr").html('<div class="ui active inline loader"></div>');
 		setTimeout(function() {
-			console.log(qty + '/' + warehouse + '/' + item);
+			// console.log(qty + '/' + warehouse + '/' + item);
 			if (warehouse == "" || item == "") {
 				$("#qtyErr").html('<i class="ui icon orange large exclamation triangle"></i>');
 				$("#qtyIssue").attr('placeholder', 'Warhouse & Item must not be NULL ..');
@@ -618,8 +666,8 @@ function sale_price_modal() {
 		.modal('show');
 }
 
-function sale_price_modal() {
-	$('.tiny.modal.sale')
+function discountModal() {
+	$('.mini.modal.sale')
 		.modal('show');
 }
 
@@ -697,14 +745,16 @@ var orderAjax = function(){
 			});
 
 			$("#btnCheckOut").removeClass('disabled');
+			$("#discountBtn").removeClass('disabled');
 		}
 		else{
 			$("#btnCheckOut").addClass('disabled');
+			$("#discountBtn").addClass('disabled');
 		}
 
 		$("#vr_preview").html(html);
-		$("#subTotal").html(Intl.NumberFormat().format(total));
-		$("#grandTotal").html(Intl.NumberFormat().format(total+tax));
+		$("#subTotal").html(total);
+		$("#grandTotal").html(total);
 		$("#saleCode").val('').focus();
 		$("#itemQty").val('');
 		$("#itemPrice").val('');
@@ -873,7 +923,7 @@ var orderAjax = function(){
 			.then(data => {
 				allItems = [];
 				// console.log(data);
-				window.location.href = 'ignite/checkOutPreview/' + data;
+				window.location.href = 'preview/' + data;
 			})
 			.catch((error) => {
 				console.log('Error:', error);
@@ -883,6 +933,29 @@ var orderAjax = function(){
 
 	let formSubmit = function(form){
 		$("#"+form).submit();
+	}
+
+	let discountAdd = function(total, invId){
+		var discount = $("#disAmt input").val();
+		
+		$.ajax({
+			url: base_url() + 'add-discount',
+			type: 'POST',
+			crossDomain: 'TRUE',
+			data: {
+				invId : invId,
+				discount : discount
+			},
+			success: function(res){
+				if(res == 'success'){
+					var gTotal = total - discount;
+
+					$("#disTotal").html(Intl.NumberFormat().format(discount));
+					$("#gTotal").html(Intl.NumberFormat().format(gTotal));
+					$("#discountModal").modal('hide');
+				}
+			}
+		});
 	}
 
 
@@ -916,6 +989,9 @@ var orderAjax = function(){
 		},
 		submitForm: function(form){
 			formSubmit(form);
+		},
+		addDiscount: function(total, invId){
+			discountAdd(total, invId);
 		}
 	}
 }();
