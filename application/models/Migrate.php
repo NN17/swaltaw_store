@@ -506,6 +506,10 @@ class Migrate extends CI_Model {
             'type' => 'INT',
             'constraint' => 8
           ),
+          'supplierId' => array(
+            'type' => 'INT',
+            'constraint' => 8
+          ),
           'purchaseDate' => array(
             'type' => 'DATE'
           ),
@@ -809,7 +813,35 @@ class Migrate extends CI_Model {
 
       $this->dbforge->add_key('discountId', TRUE);
       $this->dbforge->create_table('discounts_tbl', TRUE);
+
+      // Create vouchers_tbl
+      $this->dbforge->add_field(array(
+        'voucherId' => array(
+          'type' => 'INT',
+          'constraint' => 8,
+          'auto_increment' => TRUE
+        ),
+        'vDate' => array(
+          'type' => 'DATETIME'
+        ),
+        'vSerial' => array(
+          'type' => 'VARCHAR',
+          'constraint' => 22
+        ),
+        'supplier' => array(
+          'type' => 'INT',
+          'constraint' => 8
+        ),
+        'remark' => array(
+          'type' => 'TEXT'
+        ),
+        'created_at' => array(
+          'type' => 'DATETIME'
+        )
+      ));
         
+      $this->dbforge->add_key('voucherId', TRUE);
+      $this->dbforge->create_table('vouchers_tbl', TRUE);
         
         // ------------ End of Create Tables ---------------
     }

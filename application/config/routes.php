@@ -111,6 +111,10 @@ $route['edit-brand/(:num)'] = 'ignite/editBrand';
 * Routes for Vouchers
 */
 $route['vouchers'] = 'ignite/vouchers';
+$route['create-voucher'] = 'ignite/newVoucher';
+$route['modify-vouchers/(:num)'] = 'ignite/editVoucher';
+$route['remove-vouchers/(:num)'] = 'ignite/deleteVoucher';
+$route['update-vouchers/(:num)'] = 'ignite/updateVoucher';
 
 /*
 * Routes for Items & Price
@@ -127,6 +131,7 @@ $route['get-defined-price/(:num)'] = 'ignite/getDefinedPrice';
 $route['purchase/(:num)'] = 'ignite/purchase';
 $route['create-purchase'] = 'ignite/newPurchase';
 $route['edit-purchase/(:num)'] = 'ignite/editPurchase';
+$route['purchase_detail/(:num)'] = 'ignite/purchaseDetail';
 
 /*
 * Routes for Sales

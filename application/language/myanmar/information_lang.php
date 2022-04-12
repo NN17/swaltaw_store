@@ -91,6 +91,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['new_purchase'] = 'အဝယ်စာရင်းအသစ်ထည့်ရန်';
 	$lang['purchase_date'] = 'ဝယ်ယူသည့်နေ့စွဲ';
 	$lang['editPurchase'] = 'အဝယ်စာရင်းပြင်ဆင်ရန်';
+	$lang['total_cat'] = 'ပစ္စည်အမျိုးအမည် စုစုပေါင်း';
+	$lang['total_pamt'] = 'စုစုပေါင်းကျသင့်ငွေ';
+	$lang['amount'] = 'ကျသင့်ငွေစုစုပေါင်း';
 
 	// Language for Sales
 	$lang['new_sale'] = 'ကုန်ပစ္စည်းထုတ်ပေးရန်';
@@ -143,3 +146,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['discount_rate'] = 'လျော့ဈေးနှုန်းထား';
 	$lang['new_discount'] = 'လျော့ဈေးအသစ်';
 	$lang['edit_discount'] = 'လျော့ဈေးပြင်ဆင်ရန်';
+
+	// Language for Vouchers
+	$lang['voucher_serial'] = 'ဘောက်ချာအမှတ်';
+	$lang['voucher_date'] = 'ဘောက်ချာပါနေ့စွဲ';
+	$lang['new_voucher'] = 'ဘောက်ချာအသစ်ပြုလုပ်ရန်';
+	$lang['edit_voucher'] = 'ဘောက်ချာပြန်လည်ပြင်ဆင်ရန်';

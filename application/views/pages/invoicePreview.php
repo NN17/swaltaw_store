@@ -2,7 +2,7 @@
 	<div class="column">
 		<div class="ui segment teal">
 			<div class="text-center">
-				<h4>Date : <?=$invoice->created_date.' ( '.date('h:i A',strtotime($invoice->created_time)).' )'?></h4>
+				<h4>Date : <?=date('d-M-Y',strtotime($invoice->created_date)).' ( '.date('h:i A',strtotime($invoice->created_time)).' )'?></h4>
 				<h3>Serial : <?=$invoice->invoiceSerial?></h3>
 			</div>
 

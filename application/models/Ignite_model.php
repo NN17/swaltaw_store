@@ -323,6 +323,12 @@ class Ignite_model extends CI_Model {
 
     // Custom Functions ..
 
+    function supplier($id){
+        $this->db->where('supplierId', $id);
+        $query = $this->db->get('supplier_tbl')->row();
+        return $query->supplierName;
+    }
+
     function get_suppliers(){
         $this->db->order_by('supplierName', 'ASC');
         $data = $this->db->get('supplier_tbl');
@@ -384,13 +390,41 @@ class Ignite_model extends CI_Model {
                 ON currency.currencyId = ip.currency
                 LEFT JOIN supplier_tbl AS supplier
                 ON supplier.supplierId = ip.supplierId
+                LEFT JOIN count_type_tbl AS ct
+                ON ct.related_item_id = ip.itemId
                 WHERE ip.active = TRUE
+                AND ct.type = 'P'
                 ORDER BY ip.itemName ASC
         ");
         return $data->result_array();
     }
 
-    function get_purchaseItem(){
+    function get_total_pItem($vocId) {
+        $data = $this->db->query("SELECT COUNT(voucherId) AS totalItem FROM purchase_tbl
+                    WHERE voucherId = $vocId
+                    ")->row();
+        return $data->totalItem;
+    }
+
+    function get_total_pAmt($vocId) {
+        $data = $this->db->query("SELECT ct_tbl.price AS price, p_tbl.quantity AS qty FROM purchase_tbl AS p_tbl
+                LEFT JOIN items_price_tbl AS ip_tbl
+                ON ip_tbl.itemId = p_tbl.itemId
+                LEFT JOIN count_type_tbl AS ct_tbl
+                ON ct_tbl.related_item_id = ip_tbl.itemId
+                WHERE ct_tbl.type = 'P'
+                AND p_tbl.voucherId = $vocId
+                ")->result();
+
+        $total = 0;
+        foreach($data as $row){
+            $total += $row->price * $row->qty;
+        }
+
+        return $total;
+    }
+
+    function get_purchaseItem($vocId){
         $data = $this->db->query("SELECT * FROM purchase_tbl AS purchase
             LEFT JOIN items_price_tbl AS item
             ON item.itemId = purchase.itemId
@@ -401,6 +435,7 @@ class Ignite_model extends CI_Model {
             LEFT JOIN brands_tbl AS brand
             ON brand.brandId = item.brandId
             WHERE ctype.type = 'P'
+            AND purchase.voucherId = $vocId
             ORDER BY purchase.purchaseDate DESC, warehouse.serial ASC
             ");
         return $data->result_array();
@@ -603,6 +638,7 @@ class Ignite_model extends CI_Model {
     }
 
     function get_dTotalAmount($invID){
+        $inv = $this->get_limit_data('invoices_tbl', 'invoiceId', $invID)->row();
         $query = $this->db->query("SELECT * FROM invoice_detail_tbl
             WHERE invoiceId = $invID
             ")->result();
@@ -610,7 +646,7 @@ class Ignite_model extends CI_Model {
         foreach($query as $row){
             $total += $row->itemQty * $row->itemPrice;
         }
-        return $total;
+        return ($total-$inv->discountAmt);
     }
 
     function get_dNetProfit($invID){
@@ -655,10 +691,19 @@ class Ignite_model extends CI_Model {
         $pTotal = 0;
         foreach($query as $row){
             $total += $row->itemQty * $row->itemPrice;
-            $profit +=  ($row->itemQty * $row->itemPrice)-($row->itemQty * $row->price);
+            $profit +=  ($row->itemQty * $row->itemPrice)-(($row->itemQty * $row->price));
             $pTotal += $row->itemQty * $row->price;
         }
-        return ['total' => $total, 'profit' => $profit, 'pTotal' => $pTotal];
+
+        $query2 = $this->db->query("SELECT * FROM invoices_tbl
+                WHERE created_date = '$date'
+                ")->result();
+        $disTotal = 0;
+        foreach($query2 as $inv){
+            $disTotal += $inv->discountAmt;
+        }
+
+        return ['total' => ($total-$disTotal), 'profit' => ($profit-$disTotal), 'pTotal' => $pTotal];
     }
 
     function get_Y_invTotal($month, $year){

@@ -605,7 +605,7 @@ class Ignite extends CI_Controller {
 
         $this->db->where('itemId', $itemId);
         $this->db->update('items_price_tbl', $arr);
-        $this->session->set_tempdata('success', 'Item Successfully Updated.', 5);
+        $this->session->set_tempdata('success', 'Item Successfully Updated.', 3);
         redirect('items-price/0');
     }
 
@@ -614,7 +614,7 @@ class Ignite extends CI_Controller {
 
         $this->db->where('itemId', $itemId);
         $this->db->delete('items_price_tbl');
-        $this->session->set_tempdata('success', 'Item Successfully Deleted.', 5);
+        $this->session->set_tempdata('success', 'Item Successfully Deleted.', 3);
 
         redirect('items-price/0');
     }
@@ -848,8 +848,20 @@ class Ignite extends CI_Controller {
         $this->breadcrumb->add('Home', 'home');
         $this->breadcrumb->add('Stocks In');
 
-        $data['purchaseItem'] = $this->ignite_model->get_purchaseItem();
+        $data['vouchers'] = $this->ignite_model->get_data_order('vouchers_tbl', 'created_at', 'DESC')->result();
         $data['content'] = 'pages/purchase';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function purchaseDetail(){
+        $vocId = $this->uri->segment(2);
+
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Stocks In', 'purchase/0');
+        $this->breadcrumb->add('Detail');
+
+        $data['purchaseItem'] = $this->ignite_model->get_purchaseItem($vocId);
+        $data['content'] = 'pages/purchaseDetail';
         $this->load->view('layouts/template', $data);
     }
 
@@ -860,6 +872,8 @@ class Ignite extends CI_Controller {
 
         $data['items'] = $this->ignite_model->get_allItems();
         $data['warehouses'] = $this->ignite_model->get_data('warehouse_tbl')->result_array();
+        $data['vouchers'] = $this->ignite_model->get_data_order('vouchers_tbl','created_at', 'DESC')->result();
+        $data['suppliers'] = $this->ignite_model->get_data('supplier_tbl')->result();
 
         $data['content'] = 'pages/newPurchase';
         $this->load->view('layouts/template', $data);
@@ -880,6 +894,7 @@ class Ignite extends CI_Controller {
         $itemId = $this->input->post('item');
         $countType = $this->input->post('countType');
         $warehouse = $this->input->post('warehouse');
+        $voucher = $this->input->post('voucher');
         $date = $this->input->post('pDate');
         $qty = $this->input->post('qty');
         $remark = $this->input->post('remark');
@@ -888,6 +903,7 @@ class Ignite extends CI_Controller {
             'itemId' => $itemId,
             'count_type_id' => $countType,
             'warehouseId' => $warehouse,
+            'voucherId' => $voucher,
             'purchaseDate' => $date,
             'quantity' => $qty,
             'remark' => $remark
@@ -1397,7 +1413,7 @@ class Ignite extends CI_Controller {
     }
 
     public function getDailyChart(){
-        $month = date('m');
+        $month = $this->input->post('month');
         $year = date('Y');
         $days = cal_days_in_month(CAL_GREGORIAN,$month, $year);
 
@@ -1408,7 +1424,7 @@ class Ignite extends CI_Controller {
         for($i = 1; $i <= $days; $i++){
             $amtTotal = $this->ignite_model->get_M_Total($i, $month, $year);
             
-            array_push($chartData['days'], date('M').' '.$i);
+            array_push($chartData['days'], date('M', strtotime($year.'-'.$month.'-1')).' '.$i);
             array_push($chartData['datas'], $amtTotal['total']);
             array_push($chartData['gross'], $amtTotal['profit']);
         }
@@ -1610,6 +1626,93 @@ class Ignite extends CI_Controller {
         $data['categories'] = $this->ignite_model->get_data_order('categories_tbl', 'categoryName', 'asc')->result_array();
         $data['content'] = 'pages/newService';
         $this->load->view('layouts/template', $data);
+    }
+
+    /*
+    * Vouchers Section
+    */
+    public function vouchers(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Vouchers');
+
+        $data['vouchers'] = $this->ignite_model->get_data('vouchers_tbl')->result();
+        $data['content'] = 'pages/vouchers';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function newVoucher(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Vouchers', 'vouchers');
+        $this->breadcrumb->add('Create');
+
+        $data['suppliers'] = $this->ignite_model->get_data('supplier_tbl')->result();
+        $data['content'] = 'pages/newVoucher';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function addVoucher(){
+        $referer = $this->input->post('referer');
+        $vDate = $this->input->post('vDate');
+        $vSerial = $this->input->post('vSerial');
+        $supplier = $this->input->post('supplier');
+        $remark = $this->input->post('remark');
+
+        $insert = array(
+            'vDate' => $vDate,
+            'vSerial' => $vSerial,
+            'supplier' => $supplier,
+            'remark' => $remark,
+            'created_at' => date('Y-m-d H:i:s A')
+        );
+
+        $this->db->insert('vouchers_tbl', $insert);
+        $this->session->set_tempdata('success', 'New Vouchers created Successfully !', 3);
+        redirect($referer);
+    }
+
+    public function editVoucher(){
+        $vId = $this->uri->segment(2);
+
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Vouchers', 'vouchers');
+        $this->breadcrumb->add('Modify');
+
+        $data['suppliers'] = $this->ignite_model->get_data('supplier_tbl')->result();
+        $data['voucher'] = $this->ignite_model->get_limit_data('vouchers_tbl', 'voucherId', $vId)->row();
+        $data['content'] = 'pages/editVoucher';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function updateVoucher(){
+        $vId = $this->uri->segment(2);
+
+        $vDate = $this->input->post('vDate');
+        $vSerial = $this->input->post('vSerial');
+        $supplier = $this->input->post('supplier');
+        $remark = $this->input->post('remark');
+
+        $update = array(
+            'vDate' => $vDate,
+            'vSerial' => $vSerial,
+            'supplier' => $supplier,
+            'remark' => $remark,
+            'created_at' => date('Y-m-d H:i:s A')
+        );
+
+        $this->db->where('voucherId', $vId);
+        $this->db->update('vouchers_tbl', $update);
+        $this->session->set_tempdata('success', 'Vouchers updated Successfully !', 3);
+        redirect('vouchers');
+    }
+
+    public function deleteVoucher(){
+        $vId = $this->uri->segment(2);
+
+        $this->db->where('voucherId', $vId);
+        $this->db->delete('vouchers_tbl');
+        $this->session->set_tempdata('success', 'Voucher Deleted Successfully', 3);
+
+        redirect('vouchers');
     }
 
     /*

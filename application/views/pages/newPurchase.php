@@ -12,7 +12,7 @@
 				<select name="item" class="ui search dropdown" id="item" required>
 					<option value="">Select</option>
 					<?php foreach($items as $item):?>
-					<option value="<?=$item['itemId']?>"><?=$item['itemModel']?> _ <?=$item['itemName']?> ( <?=$item['categoryName'].' / '.$item['brandName']?> )</option>
+					<option value="<?=$item['itemId']?>"><?=$item['itemModel']?> _ <?=$item['itemName']?> ( <?=$item['categoryName'].' / '.$item['brandName']?> ) <?=$item['price']?></option>
 					<?php endforeach; ?>
 				</select>
 			</div>
@@ -37,6 +37,23 @@
 				<a href="javascript:void(0)" class="ui icon circular button pink" onclick="warehouse_modal()"><i class="icon plus"></i></a>
 			</div>
 		</div>
+    </div>
+
+    <div class="field">
+        <?=form_label($this->lang->line('voucher'))?>
+        <div class="ui grid">
+            <div class="twelve wide column">
+                <select name="voucher" class="ui search dropdown" required>
+                    <option value="">Select</option>
+                    <?php foreach($vouchers as $voucher): ?>
+                        <option value="<?=$voucher->voucherId?>"><?=$voucher->vSerial?> ( <?=$this->ignite_model->supplier($voucher->supplier)?> )</option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="four wide column">
+                <a href="javascript:void(0)" class="ui icon circular button purple" onclick="openModal('voucher')"><i class="icon plus"></i></a>
+            </div>
+        </div>
     </div>
 
     <div class="field">
@@ -67,6 +84,7 @@
 
 <!-- Warehouse Modal -->
 <div class="ui tiny modal warehouse">
+    <i class="close icon"></i>
   	<div class="header">
     	<?=$this->lang->line('new_warehouse')?>
   	</div>
@@ -98,6 +116,42 @@
             </div>
         </div>
   	</div>
+    <div class="actions">
+        <?=form_submit('save',$this->lang->line('save'),'class="ui button green"')?>
+    </div>
+    <?=form_close()?>
+</div>
+
+<!-- Voucher Modal -->
+<div class="ui tiny modal" id="voucher">
+    <i class="close icon"></i>
+    <div class="header">
+        <?=$this->lang->line('new_voucher')?>
+    </div>
+    <div class="content">
+    <?=form_open('ignite/addVoucher', 'class="ui form"')?>
+        <input type="hidden" name="referer" value="create-purchase" />
+        <div class="field">
+            <label><?=$this->lang->line('voucher_date')?></label>
+            <?=form_input('vDate','','placeholder="'.$this->lang->line('voucher_date').'" required id="datepicker"')?>
+        </div>
+        <div class="field">
+            <label><?=$this->lang->line('voucher_serial')?></label>
+            <?=form_input('vSerial','','placeholder="'.$this->lang->line('voucher_serial').'" required')?>
+        </div>
+        <div class="field">
+            <label><?=$this->lang->line('supplier')?></label>
+            <select name="supplier" class="ui search dropdown">
+                <option>-- Select Supplier --</option>
+                <?php foreach($suppliers as $supplier): ?>
+                    <option value="<?=$supplier->supplierId?>"><?=$supplier->supplierName?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="field">
+            <label><?=$this->lang->line('remark')?> ( Optional )</label>
+            <?=form_textarea('remark','','placeholder="'.$this->lang->line('remark').'"')?>
+        </div>
     <div class="actions">
         <?=form_submit('save',$this->lang->line('save'),'class="ui button green"')?>
     </div>

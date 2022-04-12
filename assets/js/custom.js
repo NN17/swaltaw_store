@@ -6,10 +6,10 @@ function base_url() {
 var dt = new Date();
 $.ajax({
 	url: base_url() + 'ignite/getDailyChart',
-	type: 'GET',
+	type: 'POST',
 	crossDomain: 'TRUE',
 	data:{
-		month: dt.getMonth(),
+		month: $("#dailyChart").data('month'),
 		year: dt.getFullYear()
 	},
 	success: function(res){
@@ -785,7 +785,7 @@ var orderAjax = function(){
 				.then(data => {
 					allItems = [];
 					// console.log(data);
-					window.location.href = 'ignite/checkOutPreview/' + data;
+					window.location.href = 'preview/' + data;
 				})
 				.catch((error) => {
 					console.log('Error:', error);
@@ -1300,12 +1300,14 @@ var igniteAjax = function (){
 				let html = '';
 				var inv = $.parseJSON(res);
 				var i = 1;
+				var dis = 0;
 				let total = 0;
 				let invId = '';
 				let invDate = '';
 				inv.forEach(function(x){
 					let amount = x.itemQty * x.itemPrice;
 					total += amount;
+					dis = x.discountAmt;
 					invDate = x.created_date + '( '+x.created_time+' )';
 					invId = x.invoiceSerial;
 					html += `<tr>
@@ -1319,8 +1321,18 @@ var igniteAjax = function (){
 				});
 
 				html += `<tr>
-						<td colspan="4" class="ui right aligned">Total</td>
-						<td class="ui right aligned">${Intl.NumberFormat().format(total)}</td>
+						<td colspan="4" class="ui right aligned"><strong>Total</strong></td>
+						<td class="ui right aligned"><strong>${Intl.NumberFormat().format(total)}</strong></td>
+					</tr>`;
+
+				html += `<tr>
+						<td colspan="4" class="ui right aligned"><strong>Discount</strong></td>
+						<td class="ui right aligned"><strong>${Intl.NumberFormat().format(dis)}</strong></td>
+					</tr>`;
+
+				html += `<tr>
+						<td class="ui right aligned" colspan="4"><strong>Grand Total</strong></td>
+						<td class="ui right aligned"><strong>${Intl.NumberFormat().format(total - dis)}</strong></td>
 					</tr>`;
 
 				$('#invDetailHead').html('Invoice Detail ( '+invId+' )');

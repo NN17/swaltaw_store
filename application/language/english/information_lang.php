@@ -91,6 +91,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['new_purchase'] = 'New Purchase';
 	$lang['purchase_date'] = 'Purchase Date';
 	$lang['editPurchase'] = 'Edit Purchase';
+	$lang['total_cat'] = 'Total Items';
+	$lang['total_pamt'] = 'Total Amount';
+	$lang['amount'] = 'Amount';
 
 	// Language for Sales
 	$lang['new_sale'] = 'New Stocks Issue';
@@ -143,3 +146,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['discount_rate'] = 'Discount Rate';
 	$lang['new_discount'] = 'New Discount';
 	$lang['edit_discount'] = 'Modify Discount';
+
+	// Language for Vouchers
+	$lang['voucher_serial'] = 'Voucher Serial';
+	$lang['voucher_date'] = 'Voucher\'s Date';
+	$lang['new_voucher'] = 'New Voucher';
+	$lang['edit_voucher'] = 'Modify Voucher';
