@@ -195,12 +195,13 @@ class Ignite_model extends CI_Model {
     /* 
     * Image Upload Function
     */
-    function upload_img($file,$path)
+    function upload_img($file,$path, $name)
     {
+        $this->load->library('upload');
         $config['upload_path'] = $path;
         $config['allowed_types'] = 'gif|jpg|jpeg|png';
         $config['max_size']     = '1024';
-        $config['file_name'] = 'upload_'.time();
+        $config['file_name'] = $name;
         $this->upload->initialize($config);
         
         if ($this->upload->do_upload($file))

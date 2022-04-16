@@ -3,7 +3,7 @@
 
 <div class="ui grid">
 <div class="seven wide column">
-<?=form_open('ignite/updateItem/'.$item['itemId'], 'class="ui form"')?>
+<?=form_open_multipart('ignite/updateItem/'.$item['itemId'], 'class="ui form"')?>
 	<h4 class="ui teal dividing header">Basic Information</h4>
 
 	<div class="field">
@@ -81,6 +81,26 @@
     		<?php endforeach; ?>
     	</select>
     </div>
+
+    <!-- image upload -->
+    <div class="field">
+		<?=form_label('Select Image')?>
+		<div class="file-upload px-2 py-2 upload-demo">
+			<div class="uploadBtn">
+				<div class="fileUpload ui button teal">
+					<span class="fa fa-image"> Browse</span>
+					<?=form_upload('itemImage','','class="upload" onchange="readURL(this)" accept=".jpg,.png,.gif"')?>
+				</div>
+			</div>
+			<div class="preview">
+				<?php if(!empty($item['imgPath'])): ?>
+					<img src="<?=$item['imgPath']?>" id="previewImg" class="ui centered image rounded" />
+				<?php else: ?>
+					<img src="assets/imgs/preview.png" id="previewImg" class="ui centered image rounded" />
+				<?php endif; ?>
+			</div>
+		</div>
+	</div>
 
     <h4 class="ui blue dividing header">Other Information</h4>
 
@@ -193,4 +213,15 @@
         <?=form_submit('save',$this->lang->line('save'),'class="ui button pink"')?>
 	</div>
 	<?=form_close()?>
+</div>
+
+<!-- Image Crop Modal -->
+<div class="ui modal crop">
+	<div class="header">
+	    Crop Image
+	</div>
+	<div class="content centered">
+	    <div id="img_prev"></div>
+        <button class="ui button olive crop_my_image">Store</button>
+	</div>
 </div>

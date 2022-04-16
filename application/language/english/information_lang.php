@@ -4,8 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	// Language for Main Menu
 	$lang['home'] = 'POS';
 	$lang['stocks'] = 'Stock Balance';
-	$lang['purchase'] = 'Stocks In';
-	$lang['stock_out'] = 'Stocks Out';
+	$lang['purchase'] = 'Purchase';
+	$lang['stock_out'] = 'Transfer';
 	$lang['itemPrice'] = 'Items & Price';
 	$lang['reports'] = 'Reports';
 	$lang['lang_en'] = 'English';
@@ -59,6 +59,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['wholesale_price'] = 'Wholesale price';
 	$lang['edit_item'] = 'Edit Item';
 	$lang['change_price'] = 'Change Price';
+	$lang['image'] = 'Image';
 
 	// Language for Categories
 	$lang['category'] = 'Category';

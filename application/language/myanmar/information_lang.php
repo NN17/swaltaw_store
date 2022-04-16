@@ -4,8 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	// Language Setting for main menu
 	$lang['home'] = 'ဈေးရောင်း';
 	$lang['stocks'] = 'ကုန်ပစ္စည်းလက်ကျန်';
-	$lang['purchase'] = 'ကုန်ပစ္စည်း အဝင်';
-	$lang['stock_out'] = 'ကုန်ပစ္စည်း အထွက်';
+	$lang['purchase'] = 'အဝယ်စာရင်း';
+	$lang['stock_out'] = 'အပြောင်းအရွှေ့';
 	$lang['itemPrice'] = 'ပစ္စည်းနှင့် စျေးနှုန်း';
 	$lang['reports'] = 'အစီရင်ခံစာ ထုတ်ယူရန်';
 	$lang['lang_en'] = 'အင်္ဂလိပ်';
@@ -59,6 +59,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['wholesale_price'] = 'လက်ကား စျေးနှုန်း';
 	$lang['edit_item'] = 'ကုန်ပစ္စည်းပြင်ဆင်ရန်';
 	$lang['change_price'] = 'စျေးနှုန်းပြင်ဆင်ရန်';
+	$lang['image'] = 'ရုပ်ပုံ';
 
 	// Language for Categories
 	$lang['category'] = 'အမျိုးအစား';

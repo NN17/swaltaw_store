@@ -13,7 +13,7 @@
 			<th><?=$this->lang->line('item_name')?></th>
 			<th><?=$this->lang->line('item_model')?></th>
 			<th><?=$this->lang->line('brand')?></th>
-			<th><?=$this->lang->line('currency')?></th>
+			<th><?=$this->lang->line('image')?></th>
 			<th class="ui right aligned"><?=$this->lang->line('purchase_price')?></th>
 			<th class="ui right aligned"><?=$this->lang->line('sell_price')?></th>
 			<th><?=$this->lang->line('supplier')?></th>
@@ -33,7 +33,7 @@
 				<td><?=$item['itemName']?></td>
 				<td><?=$item['itemModel']?></td>
 				<td><?=$item['brandName']?></td>
-				<td><?=$item['currency']?></td>
+				<td><button class="ui basic button tiny icon olive <?=!empty($item['imgPath'])?'':'disabled'?>" onclick="viewImg('<?=$item['imgPath']?>')"><i class="ui icon file image"></i></button></td>
 				<td class="ui right aligned"><strong><?=$p_countType?round($p_countType->price/$p_countType->qty , 2).' / <span class="text-grey">( '.number_format($p_countType->price).' )</span>':'-'?></strong></td>
 				<td class="ui right aligned"><strong>
 					<?php
@@ -69,4 +69,14 @@
 	<?=$this->pagination->create_links();?>
 </div>
 
+
+<!-- Image Modal -->
+<div class="ui tiny modal imgPreview">
+	<div class="header">
+	    Preview Image
+	</div>
+	<div class="content centered" id="imgContent">
+	    
+	</div>
+</div>
 

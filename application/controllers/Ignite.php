@@ -460,6 +460,19 @@ class Ignite extends CI_Controller {
         $this->load->view('layouts/template', $data);
     }
 
+    public function uploadImage(){
+        $data = $_POST['image'];
+     
+        list($type, $data) = explode(';', $data);
+        list(, $data)      = explode(',', $data);
+     
+        $data = base64_decode($data);
+        $imageName = time().'.png';
+        file_put_contents('assets/uploads/'.$imageName, $data);
+     
+        echo 'assets/uploads/'.$imageName;
+    }
+
     public function getLetterCode(){
         $catId = $this->input->post('catId');
 
@@ -477,10 +490,15 @@ class Ignite extends CI_Controller {
         $model = $this->input->post('model');
         $code = $this->input->post('code');
         $currency = $this->input->post('currency');
-        $p_price = $this->input->post('p_price');
-        $r_price = $this->input->post('r_price');
-        $w_price = $this->input->post('w_price');
         $remark = $this->input->post('remark');
+
+        $upload = $this->ignite_model->upload_img('itemImage', 'assets/uploads', $code);
+        if($upload['status']){
+            $path = $upload['path'];
+        }
+            else{
+                $path = '';
+            }
 
         $arr = array(
             'itemName' => $name,
@@ -489,6 +507,7 @@ class Ignite extends CI_Controller {
             'codeNumber' => $code,
             'brandId' => $brand,
             'currency' => $currency,
+            'imgPath' => $path,
             'supplierId' => $supplier,
             'remark' => $remark,
             'referId' => 0,
@@ -581,6 +600,7 @@ class Ignite extends CI_Controller {
     public function updateItem(){
         $itemId = $this->uri->segment(3);
 
+
         $category = $this->input->post('category');
         $brand = $this->input->post('brand');
         $supplier = $this->input->post('supplier');
@@ -590,6 +610,14 @@ class Ignite extends CI_Controller {
         $currency = $this->input->post('currency');
         $remark = $this->input->post('remark');
 
+        $upload = $this->ignite_model->upload_img('itemImage', 'assets/uploads', $code);
+        if($upload['status']){
+            $path = $upload['path'];
+        }
+            else{
+                $path = '';
+            }
+
         $arr = array(
             'itemName' => $name,
             'itemModel' => $model,
@@ -597,6 +625,7 @@ class Ignite extends CI_Controller {
             'codeNumber' => $code,
             'brandId' => $brand,
             'currency' => $currency,
+            'imgPath' => $path,
             'supplierId' => $supplier,
             'remark' => $remark,
             'referId' => 0,
@@ -848,7 +877,7 @@ class Ignite extends CI_Controller {
         $this->breadcrumb->add('Home', 'home');
         $this->breadcrumb->add('Stocks In');
 
-        $data['vouchers'] = $this->ignite_model->get_data_order('vouchers_tbl', 'created_at', 'DESC')->result();
+        $data['vouchers'] = $this->ignite_model->get_data_order('vouchers_tbl', 'vDate', 'DESC')->result();
         $data['content'] = 'pages/purchase';
         $this->load->view('layouts/template', $data);
     }

@@ -150,6 +150,7 @@ $.ajax({
 $(document).ready(function() {
 
 	priceAjax.init();
+	cropImage.init();
 
 	$(".ui.dropdown").dropdown();
 	$(".menu .item").tab();
@@ -671,6 +672,12 @@ function discountModal() {
 		.modal('show');
 }
 
+function viewImg(path) {
+	var html = '<img src="' + path + '" class="ui centered image" />';
+	$('#imgContent').html(html);
+	$('.modal.imgPreview').modal('show');
+}
+
 function changePriceModal(itemId) {
 	$.ajax({
 		url: base_url() + 'ignite/getPrice/' + itemId,
@@ -702,6 +709,22 @@ function format(size, num) {
 
 function openModal(name){
 	$('#' + name).modal({closable: false}).modal('show');
+}
+
+function readURL(input) {
+    if (input.files && input.files[0]) 
+    {
+        var reader = new FileReader();
+
+        reader.onload = function (e) 
+        {
+            $('#previewImg')
+                .attr('src', e.target.result)
+                .css('width','75%');
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
 }
 
 
@@ -1353,6 +1376,77 @@ var igniteAjax = function (){
 	}
 }();
 // 
+
+var cropImage = (function() {
+	function crop(){
+		$image_crop = $('#img_prev').croppie({
+                enableExif: true,
+                viewport: {
+                    width: 220,
+                    height: 220,
+                    type: 'square' // square
+                },
+                boundary: {
+                    width: 320,
+                    height: 320
+                }
+            });
+
+            $('#img-crop').on('change', function () {
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    $image_crop.croppie('bind', {
+                        url: event.target.result
+                    }).then(function () {
+                        
+                    });
+                }
+                reader.readAsDataURL(this.files[0]);
+                $('.modal.crop').modal({closable: false}).modal('show');
+            });
+
+            $('.crop_my_image').click(function (event) {
+                $image_crop.croppie('result', {
+                    type: 'blob',
+                    size: 'viewport'
+                }).then(function (response) {
+                	let reader = new FileReader();
+					reader.readAsDataURL(response); // converts the blob to base64 and calls onload
+					reader.onload = function() {
+						var data = reader.result;
+                		console.log(data);
+                		html = '<img src="' + data + '" class="ui centered image rounded" />';
+                    	$('.preview').html(html);
+					}
+
+                    $('.modal.crop').modal('hide');
+                    // $.ajax({
+                    //     type: 'POST',
+                    //     url: "ignite/uploadImage",
+                    //     data: {
+                    //         "image": response
+                    //     },
+                    //     success: function (data) {
+                    //         console.log(data);
+                    //         $('.modal.crop').modal('hide');
+                    //         $('#imgpth').val(data);
+                    //         html = '<img src="' + data + '" class="ui centered image rounded" />';
+                    //         $('.preview').html(html);
+                    //     }
+                    // })
+                });
+            });
+        
+	}
+
+	function init() {
+		crop();
+	}
+
+	return {
+		init: init
+	};
+})();
 
 // function isOnline(no, yes) {
 // 	var xhr = XMLHttpRequest

@@ -468,6 +468,10 @@ class Migrate extends CI_Model {
             'type' => 'INT',
             'constraint' => 8
           ),
+          'imgPath' => array(
+            'type' => 'VARCHAR',
+            'constraint' => 355
+          ),
           'supplierId' => array(
             'type' => 'INT',
             'constraint' => 8

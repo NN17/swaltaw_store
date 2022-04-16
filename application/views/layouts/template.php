@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="assets/DataTables.SemanticUI/datatables.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/jquery.datetimepicker.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/jquery-confirm.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/croppie.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/flaticon.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/custom.css" />
@@ -119,6 +120,7 @@
     <script type="text/javascript" src="assets/DataTables.SemanticUI/datatables.min.js"></script>
     <script src="assets/js/jquery.datetimepicker.js"></script>
     <script src="assets/js/jquery-confirm.js"></script>
+    <script type="text/javascript" src="assets/js/croppie.js"></script>
     <script src="assets/js/custom.js"></script>
     <script type="text/javascript">
         <?php 
