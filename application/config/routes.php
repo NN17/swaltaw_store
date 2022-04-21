@@ -74,6 +74,9 @@ $route['add-discount'] = 'ignite/addDiscountInv';
 * Routes for Charges
 */
 $route['extra-charges'] = 'ignite/extraCharges';
+$route['create-charges'] = 'ignite/newCharges';
+$route['modify-charge/(:num)'] = 'ignite/editCharges';
+$route['delete-charge/(:num)'] = 'ignite/deleteCharges';
 /*
 * Routes for setting
 */
@@ -187,6 +190,14 @@ $route['newService'] = 'ignite/newService';
 * Routes for Settings
 */
 $route['setting'] = 'ignite/setting';
+
+/*
+* Route for Damages
+*/
+$route['damages'] = 'ignite/damages';
+$route['create-damage'] = 'ignite/newDamage';
+$route['modify-damage/(:num)'] = 'ignite/editDamage';
+$route['delete-damage/(:num)'] = 'ignite/deleteDamage';
 
 /*
 * Routes for Logout

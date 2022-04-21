@@ -5,7 +5,7 @@
 <table class="ui definition table">
   <thead>
     <tr><th></th>
-    <th>Action</th>
+    <th>Modify</th>
     <th>Description</th>
   </tr></thead>
   <tbody>
@@ -13,12 +13,18 @@
     <?php foreach($links as $link): ?>
     <tr>
       <td>
+        <div class="ui toggle checkbox">
+          <input type="checkbox" <?=$active==false?'checked="checked"':''?> name="permission<?=$link->linkId?>">
+          <label></label>
+        </div>
+
         <i class="icon <?=$link->color?> <?=$link->icon_class?>"></i>
         <?=$link->linkName?>
+
       </td>
       <td>
         <div class="ui toggle checkbox">
-          <input type="checkbox" <?=$active==false?'checked="checked"':''?> name="permission<?=$link->linkId?>">
+          <input type="checkbox" <?=$active==false?'checked="checked"':''?> name="modify<?=$link->linkId?>">
           <label></label>
         </div>
       </td>
@@ -29,6 +35,6 @@
   </tbody>
 </table>
 <div class="text-center field">
-  <?=form_submit('Save','Save', 'class="ui button green"')?>
+  <?=form_submit('Save','Apply', 'class="ui button green"')?>
 </div>
 <?=form_close()?>

@@ -41,7 +41,7 @@
 						endforeach; 
 					?>
 					<tr>
-						<td colspan="4" class="ui right aligned"><strong>Total</strong></td>
+						<td colspan="4" class="ui right aligned"><strong>Sub Total</strong></td>
 						<td class="ui right aligned"><strong><?=number_format($total)?></strong></td>
 					</tr>
 					<tr>
@@ -68,6 +68,7 @@
 					<?php endif; ?>
 				</tbody>
 			</table>
+
 
 			<div class="text-center">
 				<div class="three ui buttons">

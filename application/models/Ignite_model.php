@@ -611,6 +611,53 @@ class Ignite_model extends CI_Model {
         return $query;
     }
 
+    function get_itemsForDamage(){
+        $data = $this->db->query("SELECT * FROM items_price_tbl AS ip_tbl
+                LEFT JOIN purchase_tbl AS p_tbl
+                ON p_tbl.itemId = ip_tbl.itemId
+                LEFT JOIN count_type_tbl AS ct_tbl
+                ON ct_tbl.related_item_id = ip_tbl.itemId
+                LEFT JOIN stocks_balance_tbl AS sb_tbl
+                ON sb_tbl.itemId = ip_tbl.itemId
+                WHERE ct_tbl.type = 'P'
+                AND sb_tbl.qty > 0
+                ORDER BY ip_tbl.itemName ASC
+                ")->result();
+
+        return $data;
+    }
+
+    function itemDetail($id) {
+        $dataP = $this->db->query("SELECT ip_tbl.itemName, ct_tbl.price, ip_tbl.codeNumber, ip_tbl.imgPath, ip_tbl.itemModel, sb_tbl.qty FROM items_price_tbl AS ip_tbl
+                LEFT JOIN count_type_tbl AS ct_tbl
+                ON ct_tbl.related_item_id = ip_tbl.itemId
+                LEFT JOIN stocks_balance_tbl AS sb_tbl
+                ON sb_tbl.itemId = ip_tbl.itemId
+                WHERE ip_tbl.itemId = $id
+                AND ct_tbl.type = 'P'
+                ")->row();
+        $dataS = $this->db->query("SELECT ip_tbl.itemName, ct_tbl.price, ip_tbl.codeNumber, ip_tbl.imgPath, ip_tbl.itemModel, sb_tbl.qty FROM items_price_tbl AS ip_tbl
+                LEFT JOIN count_type_tbl AS ct_tbl
+                ON ct_tbl.related_item_id = ip_tbl.itemId
+                LEFT JOIN stocks_balance_tbl AS sb_tbl
+                ON sb_tbl.itemId = ip_tbl.itemId
+                WHERE ip_tbl.itemId = $id
+                AND ct_tbl.type = 'S'
+                ")->row();
+
+        $array = array(
+            'itemName' => $dataP->itemName,
+            'sellPrice' => $dataS->price,
+            'purchasePrice' => $dataP->price,
+            'itemCode' => $dataP->codeNumber,
+            'model' => $dataP->itemModel,
+            'imgPath' => $dataP->imgPath,
+            'balance' => $dataP->qty,
+        );
+
+        return $array;
+    }
+
     function get_credit($customerID){
         $query = $this->db->query("SELECT * FROM credits_tbl AS crd
             LEFT JOIN invoices_tbl AS inv

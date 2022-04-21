@@ -31,21 +31,12 @@
             </a>
             <?php $main_menu = $this->ignite_model->get_limit_data('link_structure_tbl', 'sub_menu', false)->result(); ?>
             <?php foreach($main_menu as $row): ?>
-            <a href="<?=$row->machine?>" class="item <?php if($this->uri->segment(1) == $row->machine){echo 'active';}?>">
-                <i class="icon <?=$row->color?> <?=$row->icon_class?>"></i> <?=$this->lang->line($row->lang_name)?>
-            </a>
+                <?php if($this->auth->checkLinkAccess($this->session->userdata('Id'), $row->linkId)): ?>
+                    <a href="<?=$row->machine?>" class="item <?php if($this->uri->segment(1) == $row->machine){echo 'active';}?>">
+                        <i class="icon <?=$row->color?> <?=$row->icon_class?>"></i> <?=$this->lang->line($row->lang_name)?>
+                    </a>
+                <?php endif; ?>
             <?php endforeach; ?>
-
-            
-
-            <!-- <div class="ui simple dropdown item">
-                <i class="file alternate outline icon"></i> REPORTS <i class="dropdown icon"></i>
-            <div class="menu">
-                <a class="item" href="report-daily"><i class="chart line icon teal"></i> Daily</a>
-                <a class="item" href="report-monthly"><i class="chart line icon violet"></i> Monthly</a>
-                <a class="item" href="report-yearly"><i class="chart line icon purple"></i> Yearly</a>
-            </div>
-            </div> -->
 
             <div class="right menu">
                 <!-- Username -->
@@ -67,9 +58,11 @@
                             <div class="menu">
                                 <?php $submenu = $this->ignite_model->get_limit_data('link_structure_tbl', 'sub_menu', true)->result();?>
                                 <?php foreach($submenu as $menu): ?>
+                                    <?php if($this->auth->checkLinkAccess($this->session->userdata('Id'), $menu->linkId)): ?>
                                     <a href="<?=$menu->machine?>" class="item" data-value="female">
                                         <i class="icon <?=$menu->icon_class?> <?=$menu->color?>"></i> <?=$this->lang->line($menu->lang_name)?>
                                     </a>
+                                    <?php endif; ?>
                                 <?php endforeach; ?>
                             </div>
                         </div>

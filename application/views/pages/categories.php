@@ -1,6 +1,6 @@
 <div class="ui clearing segment grey">
 	<h3 class="ui grey left floated header"><?=$this->lang->line('category')?></h3>
-	<a href="create-category" class="ui right floated button grey">
+	<a href="create-category" class="ui right floated button grey <?=$this->auth->checkModify($this->session->userdata('Id'), 'categories')?'':'disabled'?>">
 	    <i class="icon plus circle"></i> <?=$this->lang->line('new')?>
 	</a>
 </div>
@@ -27,8 +27,8 @@
 			<td><?=$cat['letterCode']?></td>
 			<td><?=!empty($cat['remark'])?$cat['remark']:'...'?></td>
 			<td>
-				<a href="edit-category/<?=$cat['categoryId']?>" class="ui button icon tiny circular orange"><i class="ui icon cog"></i></a>
-				<a href="javascript:void(0)" class="ui button icon tiny circular red" id="delete" data-url="ignite/deleteCategory/<?=$cat['categoryId']?>"><i class="ui icon remove"></i></a>
+				<a href="edit-category/<?=$cat['categoryId']?>" class="ui button icon tiny circular orange <?=$this->auth->checkModify($this->session->userdata('Id'), 'categories')?'':'disabled'?>"><i class="ui icon cog"></i></a>
+				<a href="javascript:void(0)" class="ui button icon tiny circular red <?=$this->auth->checkModify($this->session->userdata('Id'), 'categories')?'':'disabled'?>" id="delete" data-url="ignite/deleteCategory/<?=$cat['categoryId']?>"><i class="ui icon remove"></i></a>
 			</td>
 		</tr>
 		<?php

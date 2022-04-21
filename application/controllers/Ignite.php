@@ -23,6 +23,7 @@ class Ignite extends CI_Controller {
         parent::__construct();
         $this->load->model('migrate');
         $this->migrate->table_migrate();
+        $this->load->library('libigniter');
 
         date_default_timezone_set('Asia/Rangoon');
     }
@@ -151,6 +152,14 @@ class Ignite extends CI_Controller {
 
         header('Content-Type: application/json');
         echo json_encode($items);
+    }
+
+    public function getItem(){
+        $itemId = $this->input->post('itemId');
+
+        $itemDetail = $this->ignite_model->itemDetail($itemId);
+
+        echo json_encode($itemDetail);
     }
 
     public function getItemByCode(){
@@ -1202,22 +1211,32 @@ class Ignite extends CI_Controller {
         $accId = $this->uri->segment(3);
 
         $links = $this->ignite_model->get_data('link_structure_tbl')->result();
-        $count = count($this->input->post());
-        $accept = '';
-        $i = 1;
+        $count = count($links);
+
+        $accept = array();
+        $modify = array();
+
         foreach($links as $link){
-            if($this->input->post('permission'.$link->linkId)){
-                $accept .= $link->linkId;
-                if($i < ($count-1)){
-                    $accept .= ',';
-                    $i++;
-                }
+            if($this->input->post('permission'.$link->linkId)){                
+               $accept[$link->linkId] = true;
             }
+                else{
+                    $accept[$link->linkId] = false;
+                }
+
+            if($this->input->post('modify'.$link->linkId)){
+                $modify[$link->linkId] = true;
+            }
+                else{
+                    $modify[$link->linkId] = false;
+                }
         }
+
         
         $arr = array(
             'accId' => $accId,
-            'link_accept' => $accept,
+            'link' => json_encode($accept),
+            'modify' => json_encode($modify),
             'created_at' => date('Y-m-d h:i:s'),
             'updated_at' => date('Y-m-d h:i:s')
         );
@@ -1246,28 +1265,33 @@ class Ignite extends CI_Controller {
         $accId = $this->uri->segment(3);
 
         $links = $this->ignite_model->get_data('link_structure_tbl')->result();
-        $count = count($this->input->post());
-        $accept = '';
-        $i = 1;
+
         foreach($links as $link){
-            if($this->input->post('permission'.$link->linkId)){
-                $accept .= $link->linkId;
-                if($i < ($count-1)){
-                    $accept .= ',';
-                    $i++;
-                }
+            if($this->input->post('permission'.$link->linkId)){                
+               $accept[$link->linkId] = true;
             }
+                else{
+                    $accept[$link->linkId] = false;
+                }
+
+            if($this->input->post('modify'.$link->linkId)){
+                $modify[$link->linkId] = true;
+            }
+                else{
+                    $modify[$link->linkId] = false;
+                }
         }
         
         $arr = array(
-            'link_accept' => $accept,
+            'link' => json_encode($accept),
+            'modify' => json_encode($modify),
             'updated_at' => date('Y-m-d h:i:s')
         );
 
         $this->db->where('accId', $accId);
         $this->db->update('permission_tbl', $arr);
 
-        $this->session->set_tempdata('success', 'Permission Successfully Updated.', 5);
+        $this->session->set_tempdata('success', 'Permission Successfully Updated.', 3);
 
         redirect('users');
     }
@@ -1290,7 +1314,7 @@ class Ignite extends CI_Controller {
 
         $this->db->update('accounts_tbl', ['secret' => $psw], ['accId' => $accId]);
 
-        $this->session->set_tempdata('success', 'Password Successfully Updated.', 5);
+        $this->session->set_tempdata('success', 'Password Successfully Updated.', 3);
         redirect('users');
     }
 
@@ -1299,7 +1323,7 @@ class Ignite extends CI_Controller {
 
         $this->db->update('accounts_tbl', ['accountState' => false], ['accId' => $accId]);
 
-        $this->session->set_tempdata('success', 'User has been disabled.', 5);
+        $this->session->set_tempdata('success', 'User has been disabled.', 3);
         redirect('users');
     }
 
@@ -1308,7 +1332,7 @@ class Ignite extends CI_Controller {
 
         $this->db->update('accounts_tbl', ['accountState' => true], ['accId' => $accId]);
 
-        $this->session->set_tempdata('success', 'User has been enabled.', 5);
+        $this->session->set_tempdata('success', 'User has been enabled.', 3);
         redirect('users');
     }
 
@@ -1349,7 +1373,7 @@ class Ignite extends CI_Controller {
 
         $this->db->insert('customers_tbl', $arr);
 
-        $this->session->set_tempdata('success', 'Customer successfully created.', 5);
+        $this->session->set_tempdata('success', 'Customer successfully created.', 3);
         redirect('customers');
     }
 
@@ -1382,7 +1406,7 @@ class Ignite extends CI_Controller {
         $this->db->where('customerId', $customerId);
         $this->db->update('customers_tbl', $arr);
 
-        $this->session->set_tempdata('success', 'Customer successfully updated.', 5);
+        $this->session->set_tempdata('success', 'Customer successfully updated.', 3);
         redirect('customers');
     }
 
@@ -1521,6 +1545,7 @@ class Ignite extends CI_Controller {
 
     public function discounts() {
         $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Setting', 'setting');
         $this->breadcrumb->add('Discounts');
 
         $data['content'] = 'pages/discounts';
@@ -1630,10 +1655,96 @@ class Ignite extends CI_Controller {
 
     public function extraCharges() {
         $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Setting', 'setting');
         $this->breadcrumb->add('Extra Charges');
 
+        $data['charges'] = $this->ignite_model->get_data_order('extra_charges_tbl', 'created_at', 'DESC')->result();
         $data['content'] = 'pages/extraCharges';
         $this->load->view('layouts/template', $data);
+    }
+
+    public function newCharges() {
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Setting', 'setting');
+        $this->breadcrumb->add('Extra Charges', 'extra-charges');
+        $this->breadcrumb->add('Create');
+
+        $data['content'] = 'pages/newCharges';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function addCharges() {
+        $title = $this->input->post('title');
+        $amount = $this->input->post('chargeAmt');
+        $remark = $this->input->post('chrgeRemark');
+
+        if($this->input->post('active')){
+            $active = true;
+        }
+            else{
+                $active = false;
+            }
+
+        $arr = array(
+            'chargeTitle' => $title,
+            'chargeAmount' => $amount,
+            'remark' => $remark,
+            'active' => $active,
+            'created_at' => date('Y-m-d H:i:s A')
+        );
+
+        $this->db->insert('extra_charges_tbl', $arr);
+        $this->session->set_tempdata('success', 'Extra Charges Successfully Created !', 3); 
+        redirect('extra-charges');
+    }
+
+    public function editCharges() {
+        $id = $this->uri->segment(2);
+
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Setting', 'setting');
+        $this->breadcrumb->add('Extra Charges', 'extra-charges');
+        $this->breadcrumb->add('Modify');
+
+        $data['chargeData'] = $this->ignite_model->get_limit_data('extra_charges_tbl', 'chargeId', $id)->row();
+        $data['content'] = 'pages/editCharges';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function updateCharges() {
+        $id = $this->uri->segment(3);
+
+        $title = $this->input->post('title');
+        $amount = $this->input->post('chargeAmt');
+        $remark = $this->input->post('chrgeRemark');
+
+        if($this->input->post('active')){
+            $active = true;
+        }
+            else{
+                $active = false;
+            }
+
+        $arr = array(
+            'chargeTitle' => $title,
+            'chargeAmount' => $amount,
+            'remark' => $remark,
+            'active' => $active
+        );
+
+        $this->db->where('chargeId', $id);
+        $this->db->update('extra_charges_tbl', $arr);
+        $this->session->set_tempdata('success', 'Extra Charges Successfully Updated !', 3);
+        redirect('extra-charges');
+    }
+
+    public function deleteCharges() {
+        $id = $this->uri->segment(2);
+
+        $this->db->where('chargeId', $id);
+        $this->db->delete('extra_charges_tbl');
+        $this->session->set_tempdata('success', 'Extra Charges Successfully Deleted !', 3);
+        redirect('extra-charges');
     }
 
     /*
@@ -1664,7 +1775,7 @@ class Ignite extends CI_Controller {
         $this->breadcrumb->add('Home', 'home');
         $this->breadcrumb->add('Vouchers');
 
-        $data['vouchers'] = $this->ignite_model->get_data('vouchers_tbl')->result();
+        $data['vouchers'] = $this->ignite_model->get_data_order('vouchers_tbl', 'vDate', 'DESC')->result();
         $data['content'] = 'pages/vouchers';
         $this->load->view('layouts/template', $data);
     }
@@ -1674,6 +1785,7 @@ class Ignite extends CI_Controller {
         $this->breadcrumb->add('Vouchers', 'vouchers');
         $this->breadcrumb->add('Create');
 
+        $data['extCharges'] = $this->ignite_model->get_data_order('extra_charges_tbl', 'created_at', 'DESC')->result();
         $data['suppliers'] = $this->ignite_model->get_data('supplier_tbl')->result();
         $data['content'] = 'pages/newVoucher';
         $this->load->view('layouts/template', $data);
@@ -1683,13 +1795,18 @@ class Ignite extends CI_Controller {
         $referer = $this->input->post('referer');
         $vDate = $this->input->post('vDate');
         $vSerial = $this->input->post('vSerial');
+        $chargeId = $this->input->post('extCharge');
         $supplier = $this->input->post('supplier');
         $remark = $this->input->post('remark');
+
+        $extCharge = $this->ignite_model->get_limit_data('extra_charges_tbl','chargeId', $chargeId)->row();
 
         $insert = array(
             'vDate' => $vDate,
             'vSerial' => $vSerial,
             'supplier' => $supplier,
+            'extCharge' => $extCharge->chargeId,
+            'chargeAmt' => $extCharge->chargeAmount,
             'remark' => $remark,
             'created_at' => date('Y-m-d H:i:s A')
         );
@@ -1706,6 +1823,7 @@ class Ignite extends CI_Controller {
         $this->breadcrumb->add('Vouchers', 'vouchers');
         $this->breadcrumb->add('Modify');
 
+        $data['extCharges'] = $this->ignite_model->get_data_order('extra_charges_tbl', 'created_at', 'DESC')->result();
         $data['suppliers'] = $this->ignite_model->get_data('supplier_tbl')->result();
         $data['voucher'] = $this->ignite_model->get_limit_data('vouchers_tbl', 'voucherId', $vId)->row();
         $data['content'] = 'pages/editVoucher';
@@ -1718,14 +1836,18 @@ class Ignite extends CI_Controller {
         $vDate = $this->input->post('vDate');
         $vSerial = $this->input->post('vSerial');
         $supplier = $this->input->post('supplier');
+        $chargeId = $this->input->post('extCharge');
         $remark = $this->input->post('remark');
+
+        $extCharge = $this->ignite_model->get_limit_data('extra_charges_tbl','chargeId', $chargeId)->row();
 
         $update = array(
             'vDate' => $vDate,
             'vSerial' => $vSerial,
             'supplier' => $supplier,
+            'extCharge' => $extCharge->chargeId,
+            'chargeAmt' => $extCharge->chargeAmount,
             'remark' => $remark,
-            'created_at' => date('Y-m-d H:i:s A')
         );
 
         $this->db->where('voucherId', $vId);
@@ -1742,6 +1864,125 @@ class Ignite extends CI_Controller {
         $this->session->set_tempdata('success', 'Voucher Deleted Successfully', 3);
 
         redirect('vouchers');
+    }
+
+    /*
+    * Damage Section
+    */
+    public function damages() {
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Damages');
+
+        $data['damages'] = $this->ignite_model->get_data_order('damages_tbl', 'created_at', 'DESC')->result();
+        $data['content'] = 'pages/damages';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function newDamage() {
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Damages', 'damages');
+        $this->breadcrumb->add('Create');
+
+        $data['items'] = $this->ignite_model->get_itemsForDamage();
+        $data['content'] = 'pages/newDamage';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function addDamages(){
+        $itemId = $this->input->post('item');
+        $qty = $this->input->post('qty');
+        $remark = $this->input->post('remark');
+
+        $arr = array(
+            'related_item_id' => $itemId,
+            'qty' => $this->input->post('qty'),
+            'remark' => $this->input->post('remark'),
+            'created_at' => date('Y-m-d H:i:s A')
+        );
+
+        $this->db->insert('damages_tbl', $arr);
+
+        // extract for stock_balance_tbl
+        $balance = $this->ignite_model->get_limit_data('stocks_balance_tbl', 'itemId', $itemId)->row();
+        $upd = array(
+            'qty' => ($balance->qty - $qty)
+        );
+        $this->db->where('itemId', $itemId);
+        $this->db->update('stocks_balance_tbl', $upd);
+
+        $this->session->set_tempdata('success', 'Damage Items Created Successfully !', 3);
+        redirect('damages');
+    }
+
+    public function editDamage() {
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Damages', 'damages');
+        $this->breadcrumb->add('Create');
+        $id = $this->uri->segment(2);
+
+        $data['damage'] = $this->ignite_model->get_limit_data('damages_tbl', 'damageId', $id)->row();
+        $data['items'] = $this->ignite_model->get_itemsForDamage();
+        $data['content'] = 'pages/editDamage';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function updateDamage() {
+        $id = $this->uri->segment(3);
+
+        $damage = $this->ignite_model->get_limit_data('damages_tbl', 'damageId', $id)->row();
+
+        $itemId = $this->input->post('item');
+        $qty = $this->input->post('qty');
+        $remark = $this->input->post('remark');
+
+        if($itemId == $damage->related_item_id){
+
+            $arr = array(
+                'qty' => $qty,
+                'remark' => $this->input->post('remark')
+            );
+
+            $balance = $this->ignite_model->get_limit_data('stocks_balance_tbl', 'itemId', $itemId)->row();
+            $bal = array(
+                'qty' => ($balance->qty + $damage->qty) - $qty
+            );
+
+            $this->db->where('itemId', $itemId);
+            $this->db->update('stocks_balance_tbl', $bal);
+
+            $this->db->where('damageId', $id);
+            $this->db->update('damages_tbl', $arr);
+        }
+            else{
+                $arr = array(
+                    'related_item_id' => $itemId,
+                    'qty' => $qty,
+                    'remark' => $remark
+                );
+
+                $this->db->where('damageId', $id);
+                $this->db->update('damages_tbl', $arr);
+
+                // Restore Balance
+                $balance = $this->ignite_model->get_limit_data('stocks_balance_tbl', 'itemId', $damage->related_item_id)->row();
+                $restoreBal = array(
+                    'qty' => $balance->qty + $damage->qty
+                );
+
+                $this->db->where('itemId', $damage->related_item_id);
+                $this->db->update('stocks_balance_tbl', $restoreBal);
+                // Update New Balance
+                $newBalance = $this->ignite_model->get_limit_data('stocks_balance_tbl', 'itemId', $itemId)->row();
+                $newBal = array(
+                    'qty' => $newBalance->qty - $qty
+                );
+
+                $this->db->where('itemId', $itemId);
+                $this->db->update('stocks_balance_tbl', $newBal);
+            }
+
+        $this->session->set_tempdata('success', 'Damage Item Updated Successfully !', 3);
+        redirect('damages');
     }
 
     /*

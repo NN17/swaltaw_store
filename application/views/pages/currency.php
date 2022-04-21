@@ -24,7 +24,7 @@
 					<td><?=$currency['currency']?></td>
 					<td>
 						<div class="field">
-					      <div class="ui slider checkbox">
+					      <div class="ui slider checkbox <?=$this->auth->checkModify($this->session->userdata('Id'), 'currency')?'':'disabled'?>">
 					        <input type="radio" id="curDefault" value="<?=$currency['currencyId']?>" name="throughput" <?=$currency['default']?'checked':''?>>
 					      </div>
 					    </div>

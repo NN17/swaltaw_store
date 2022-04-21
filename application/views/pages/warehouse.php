@@ -1,6 +1,6 @@
 <div class="ui clearing segment purple">
 	<h3 class="ui purple left floated header"><?=$this->lang->line('warehouse')?></h3>
-	<a href="create-warehouse" class="ui button right floated purple">
+	<a href="create-warehouse" class="ui button right floated purple <?=$this->auth->checkModify($this->session->userdata('Id'), 'warehouse')?'':'disabled'?>">
 	    <i class="icon plus circle"></i> <?=$this->lang->line('new')?>
 	</a>
 </div>
@@ -29,8 +29,8 @@
 			<td><?=!empty($wHouse['remark'])?$wHouse['remark']:'...'?></td>
 			<td><?=$wHouse['activeState']?'<i class="icon check circle outline green"></i> Active':'<i class="icon ban red"></i> Disable'?></td>
 			<td>
-				<a href="edit-warehouse/<?=$wHouse['warehouseId']?>" class="ui button icon circular orange"><i class="icon cog"></i></a>
-				<a href="javascript:void(0)" class="ui button icon circular red" id="delete" data-url="ignite/deleteWarehouse/<?=$wHouse['warehouseId']?>"><i class="icon remove"></i></a>
+				<a href="edit-warehouse/<?=$wHouse['warehouseId']?>" class="ui button icon circular orange <?=$this->auth->checkModify($this->session->userdata('Id'), 'warehouse')?'':'disabled'?>"><i class="icon cog"></i></a>
+				<a href="javascript:void(0)" class="ui button icon circular red <?=$this->auth->checkModify($this->session->userdata('Id'), 'warehouse')?'':'disabled'?>" id="delete" data-url="ignite/deleteWarehouse/<?=$wHouse['warehouseId']?>"><i class="icon remove"></i></a>
 			</td>
 		</tr>
 		<?php 

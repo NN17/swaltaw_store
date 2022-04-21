@@ -86,6 +86,38 @@
 				<td class="ui right aligned"><strong id="grandTotal">0</strong></td>
 			</tr>
 		</table>
+
+		<div class="ui form py-3">
+			<div class="inline fields">
+				<label>Payment Method : </label>
+
+				<div class="field">
+			      <div class="ui checkbox">
+			        <input type="radio" name="payment" checked="checked">
+			        <label>In Cash</label>
+			      </div>
+			    </div>
+			    <div class="field">
+			      <div class="ui checkbox">
+			        <input type="radio" name="payment">
+			        <label>Credit</label>
+			      </div>
+			    </div>
+			    <div class="field">
+			      <div class="ui checkbox">
+			        <input type="radio" name="payment">
+			        <label>mBanking</label>
+			      </div>
+			    </div>
+			    <div class="field">
+			      <div class="ui checkbox">
+			        <input type="radio" name="payment">
+			        <label>COD</label>
+			      </div>
+			    </div>
+
+			</div>
+		</div>
 		<!-- <table class="ui striped table orange">
 			<tr class="negative">
 				<td class=""><strong>Credit</strong></td>
@@ -105,7 +137,9 @@
 
 		<div class="ui segment all-link text-center">
 			<?php foreach($allLink as $link): ?>
+				<?php if($this->auth->checkLinkAccess($this->session->userdata('Id'), $link->linkId)): ?>
 				<a href="<?=$link->machine?>" class="ui button circular icon <?=$link->color?>" id="popup_link" data-content="<?=$link->linkName?>"><i class="icon <?=$link->icon_class?> "></i></a>
+				<?php endif; ?>
 			<?php endforeach; ?>
 		</div>
 	</div>

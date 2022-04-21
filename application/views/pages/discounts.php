@@ -1,7 +1,7 @@
 <div class="ui clearing segment orange">
 	<h3 class="ui left floated header orange"><?=$this->lang->line('discounts')?></h3>
 	
-	<a href="create-discount" class="ui button right floated orange">
+	<a href="create-discount" class="ui button right floated orange <?=$this->auth->checkModify($this->session->userdata('Id'), 'setting')?'':'disabled'?>">
 	    <i class="icon plus circle"></i> <?=$this->lang->line('new')?>
 	</a>
 </div>
@@ -40,8 +40,8 @@
 				</td>
 				<td><?=$discount->remark?></td>
 				<td>
-					<a href="modify-discount/<?=$discount->discountId?>" class="ui button icon circular orange"><i class="icon cog"></i></a>
-					<a href="javascript:void(0)" class="ui button icon circular red" id="delete" data-url="delete-discount/<?=$discount->discountId?>"><i class="icon remove"></i></a>
+					<a href="modify-discount/<?=$discount->discountId?>" class="ui button icon circular orange <?=$this->auth->checkModify($this->session->userdata('Id'), 'setting')?'':'disabled'?>"><i class="icon cog"></i></a>
+					<a href="javascript:void(0)" class="ui button icon circular red <?=$this->auth->checkModify($this->session->userdata('Id'), 'setting')?'':'disabled'?>" id="delete" data-url="delete-discount/<?=$discount->discountId?>"><i class="icon remove"></i></a>
 				</td>
 			</tr>
 		<?php 

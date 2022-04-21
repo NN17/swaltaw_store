@@ -147,9 +147,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['discount_rate'] = 'Discount Rate';
 	$lang['new_discount'] = 'New Discount';
 	$lang['edit_discount'] = 'Modify Discount';
+	$lang['new_charges'] = 'New Charges';
+	$lang['edit_charges'] = 'Edit Charges';
+	$lang['charge_amount'] = 'Charges Amount';
 
 	// Language for Vouchers
 	$lang['voucher_serial'] = 'Voucher Serial';
 	$lang['voucher_date'] = 'Voucher\'s Date';
 	$lang['new_voucher'] = 'New Voucher';
 	$lang['edit_voucher'] = 'Modify Voucher';
+
+	// Languages for Damages
+	$lang['new_damage'] = 'Create New Damage';
+	$lang['edit_damage'] = 'Edit Damage';

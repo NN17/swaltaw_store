@@ -1,7 +1,7 @@
 <div class="ui clearing segment black">
 	<h3 class="ui left floated header black"><?=$this->lang->line('brand')?></h3>
 	
-	<a href="create-brand" class="ui button right floated black">
+	<a href="create-brand" class="ui button right floated black <?=$this->auth->checkModify($this->session->userdata('Id'), 'brands')?'':'disabled'?>">
 	    <i class="icon plus circle"></i> <?=$this->lang->line('new')?>
 	</a>
 </div>
@@ -26,8 +26,8 @@
 			<td><?=$brand['brandName']?></td>
 			<td><?=!empty($brand['remark'])?$brand['remark']:'...'?></td>
 			<td>
-				<a href="edit-brand/<?=$brand['brandId']?>" class="ui button icon tiny circular orange"><i class="ui icon cog"></i></a>
-				<a href="javascript:void(0)" class="ui button icon tiny circular red" id="delete" data-url="ignite/deleteBrand/<?=$brand['brandId']?>"><i class="ui icon remove"></i></a>
+				<a href="edit-brand/<?=$brand['brandId']?>" class="ui button icon tiny circular orange <?=$this->auth->checkModify($this->session->userdata('Id'), 'brands')?'':'disabled'?>"><i class="ui icon cog"></i></a>
+				<a href="javascript:void(0)" class="ui button icon tiny circular red <?=$this->auth->checkModify($this->session->userdata('Id'), 'brands')?'':'disabled'?>" id="delete" data-url="ignite/deleteBrand/<?=$brand['brandId']?>"><i class="ui icon remove"></i></a>
 			</td>
 		</tr>
 		<?php

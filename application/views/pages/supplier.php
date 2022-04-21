@@ -1,6 +1,6 @@
 <div class="ui clearing segment violet">
 	<h3 class="ui violet left floated header"><?=$this->lang->line('supplier')?></h3>
-	<a href="create-supplier" class="ui right floated button violet">
+	<a href="create-supplier" class="ui right floated button violet <?=$this->auth->checkModify($this->session->userdata('Id'), 'supplier')?'':'disabled'?>">
 	    <i class="icon plus circle"></i> <?=$this->lang->line('new')?>
 	</a>
 </div>
@@ -31,8 +31,8 @@
 		 		<td><?=$supplier['contactPhone1']?></td>
 		 		<td><?=$supplier['contactAddress1']?></td>
 		 		<td>
-		 			<a href="edit-supplier/<?=$supplier['supplierId']?>" class="ui button icon circular orange"><i class="icon cog"></i></a>
-		 			<a href="javascript:void(0)" class="ui button icon circular red" id="delete" data-url="ignite/deleteSupplier/<?=$supplier['supplierId']?>"><i class="icon remove"></i></a>
+		 			<a href="edit-supplier/<?=$supplier['supplierId']?>" class="ui button icon circular orange <?=$this->auth->checkModify($this->session->userdata('Id'), 'supplier')?'':'disabled'?>"><i class="icon cog"></i></a>
+		 			<a href="javascript:void(0)" class="ui button icon circular red <?=$this->auth->checkModify($this->session->userdata('Id'), 'supplier')?'':'disabled'?>" id="delete" data-url="ignite/deleteSupplier/<?=$supplier['supplierId']?>"><i class="icon remove"></i></a>
 		 		</td>
 		 	</tr>
 		 <?php 

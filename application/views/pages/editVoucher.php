@@ -13,6 +13,15 @@
 	    	<?=form_input('vSerial',$voucher->vSerial,'placeholder="'.$this->lang->line('voucher_serial').'" required')?>
 	    </div>
 	    <div class="field">
+	    	<label><?=$this->lang->line('extra_charges')?></label>
+	    	<select name="extCharge" class="ui dropdown" required>
+	    		<option> -- Select Extra Charges -- </option>
+	    		<?php foreach($extCharges as $ext): ?>
+	    			<option value="<?=$ext->chargeId?>" <?=$voucher->extCharge == $ext->chargeId?'selected':''?>><?=$ext->chargeTitle?> ( <?=$ext->chargeAmount?> )</option>
+	    		<?php endforeach; ?>
+	    	</select>
+	    </div>
+	    <div class="field">
 	    	<label><?=$this->lang->line('supplier')?></label>
 	    	<select name="supplier" class="ui search dropdown">
 	    		<option>-- Select Supplier --</option>

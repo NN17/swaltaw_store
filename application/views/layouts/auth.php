@@ -1,4 +1,4 @@
-
+<?php if(!$this->session->userdata('loginState')): ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -149,3 +149,7 @@
 </body>
 
 </html>
+
+<?php else: redirect('home')?>
+
+<?php endif; ?>

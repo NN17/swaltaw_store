@@ -818,6 +818,35 @@ class Migrate extends CI_Model {
       $this->dbforge->add_key('discountId', TRUE);
       $this->dbforge->create_table('discounts_tbl', TRUE);
 
+      // Create extra_charges_tbl
+      $this->dbforge->add_field(array(
+        'chargeId' => array(
+          'type' => 'INT',
+          'constraint' => 8,
+          'auto_increment' => TRUE
+        ),
+        'chargeTitle' => array(
+          'type' => 'VARCHAR',
+          'constraint' => 255
+        ),
+        'chargeAmount' => array(
+          'type' => 'INT',
+          'constraint' => 8
+        ),
+        'remark' => array(
+          'type' => 'TEXT'
+        ),
+        'active' => array(
+          'type' => 'BOOLEAN'
+        ),
+        'created_at' => array(
+          'type' => 'DATETIME'
+        ),
+      ));
+
+      $this->dbforge->add_key('chargeId', TRUE);
+      $this->dbforge->create_table('extra_charges_tbl', TRUE);
+
       // Create vouchers_tbl
       $this->dbforge->add_field(array(
         'voucherId' => array(
@@ -831,6 +860,14 @@ class Migrate extends CI_Model {
         'vSerial' => array(
           'type' => 'VARCHAR',
           'constraint' => 22
+        ),
+        'extCharge' => array(
+          'type' => 'INT',
+          'constraint' => 8
+        ),
+        'chargeAmt' => array(
+          'type' => 'INT',
+          'constraint' => 8
         ),
         'supplier' => array(
           'type' => 'INT',
@@ -846,6 +883,32 @@ class Migrate extends CI_Model {
         
       $this->dbforge->add_key('voucherId', TRUE);
       $this->dbforge->create_table('vouchers_tbl', TRUE);
+
+      // Create damages_tbl
+      $this->dbforge->add_field(array(
+        'damageId' => array(
+          'type' => 'INT',
+          'constraint' => 8,
+          'auto_increment' => TRUE
+        ),
+        'related_item_id' => array(
+          'type' => 'INT',
+          'constraint' => 8
+        ),
+        'qty' => array(
+          'type' => 'INT',
+          'constraint' => 8
+        ),
+        'remark' => array(
+          'type' => 'TEXT'
+        ),
+        'created_at' => array(
+          'type' => 'DATETIME'
+        )
+      ));
+
+      $this->dbforge->add_key('damageId', TRUE);
+      $this->dbforge->create_table('damages_tbl', TRUE);
         
         // ------------ End of Create Tables ---------------
     }

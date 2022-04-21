@@ -147,9 +147,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['discount_rate'] = 'လျော့ဈေးနှုန်းထား';
 	$lang['new_discount'] = 'လျော့ဈေးအသစ်';
 	$lang['edit_discount'] = 'လျော့ဈေးပြင်ဆင်ရန်';
+	$lang['new_charges'] = 'ကုန်ကျစရိတ်အသစ်';
+	$lang['edit_charges'] = 'ကုန်ကျစရိတ် ပြင်ဆင်ရန်';
+	$lang['charge_amount'] = 'ကုန်ကျစရိတ် ကျသင့်ငွေ';
 
 	// Language for Vouchers
 	$lang['voucher_serial'] = 'ဘောက်ချာအမှတ်';
 	$lang['voucher_date'] = 'ဘောက်ချာပါနေ့စွဲ';
 	$lang['new_voucher'] = 'ဘောက်ချာအသစ်ပြုလုပ်ရန်';
 	$lang['edit_voucher'] = 'ဘောက်ချာပြန်လည်ပြင်ဆင်ရန်';
+
+	// Languages for Damages
+	$lang['new_damage'] = 'အပျက်အဆီးအသစ်';
+	$lang['edit_damage'] = 'အပျက်အဆီး ပြင်ဆင်ရန်';

@@ -7,10 +7,10 @@ class Libigniter
 
 	public function __construct()
 	{
-        $this->CI =& get_instance();
+     $this->CI =& get_instance();
 
-        $this->CI->load->library('session');
-        $this->CI->load->helper('url');
+     $this->CI->load->library('session');
+     $this->CI->load->helper('url');
 	}
 
 	public function user($userId){
@@ -76,6 +76,18 @@ class Libigniter
 
 	// **********************************************************
 
+
+	// is_in_array (for Permission search)
+	public function is_in_array($value, $array){
+		$res = false;
+		foreach($array as $arr => $val){
+			if($arr == $value && $val == true){
+				$res = true;
+			}
+		}
+
+		return $res;
+	}
 	
 }
 

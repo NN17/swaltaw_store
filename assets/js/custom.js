@@ -1,147 +1,6 @@
 function base_url() {
 	return "http://" + location.hostname + "/inventory/";
-}
-
-// Daily Report Charts
-var dt = new Date();
-$.ajax({
-	url: base_url() + 'ignite/getDailyChart',
-	type: 'POST',
-	crossDomain: 'TRUE',
-	data:{
-		month: $("#dailyChart").data('month'),
-		year: dt.getFullYear()
-	},
-	success: function(res){
-		var obj = JSON.parse(res);
-		var xValues = obj.days;
-		var yValues = obj.datas;
-
-		new Chart("dailyChart", {
-		  type: "bar",
-		  data: {
-		    labels: xValues,
-		    datasets: [
-		    	{
-		      		backgroundColor: 'lightgreen',
-		      		data: obj.datas
-		    	},
-		    	{
-		      		backgroundColor: 'slategrey',
-		      		data: obj.gross
-		    	},
-		    ]
-		  },
-		  options: {
-		    legend: {display: false},
-		    scales: {
-		      yAxes: [{
-		        ticks: {
-		        	stepSize: 5000,
-		          	beginAtZero: true
-		        }
-		      }],
-		    }
-		  }
-		});
-	}
-});
-
-// Monthly Report Charts
-var dt = new Date();
-$.ajax({
-	url: base_url() + 'ignite/getMonthlyChart',
-	type: 'GET',
-	crossDomain: 'TRUE',
-	data:{
-		month: dt.getMonth(),
-		year: dt.getFullYear()
-	},
-	success: function(res){
-		var obj = JSON.parse(res);
-		var xValues = obj.months;
-		var barColors = "lightgreen";
-
-		new Chart("mChart", {
-		  type: "line",
-		  data: {
-		    labels: xValues,
-		    datasets: [
-			    {
-			      	borderColor: barColors,
-			      	data: obj.datas,
-			      	fill: false
-			    },
-			    {
-			    	borderColor: "slategrey",
-			      	data: obj.gross,
-			      	fill: false
-			    }
-		    ]
-		  },
-		  options: {
-		    legend: {display: false},
-		    scales: {
-		      yAxes: [{
-		        ticks: {
-		        	stepSize : 10000,
-		          	beginAtZero: true
-		        }
-		      }],
-		    }
-		  }
-		});
-	}
-});
-
-// Yearly Report Charts
-var dt = new Date();
-$.ajax({
-	url: base_url() + 'ignite/getYearlyChart',
-	type: 'GET',
-	crossDomain: 'TRUE',
-	data:{
-		month: dt.getMonth(),
-		year: dt.getFullYear()
-	},
-	success: function(res){
-		var obj = JSON.parse(res);
-		var xValues = obj.years;
-		var yValues = obj.data;
-		var barColors = "blueviolet";
-
-		new Chart("yChart", {
-		  type: "line",
-		  data: {
-		    labels: xValues,
-		    datasets: [
-			    { 
-			    	borderColor: "blueviolet",
-			      	data: obj.data,
-			      	fill: false
-			  	},
-			  	{ 
-			    	borderColor: "slategrey",
-			      	data: obj.gross,
-			      	fill: false
-			  	},
-		    ]
-		  },
-		  options: {
-		    legend: {display: false},
-		    scales: {
-		      yAxes: [{
-		        ticks: {
-		        	stepSize : 50000,
-		          	beginAtZero: true
-		        }
-		      }],
-		    }
-		  }
-		});
-	}
-});
-	
+}	
 
 // setInterval(() => {
 //     isOnline();
@@ -151,6 +10,8 @@ $(document).ready(function() {
 
 	priceAjax.init();
 	cropImage.init();
+	chartJs.init();
+	damageItem.init();
 
 	$(".ui.dropdown").dropdown();
 	$(".menu .item").tab();
@@ -1037,7 +898,7 @@ var priceAjax = function(){
 			// console.log(getPrices(itemId));
 			getPrices(itemId);
 		} else {
-			console.log("don't have")
+			// console.log("don't have")
 		}
 	};
 
@@ -1366,16 +1227,118 @@ var igniteAjax = function (){
 		});
 	}
 
+	let itemCheck = function(itemId) {
+		$.ajax({
+			url: base_url() + 'ignite/getItem',
+			type: 'POST',
+			crossDomain: 'TRUE',
+			data: {
+				itemId : itemId.value
+			},
+			success: function(res){
+				var obj = $.parseJSON(res);
+				$('#dQty').attr('data-qty', obj.balance);
+				if(obj.imgPath == ""){
+					var path = 'assets/imgs/preview.png';
+				}else{
+					path = obj.imgPath;
+				}
+				var html = `<table class="ui purple striped table">
+					<tr>
+						<td rowspan="6">
+							<img src=" ${path} " class="ui image centered rounded" style="width: 300px" />
+						</td>
+						<td>Item Name :</td>
+						<td>${obj.itemName}</td>
+					</tr>
+					<tr>
+						<td>Item Code</td>
+						<td>${obj.itemCode}</td>
+					</tr>
+					<tr>
+						<td>Model Number</td>
+						<td>${obj.model}</td>
+					</tr>
+					<tr>
+						<td>Sell Price</td>
+						<td>${obj.sellPrice}</td>
+					</tr>
+					<tr>
+						<td>Purchase Price</td>
+						<td>${obj.purchasePrice}</td>
+					</tr>
+					<tr>
+						<td>Remaining Balance</td>
+						<td>${obj.balance}</td>
+					</tr>
+				</table>`;
+
+				$('.itemDetail').html(html);
+			}
+		});
+	}
+
+	let checkBalance = function(input) {
+		let balance = Number($('#dQty').attr('data-qty'));
+		let qty = Number(input.value);
+		if(qty > balance){
+			$.alert({
+				title: 'Alert !',
+				content: 'Your Remaining Balance is ' + balance + ' !',
+				backgroundDismiss: false,
+				columnClass: "custom-confirm-box",
+			});
+
+			input.value = balance;
+			input.focus();
+		}
+	}
+
 	return {
 		init: function (){
 			thisPath();
 		},
 		detailInv: function (invId){
 			invDetail(invId);
+		},
+		checkItem: function (itemId){
+			itemCheck(itemId);
+		},
+		balanceCheck: function(input){
+			checkBalance(input);
 		}
 	}
 }();
 // 
+
+let damageItem = (function () {
+
+	let thisPath = function(){
+		let currentPath = window.location.pathname;
+		let arr = currentPath.split('/');
+		let itemId = arr[arr.length - 2];
+		if (currentPath.indexOf('inventory/modify-damage') > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	};
+
+	function itemDamage() {
+		if(thisPath()){
+			let itemId = document.getElementById("dmgItem");
+			igniteAjax.checkItem(itemId);
+		}
+	}
+
+	function init(){
+		itemDamage();
+	}
+
+	return {
+		init: init
+	};
+})();
 
 var cropImage = (function() {
 	function crop(){
@@ -1441,6 +1404,173 @@ var cropImage = (function() {
 
 	function init() {
 		crop();
+	}
+
+	return {
+		init: init
+	};
+})();
+
+let chartJs = (function() {
+
+	let thisPath = function(){
+		let currentPath = window.location.pathname;
+		let arr = currentPath.split('/');
+		let itemId = arr[arr.length - 2];
+		if (currentPath.indexOf('inventory/reports') > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	};
+
+	function getChart() {
+		if(thisPath()){
+
+			// Daily Report Charts
+			var dt = new Date();
+			$.ajax({
+				url: base_url() + 'ignite/getDailyChart',
+				type: 'POST',
+				crossDomain: 'TRUE',
+				data:{
+					month: $("#dailyChart").data('month'),
+					year: dt.getFullYear()
+				},
+				success: function(res){
+					var obj = JSON.parse(res);
+					var xValues = obj.days;
+					var yValues = obj.datas;
+
+					new Chart("dailyChart", {
+					  type: "bar",
+					  data: {
+					    labels: xValues,
+					    datasets: [
+					    	{
+					      		backgroundColor: 'lightgreen',
+					      		data: obj.datas
+					    	},
+					    	{
+					      		backgroundColor: 'slategrey',
+					      		data: obj.gross
+					    	},
+					    ]
+					  },
+					  options: {
+					    legend: {display: false},
+					    scales: {
+					      yAxes: [{
+					        ticks: {
+					        	stepSize: 5000,
+					          	beginAtZero: true
+					        }
+					      }],
+					    }
+					  }
+					});
+				}
+			});
+
+			// Monthly Report Charts
+			var dt = new Date();
+			$.ajax({
+				url: base_url() + 'ignite/getMonthlyChart',
+				type: 'GET',
+				crossDomain: 'TRUE',
+				data:{
+					month: dt.getMonth(),
+					year: dt.getFullYear()
+				},
+				success: function(res){
+					var obj = JSON.parse(res);
+					var xValues = obj.months;
+					var barColors = "lightgreen";
+
+					new Chart("mChart", {
+					  type: "line",
+					  data: {
+					    labels: xValues,
+					    datasets: [
+						    {
+						      	borderColor: barColors,
+						      	data: obj.datas,
+						      	fill: false
+						    },
+						    {
+						    	borderColor: "slategrey",
+						      	data: obj.gross,
+						      	fill: false
+						    }
+					    ]
+					  },
+					  options: {
+					    legend: {display: false},
+					    scales: {
+					      yAxes: [{
+					        ticks: {
+					        	stepSize : 10000,
+					          	beginAtZero: true
+					        }
+					      }],
+					    }
+					  }
+					});
+				}
+			});
+
+			// Yearly Report Charts
+			var dt = new Date();
+			$.ajax({
+				url: base_url() + 'ignite/getYearlyChart',
+				type: 'GET',
+				crossDomain: 'TRUE',
+				data:{
+					month: dt.getMonth(),
+					year: dt.getFullYear()
+				},
+				success: function(res){
+					var obj = JSON.parse(res);
+					var xValues = obj.years;
+					var yValues = obj.data;
+					var barColors = "blueviolet";
+
+					new Chart("yChart", {
+					  type: "line",
+					  data: {
+					    labels: xValues,
+					    datasets: [
+						    { 
+						    	borderColor: "blueviolet",
+						      	data: obj.data,
+						      	fill: false
+						  	},
+						  	{ 
+						    	borderColor: "slategrey",
+						      	data: obj.gross,
+						      	fill: false
+						  	},
+					    ]
+					  },
+					  options: {
+					    legend: {display: false},
+					    scales: {
+					      yAxes: [{
+					        ticks: {
+					        	stepSize : 50000,
+					          	beginAtZero: true
+					        }
+					      }],
+					    }
+					  }
+					});
+				}
+			});
+		}
+	}
+
+	function init(){
+		getChart();
 	}
 
 	return {
