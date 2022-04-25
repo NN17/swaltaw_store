@@ -21,11 +21,11 @@
 <body>
    
    <?php if($this->session->userdata('loginState')):?>
-    <div class="ui fixed  menu <?=$this->session->userdata('site_lang')?>">
+    <div class="ui fixed inverted menu <?=$this->session->userdata('site_lang')?>">
         
         <div class="ui container fluid">
             <a href="ignite/home" class="header item">
-            <img src="assets/imgs/ignite-logo-circle.png" />
+            <img src="assets/imgs/ignite-logo-circle-white.png" />
             &nbsp; &nbsp; IGNITE SOURCE &nbsp;
             <small class="text-grey">POS System</small>
             </a>
@@ -55,7 +55,7 @@
                     <div class="ui dropdown">
                         <div class="default icon"><i class="icon grey cog"></i></div>
                         
-                            <div class="menu">
+                            <div class="ui setting menu">
                                 <?php $submenu = $this->ignite_model->get_limit_data('link_structure_tbl', 'sub_menu', true)->result();?>
                                 <?php foreach($submenu as $menu): ?>
                                     <?php if($this->auth->checkLinkAccess($this->session->userdata('Id'), $menu->linkId)): ?>

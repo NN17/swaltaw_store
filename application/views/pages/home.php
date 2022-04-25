@@ -25,13 +25,13 @@
 			<div class="inline fields">
 				<div class="field">
 					<div class="ui toggle checkbox" style="padding:6px">
-					  <input type="checkbox" name="public" id="byCustomer">
-					  <label><?=$this->lang->line('by_customer')?></label>
+						<input type="checkbox" name="byCustomer" id="byCustomer" onchange="orderAjax.byCustomer(this)">
+						<label><?=$this->lang->line('by_customer')?></label>
 					</div>
 				</div>
 			
 				<div class="field">
-					<select name="customer" class="ui search dropdown disabled" id="customer" onchange="orderAjax.credit()">
+					<select name="customer" class="ui search dropdown disabled" id="customer" onchange="orderAjax.credit(this)">
 						<option value="">Select Customer</option>
 						<?php foreach($customers as $customer): ?>
 							<option value="<?=$customer->customerId?>"><?=$customer->customerName?></option>
@@ -44,8 +44,8 @@
 				</div>
 
 				<div class="field">
-					<div class="ui slider checkbox disabled">
-					  	<input type="checkbox" name="wholesale" id="wholesale">
+					<div class="ui slider checkbox">
+					  	<input type="checkbox" name="wholesale" id="wholesale" onchange="orderAjax.wholeSale(this)">
 					  	<label><?=$this->lang->line('whole_sale')?></label>
 					</div>
 				</div>
@@ -78,8 +78,8 @@
 				<td class="ui right aligned"><strong id="subTotal" >0</strong></td>
 			</tr>
 			<tr>
-				<td><strong>Gov Tax (5%)</strong></td>
-				<td class="ui right aligned"><strong id="tax">0</strong></td>
+				<td><strong>Deposit</strong></td>
+				<td class="ui right aligned"><strong id="depositAmt">0</strong></td>
 			</tr>
 			<tr>
 				<td><strong>Grand Total</strong></td>
@@ -93,45 +93,36 @@
 
 				<div class="field">
 			      <div class="ui checkbox">
-			        <input type="radio" name="payment" checked="checked">
-			        <label>In Cash</label>
+			        <input type="radio" name="payment" value="CSH" checked="checked" onchange="orderAjax.payment(this)">
+			        <label>Cash</label>
 			      </div>
 			    </div>
 			    <div class="field">
 			      <div class="ui checkbox">
-			        <input type="radio" name="payment">
+			        <input type="radio" value="CRD" name="payment" onchange="orderAjax.payment(this)">
 			        <label>Credit</label>
 			      </div>
 			    </div>
 			    <div class="field">
 			      <div class="ui checkbox">
-			        <input type="radio" name="payment">
+			        <input type="radio" value="MBK" name="payment" onchange="orderAjax.payment(this)">
 			        <label>mBanking</label>
 			      </div>
 			    </div>
 			    <div class="field">
 			      <div class="ui checkbox">
-			        <input type="radio" name="payment">
+			        <input type="radio" value="COD" name="payment" onchange="orderAjax.payment(this)">
 			        <label>COD</label>
 			      </div>
 			    </div>
 
+			    <div class="field">
+			    	<button class="ui button orange circular tiny icon disabled" id="deposit" onclick="openModal('depositModal')"><i class="ui icon plus circle"></i> Deposit</button>
+			    </div>
+
 			</div>
 		</div>
-		<!-- <table class="ui striped table orange">
-			<tr class="negative">
-				<td class=""><strong>Credit</strong></td>
-				<td class="ui right aligned"><strong id="credit">0</strong></td>
-			</tr>
-			<tr class="disabled" id="addCash" onclick="openModal('cashModal')">
-				<td class=""><strong>Cash</strong></td>
-				<td class="ui right aligned"><strong id="cash">0</strong></td>
-			</tr>
-			<tr class="">
-				<td class=""><strong>Total Due</strong></td>
-				<td class="ui right aligned"><strong id="due">0</strong></td>
-			</tr>
-		</table> -->
+		
 
 		<button class="ui button circular green huge fluid disabled" id="btnCheckOut" onclick="orderAjax.checkOutOrder()"><?=$this->lang->line('create_invoice')?></button>
 
@@ -171,15 +162,15 @@
 </div>
 
 <!-- Cash Modal -->
-<div class="ui mini modal" id="cashModal">
+<div class="ui mini modal" id="depositModal">
 	<i class="close icon"></i>
   	<div class="ui icon header">
-    	<i class="icon dollar sign olive"></i> In Cash
+    	<i class="icon dollar sign olive"></i> Add Deposit Amount
   	</div>
   	<div class="content ui form">
   		<div class="field">
   			<label>Amount</label>
-    		<input type="number" value=0 id="cashAmt" autofocus onkeypress="orderAjax.addCash()" />
+    		<input type="number" autofocus onkeypress="orderAjax.addCash(this)" />
     	</div>
   	</div>
 </div>

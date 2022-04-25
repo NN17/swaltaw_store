@@ -168,7 +168,7 @@ $route['edit-customer/:num'] = 'ignite/editCustomer';
 /*
 * Routes for Credits
 */
-$route['credits'] = 'ignite/credits';
+$route['invoices/:any'] = 'ignite/invoices';
 
 /*
 * Routes for print Receipt

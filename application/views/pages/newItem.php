@@ -78,15 +78,15 @@
         <?=form_input('name',set_value('name'),'placeholder="'.$this->lang->line('item_name').'" required')?>  
     </div>
 
-    <div class="field">
+    <!-- <div class="field">
         <?=form_label($this->lang->line('item_model'))?>
         <?=form_input('model',set_value('model'),'placeholder="'.$this->lang->line('item_model').'" required')?>  
-    </div>
+    </div> -->
 
 
     <div class="field">
     	<label><?=$this->lang->line('currency')?></label>
-    	<select name="currency" required="required">
+    	<select name="currency" class="ui dropdown" required="required" readonly>
     		<option value="">Select</option>
     		<?php foreach($currencies as $currency): ?>
     			<option value="<?=$currency['currencyId']?>" <?=$currency['default']?'selected':''?>><?=$currency['currency']?></option>

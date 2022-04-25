@@ -112,6 +112,24 @@
 		    	<?=form_number('price','','placeholder="'.$this->lang->line('item_price').'" id="s_price" required')?>
 		    </div>
 
+		    <div class="inline fields">
+				<label>Sale Type : </label>
+
+				<div class="field">
+			      <div class="ui checkbox">
+			        <input type="radio" name="saleType" value="R" checked="checked" >
+			        <label>Retail</label>
+			      </div>
+			    </div>
+			    <div class="field">
+			      <div class="ui checkbox">
+			        <input type="radio" value="W" name="saleType" >
+			        <label>Whole Sale</label>
+			      </div>
+			    </div>
+
+			</div>
+
 		    <div class="field">
 		    	<label><?=$this->lang->line('remark')?> ( Optional )</label>
 		    	<?=form_textarea('remark','','placeholder="'.$this->lang->line('remark').'" id="s_remark"')?>

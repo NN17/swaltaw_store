@@ -58,56 +58,70 @@ class Ignite extends CI_Controller {
 
     // Checkout
     public function checkOut(){
-        $type = $this->uri->segment(3);
+        $sType = $this->input->post('saleType');
+        $byCustomer = $this->input->post('customer');
+        $customerId = $this->input->post('customerId');
+        $payment = $this->input->post('paymentType');
+        $depositAmt = $this->input->post('depositAmt');
 
-        $arr = json_decode($this->input->raw_input_stream, true);
+        $arr = json_decode($this->input->post('order'));
 
-        $invoice = 0;
+        $max = $this->ignite_model->max_value('invoices_tbl', 'invoiceId');
+        $serial = 'INV-'.$sType.'-'.date('myd').sprintf('%05d', $max+1);
+
+        $inv = array(
+            'invoiceSerial' => $serial,
+            'saleType' => $sType,
+            'paymentType' => $payment,
+            'byCustomer' => $byCustomer,
+            'customerId' => $customerId,
+            'depositAmt' => $depositAmt,
+            'discountAmt' => 0,
+            'created_date' => date('Y-m-d'),
+            'created_time' => date('H:i:s A'),
+            'created_by' => $this->session->userdata('Id'),
+        );
+
+        $this->db->insert('invoices_tbl', $inv);
+
+        $totalAmt = 0;
         foreach($arr as $row){
-            if($invoice < 1){
-                $max = $this->ignite_model->max('invoices_tbl', 'invoiceId');
-                $serial = 'INV-'.date('Ymd').sprintf('%07d', $max['invoiceId']+1);
-
-                if($type === 'credit'){
-
-                    $crd_arr = array(
-                        'customerId' => $row['customer'],
-                        'invoiceId' => $max['invoiceId']+1,
-                        'creditAmount' => $row['amount'],
-                        'cashAmount' => $row['cash'],
-                        'balance' => ($row['credit'] + $row['amount']) - $row['cash'],
-                        'created_date' => date('Y-m-d h:i:s A')
-                    );
-
-                    $this->db->insert('credits_tbl', $crd_arr);
-                }
-
-                $invArr = array(
-                    'invoiceSerial' => $serial,
-                    'created_date' => date('Y-m-d'),
-                    'created_time' => date('H:i:s'),
-                    'created_by' => $this->session->userdata('Id')
-                );
-                $this->db->insert('invoices_tbl', $invArr);
-                $invoice ++;
-            }
-
-            $items = array(
-                'invoiceId' => ($max['invoiceId'] + 1),
-                'itemCode' => $row['code'],
-                'itemName' => $row['name'],
-                'itemPrice' => $row['price'],
-                'itemQty' => $row['qty'],
+            $totalAmt += $row->price * $row->qty;
+            $detail = array(
+                'invoiceId' => $max+1,
+                'itemCode' =>$row->code,
+                'itemName' => $row->name,
+                'itemPrice' => $row->price,
+                'itemQty' => $row->qty
             );
 
-            $this->db->insert('invoice_detail_tbl', $items);
+            $this->db->insert('invoice_detail_tbl', $detail);
 
-            $balance = $this->ignite_model->get_balOutbySale($row['code'])->row();
+            $item = $this->ignite_model->get_limit_data('items_price_tbl', 'codeNumber', $row->code)->row();
+            $balance = $this->ignite_model->get_limit_data('stocks_balance_tbl', 'itemId', $item->itemId)->row();
 
-            $this->db->update('stocks_balance_tbl', ['qty' => ($balance->qty - $row['qty'])], ['warehouseId' => $balance->warehouseId, 'itemId' => $balance->itemId]);
+            $bal = array(
+                'qty' => $balance->qty - $row->qty
+            );
+
+            $this->db->where('itemId', $item->itemId);
+            $this->db->update('stocks_balance_tbl', $bal);
         }
 
-        echo ($max['invoiceId']+1);
+        if($payment == 'CRD'){
+            $crd = array(
+                'customerId' => $customerId,
+                'invoiceId' => $max+1,
+                'Amount' => $totalAmt,
+                'depositAmt' => $depositAmt,
+                'balance' => $totalAmt - $depositAmt,
+                'created_date' => date('Y-m-d H:i:s A')
+            );
+
+            $this->db->insert('credits_tbl', $crd);
+        }
+
+        echo $max+1;
     }
 
     public function addDiscountInv(){
@@ -145,9 +159,10 @@ class Ignite extends CI_Controller {
 
     public function saleItemSearch(){
         $key = $this->input->get('keyword');
+        $type = $this->input->get('saleType');
         $items = [];
         if(!empty($key)){
-            $items = $this->ignite_model->get_saleItemSearch($key);
+            $items = $this->ignite_model->get_saleItemSearch($key, $type);
         }
 
         header('Content-Type: application/json');
@@ -183,12 +198,17 @@ class Ignite extends CI_Controller {
     * Credits
     */
 
-    public function credits(){
+    public function invoices(){
         $this->breadcrumb->add('Home', 'home');
         $this->breadcrumb->add('Credits');
-
-        $data['customers'] = $this->ignite_model->get_data('customers_tbl')->result();
-        $data['content'] = 'pages/credits';
+        $data['pType'] = $this->uri->segment(2);
+        if($data['pType'] == '~'){
+            $data['invoices'] = $this->ignite_model->get_data_order('invoices_tbl', 'created_date', 'DESC')->result();
+        }
+            else{
+                $data['invoices'] = $this->ignite_model->get_limit_data_order('invoices_tbl','paymentType', $data['pType'], 'created_date', 'DESC')->result();
+            }
+        $data['content'] = 'pages/invoices';
         $this->load->view('layouts/template', $data);
     }
 
@@ -496,7 +516,7 @@ class Ignite extends CI_Controller {
         $brand = $this->input->post('brand');
         $supplier = $this->input->post('supplier');
         $name = $this->input->post('name');
-        $model = $this->input->post('model');
+        $model = '-';
         $code = $this->input->post('code');
         $currency = $this->input->post('currency');
         $remark = $this->input->post('remark');
@@ -1799,14 +1819,21 @@ class Ignite extends CI_Controller {
         $supplier = $this->input->post('supplier');
         $remark = $this->input->post('remark');
 
-        $extCharge = $this->ignite_model->get_limit_data('extra_charges_tbl','chargeId', $chargeId)->row();
+        if(!empty($chargeId)){
+            $extCharge = $this->ignite_model->get_limit_data('extra_charges_tbl','chargeId', $chargeId)->row();
+            $amount = $extCharge->chargeAmount;
+        }
+            else{
+                $chargeId = 0;
+                $amount = 0;
+            }
 
         $insert = array(
             'vDate' => $vDate,
             'vSerial' => $vSerial,
             'supplier' => $supplier,
-            'extCharge' => $extCharge->chargeId,
-            'chargeAmt' => $extCharge->chargeAmount,
+            'extCharge' => $chargeId,
+            'chargeAmt' => $amount,
             'remark' => $remark,
             'created_at' => date('Y-m-d H:i:s A')
         );

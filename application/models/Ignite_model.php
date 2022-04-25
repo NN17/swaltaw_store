@@ -70,6 +70,13 @@ class Ignite_model extends CI_Model {
         return $query;
     }
 
+    function get_limit_data_order($table, $field, $value, $order, $method){
+        $this->db->where($field, $value);
+        $this->db->order_by($order, $method);
+        $query = $this->db->get($table);
+        return $query;
+    }
+
     function get_limit_datas($table, $parms){
         foreach($parms as $key => $value){
             $this->db->where($key, $value);
@@ -117,6 +124,12 @@ class Ignite_model extends CI_Model {
         $this->db->select_max($field);
         $query = $this->db->get($table)->row_array();
         return $query;
+    }
+
+    function max_value($table, $field){
+        $this->db->select_max($field);
+        $query = $this->db->get($table)->row();
+        return $query->$field;
     }
 
     function emailCheck($email){
@@ -544,7 +557,7 @@ class Ignite_model extends CI_Model {
         return $query;
     }
 
-    function get_saleItemSearch($key){
+    function get_saleItemSearch($key, $type){
         $query = $this->db->query("SELECT sb.qty AS qty, ct.price AS price, ip.itemName AS itemName, ip.itemModel AS itemModel, ip.codeNumber AS codeNumber  FROM stocks_balance_tbl AS sb
             LEFT JOIN warehouse_tbl AS wh
             ON wh.warehouseId = sb.warehouseId
@@ -559,7 +572,7 @@ class Ignite_model extends CI_Model {
             OR bd.brandName LIKE '$key%')
             AND sb.qty > 0
             AND wh.shop = true
-            AND ct.type = 'S'
+            AND ct.type = '$type'
             ");
         return $query->result_array();
     }

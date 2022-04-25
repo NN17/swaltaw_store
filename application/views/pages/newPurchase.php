@@ -12,7 +12,7 @@
 				<select name="item" class="ui search dropdown" id="item" required>
 					<option value="">Select</option>
 					<?php foreach($items as $item):?>
-					<option value="<?=$item['itemId']?>"><?=$item['itemModel']?> _ <?=$item['itemName']?> ( <?=$item['categoryName'].' / '.$item['brandName']?> ) <?=$item['price']?></option>
+					<option value="<?=$item['itemId']?>"><?=$item['itemName']?> ( <?=$item['categoryName'].' / '.$item['brandName']?> ) <?=$item['price']?></option>
 					<?php endforeach; ?>
 				</select>
 			</div>

@@ -45,7 +45,14 @@
 						<td class="ui right aligned"><strong><?=number_format($total)?></strong></td>
 					</tr>
 					<tr>
-						<td colspan="4" class="ui right aligned"><a href="javascript:void(0);" onclick="openModal('discountModal')" > <i class="ui icon plus pink"></i></a>&nbsp;&nbsp;&nbsp; <strong>Discount</strong></td>
+						<td colspan="4" class="ui right aligned">
+							<?php if(count($discounts) > 0): ?>
+							<a href="javascript:void(0);" onclick="openModal('discountModal')" >
+								<i class="ui icon plus pink"></i>
+							</a>&nbsp;&nbsp;&nbsp; 
+							<?php endif; ?>
+							<strong>Discount</strong>
+						</td>
 						<td class="ui right aligned red"><strong id="disTotal">0</strong></td>
 					</tr>
 					<tr>
@@ -53,16 +60,13 @@
 						<td class="ui right aligned"><strong id="gTotal"><?=number_format($total)?></strong></td>
 					</tr>
 					<?php if(isset($credit->balance)): ?>
+					
 					<tr>
-						<td colspan="4" class="ui right aligned"><strong>Credit</strong></td>
-						<td class="ui right aligned"><strong><?=number_format($credit->balance - $total)?></strong></td>
+						<td colspan="4" class="ui right aligned"><strong>Deposit</strong></td>
+						<td class="ui right aligned"><strong><?=number_format($credit->depositAmt)?></strong></td>
 					</tr>
 					<tr>
-						<td colspan="4" class="ui right aligned"><strong>Cash</strong></td>
-						<td class="ui right aligned"><strong><?=number_format($credit->cashAmount)?></strong></td>
-					</tr>
-					<tr>
-						<td colspan="4" class="ui right aligned"><strong>Grand Total</strong></td>
+						<td colspan="4" class="ui right aligned"><strong>Total Balance</strong></td>
 						<td class="ui right aligned"><strong><?=number_format($credit->balance)?></strong></td>
 					</tr>
 					<?php endif; ?>

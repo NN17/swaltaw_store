@@ -117,7 +117,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['edit_customer'] = 'ဖောက်သည်အချက်အလက် ပြင်ဆင်ရန်';
 
 	// Language for credits
-	$lang['credit'] = 'အကြွေးစာရင်း';
+	$lang['invoices'] = 'ပြေစာများ';
 
 	// Language for Services
 	$lang['service'] = 'ဝန်ဆောင်မှုများ';
@@ -130,8 +130,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['price'] = 'စျေးနှုန်း';
  
  	// Language for Reports
-	$lang['inv_serial'] = 'ဘောက်ချာအမှတ်';
-	$lang['total_items'] = 'စုစုပေါင်းပစ္စည်းအရေအတွက်';
+	$lang['inv_serial'] = 'ပြေစာအမှတ်';
+	$lang['total_items'] = 'ပစ္စည်းအရေအတွက်';
 	$lang['total_amount'] = 'ရောင်းရငွေစုစုပေါင်း';
 	$lang['total_inv'] = 'ဘောက်ချာစုစုပေါင်း';
 	$lang['net_profit'] = 'အသားတင်အမြတ်';

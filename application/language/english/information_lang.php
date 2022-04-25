@@ -117,7 +117,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['edit_customer'] = 'Edit Customer';
 
 	// Language for credits
-	$lang['credit'] = 'Credits';
+	$lang['invoices'] = 'Invoices';
 
 	// Language for Services
 	$lang['service'] = 'Services';

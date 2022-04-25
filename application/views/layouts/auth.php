@@ -10,7 +10,7 @@
     <base href="<?=base_url()?>"></base>
     <link rel="shorcut icon" href="assets/imgs/ignite-logo-circle.png" />
     <!-- Site Properties -->
-    <title>Login Example - Semantic</title>
+    <title>POS version 2.0</title>
     <link rel="stylesheet" type="text/css" href="semantic/components/reset.css">
     <link rel="stylesheet" type="text/css" href="semantic/components/site.css">
 
@@ -35,7 +35,7 @@
 
     <style type="text/css">
         body {
-        background: url('./assets/imgs/backgrounds/back4.jpg');
+        background: url('./assets/imgs/backgrounds/back3.png');
         }
         body > .grid {
         height: 100%;
@@ -106,14 +106,14 @@
 
     <div class="ui middle aligned center aligned grid">
         <div class="column">
-            <h2 class="ui olive image header">
-            <img src="assets/imgs/ignite-logo-circle.png" class="image ignite-logo"><br/>
+            <h2 class="ui red image header">
+            <img src="assets/imgs/swaltaw_logo.png" class="image ignite-logo"><br/>
             <div class="content">
                 Ignite Source POS System
             </div>
             </h2>
             <div class="version">
-                Version 1.0.1
+                Version 2.0.1
             </div>
             <?=form_open('ignite/login','class="ui large form"')?>
             <div class="ui stacked segment auth-form-body">

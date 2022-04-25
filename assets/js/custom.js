@@ -1,5 +1,5 @@
 function base_url() {
-	return "http://" + location.hostname + "/inventory/";
+	return "http://" + location.hostname + "/POSv2/";
 }	
 
 // setInterval(() => {
@@ -113,71 +113,6 @@ $(document).ready(function() {
 		}
 	})
 
-	// Wholesale
-	$("#wholesale").on('change', function(){
-		
-		if($(this).prop('checked')){
-			if($.trim($("#vr_preview").html()) == ''){
-				$("#saleItemSearch").attr('onkeyup', "orderAjax.itemSearch('wholesale')");
-
-				$("#saleCode").val('');
-				$("#itemQty").val('');
-				$("#itemPrice").val('');
-				setTimeout(function(){
-					$("#saleCode").focus();
-				},1000);
-			}else{
-				$.alert({
-				    title: 'Alert !',
-				    content: 'You have already selected items, please remove items first.',
-				    backgroundDismiss: false,
-					columnClass: "custom-confirm-box",
-					animation: "zoom",
-					theme: "material"
-				});
-				$(this).prop('checked', false);
-			}
-		}
-		else{
-			if($.trim($("#vr_preview").html()) == ''){
-				$("#saleItemSearch").attr('onkeyup', "orderAjax.itemSearch('retail')");
-
-				$("#saleCode").val('');
-				$("#itemQty").val('');
-				$("#itemPrice").val('');
-				setTimeout(function(){
-					$("#saleCode").focus();
-				},1000);
-			}else{
-				$.alert({
-				    title: 'Alert !',
-				    content: 'You have already selected items, please remove items first.',
-				    backgroundDismiss: false,
-					columnClass: "custom-confirm-box",
-					animation: "zoom",
-					theme: "material"
-				});
-				$(this).prop('checked', true);
-			}
-		}
-	});
-
-	// By Customer check
-	$("#byCustomer").on('change', function(){
-		if($(this).prop("checked")){
-			$("#customer").parent().removeClass('disabled');
-			if($("#customer").val() != ''){
-				if($("#credit").parent().hasClass('disabled')){
-					$("#credit").parent().removeClass('disabled');
-				}
-			}
-		}else{
-			$("#customer").parent().addClass('disabled');
-			if(!$("#credit").parent().hasClass('disabled')){
-				$("#credit").parent().addClass('disabled');
-			}
-		}
-	});
 
 	// F2 Shoutcut
 	$("#saleCode, #itemQty, #itemPrice").on('keydown', function(event){
@@ -199,7 +134,7 @@ $(document).ready(function() {
 					var qty = parseInt($("#itemQty").val());
 					var price = $("#itemPrice").val();
 
-					console.log('code='+code+'/name='+name+'/qty='+qty);
+					// console.log('code='+code+'/name='+name+'/qty='+qty);
 					if(code == '' || qty == '' || price == '' || qty == NaN || name == undefined){
 
 						$.alert({
@@ -318,20 +253,21 @@ $(document).ready(function() {
 		// var bCode = "0000";
 		var cat = $(this).val();
 		var id = String($('#code').data('itemid'));
-		var iCode = format(5, id);
+		var iCode = format(6, id);
 
-		$.ajax({
-			url: base_url() + 'ignite/getLetterCode',
-			type: 'POST',
-			crossDomain: 'TRUE',
-			data: {
-				'catId' : cat
-			},
-			success: function(res){
-				let obj = JSON.parse(res);
-				$('#code').val(obj.code + "-" + iCode);
-			}
-		});
+		$('#code').val(iCode);
+		// $.ajax({
+		// 	url: base_url() + 'ignite/getLetterCode',
+		// 	type: 'POST',
+		// 	crossDomain: 'TRUE',
+		// 	data: {
+		// 		'catId' : cat
+		// 	},
+		// 	success: function(res){
+		// 		let obj = JSON.parse(res);
+		// 		$('#code').val(obj.code + "-" + iCode);
+		// 	}
+		// });
 
 
 	});
@@ -595,6 +531,15 @@ function readURL(input) {
 var orderAjax = function(){
 	let newOrders = [];
 	let orderObject = {};
+	let temp = [];
+	let tempNew = [];
+
+	// Default
+	let byCustomer = false;
+	let saleType = 'R';
+	let paymentType = 'CSH';
+	let customerId = 0;
+	let deposit = 0;
 
 	let createItem = function(code, name, qty, price){
 		orderObject = {
@@ -604,7 +549,30 @@ var orderAjax = function(){
 			price: price
 		}
 
-		newOrders.push(orderObject);
+		if (newOrders.length > 0) {
+			newOrders.forEach(function(x) {
+				if (x.code == code) {
+					tempNew.push(x.code);
+				}
+			});
+
+			if (tempNew.length > 0) {
+				newOrders = newOrders.map(y => {
+					if (y.code == code) {
+						y.qty += qty;
+						return y;
+					} else {
+						return y;
+					}
+				});
+			} else {
+				newOrders.push(orderObject);
+			}
+
+		} else {
+			newOrders.push(orderObject);
+		}
+
 
 		templateStructure();
 	};
@@ -612,7 +580,6 @@ var orderAjax = function(){
 	let templateStructure = function(){
 		let html = '';
 		let total = 0;
-		let tax = 0;
 
 		if(newOrders.length > 0){
 			newOrders.forEach(function(x,y){
@@ -636,43 +603,49 @@ var orderAjax = function(){
 			$("#discountBtn").addClass('disabled');
 		}
 
+		let gTotal = total - deposit;
 		$("#vr_preview").html(html);
 		$("#subTotal").html(total);
-		$("#grandTotal").html(total);
+		$('#depositAmt').html(deposit);
+		$("#grandTotal").html(gTotal);
 		$("#saleCode").val('').focus();
 		$("#itemQty").val('');
 		$("#itemPrice").val('');
 	};
 
 	let checkOut = function(){
-		if($("#byCustomer").prop("checked") && $("#customer").val() != ''){
-			openModal('cashModal');
-		}
-			else if($("#byCustomer").prop("checked") && $("#customer").val() == ''){
+		if(paymentType == "CRD"){
+			if(customerId == 0){
 				$.alert({
-					title: 'Alert !',
-					content: 'Please choose customer or close "by customer" button.',
-					backgroundDismiss: false,
+				    title: 'Customer missing !',
+				    content: 'Customer should not be null, Please select customer.',
+				    backgroundDismiss: false,
 					columnClass: "custom-confirm-box",
+					animation: "zoom",
+					theme: "material"
 				});
-
 			}
+			$('#customer').parent().addClass('error');
+		}
 			else{
-				fetch('ignite/checkOut/~', {
-					method: 'POST', // or 'PUT'
-					headers: {
-						'Content-Type': 'application/json',
+
+				$.ajax({
+					url: base_url() + 'ignite/checkOut',
+					type: "POST",
+					crossDomain: "TRUE",
+					data: {
+						'saleType' : saleType,
+						'customer' : byCustomer,
+						'customerId' : customerId,
+						'paymentType' : paymentType,
+						'depositAmt' : deposit,
+						'order' : JSON.stringify(newOrders)
 					},
-					body: JSON.stringify(newOrders),
-				})
-				.then(response => response.json())
-				.then(data => {
-					allItems = [];
-					// console.log(data);
-					window.location.href = 'preview/' + data;
-				})
-				.catch((error) => {
-					console.log('Error:', error);
+					success: function(res){
+						console.log(res);
+						location.href = 'preview/' + res;
+						
+					}
 				});
 			}
 	};
@@ -685,7 +658,7 @@ var orderAjax = function(){
 		templateStructure();
 	};
 
-	let searchItem = function(saleType){
+	let searchItem = function(){
 		let keyword = $("#saleItemSearch").val();
 
 		$.ajax({
@@ -693,12 +666,13 @@ var orderAjax = function(){
 			type: "GET",
 			crossDomain: "TRUE",
 			data: {
-				'keyword' : keyword
+				'keyword' : keyword,
+				'saleType' : saleType
 			},
 			success: function(result){
 				let html;
 				if(result.length > 0){
-					console.log(result);
+					// console.log(result);
 					result.forEach(function(x){
 						html += `<tr onclick="orderAjax.itemSelect('${x.itemName.replace('"','&quot;')}', '${x.itemModel}', '${x.codeNumber}', ${x.price}, ${x.qty})" class="item">
 								<td>${x.itemName}</td>
@@ -726,7 +700,7 @@ var orderAjax = function(){
 		$("#itemPrice").val(price);
 		setTimeout(function() { 
 				$('input[name="itemQty"]').focus().select();
-			}, 1000);
+			}, 300);
 	}
 
 	let getItemByCode = function(code){
@@ -744,23 +718,24 @@ var orderAjax = function(){
 					$("#itemQty").val(1).data('balance', res.qty);
 					$("#itemPrice").val(res.wholesalePrice);
 					setTimeout(function() { 
-							$('input[name="itemQty"]').focus().select();
-						}, 1000);
+						$('input[name="itemQty"]').focus().select();
+					}, 300);
 				}else{
 					$("#saleCode").data('name', res.itemName);
 					$("#itemQty").val(1).data('balance', res.qty);
 					$("#itemPrice").val(res.retailPrice);
 					setTimeout(function() { 
-							$('input[name="itemQty"]').focus().select();
-						}, 1000);
+						$('input[name="itemQty"]').focus().select();
+					}, 300);
 				}
 			}
 		});
 	}
 
-	let getCredit = function(){
-		let customerId = $("#customer").val();
-		if(customerId != ''){
+	let getCredit = function(e){
+		customerId = e.value;
+
+		if(customerId != '' && customerId != 0){
 			$.ajax({
 				url: base_url() + 'ignite/getCreditByCustomer',
 				type: 'GET',
@@ -774,44 +749,24 @@ var orderAjax = function(){
 					.removeClass('disabled');
 				}
 			});
+
+			if($('#customer').parent().hasClass('error')){
+				$('#customer').parent().removeClass('error');
+			}
+
+			setTimeout(function(){
+				$("#saleCode").focus();
+			},300);
 		}
 	}
 
-	let inCash = function(){
+	let inCash = function(ev){
 		key = event.keyCode;
 		if(key == 13){
-			let amount = 0;
-			let cash = $("#cashAmt").val();
-			let credit = $("#credit").val();
-			let customer = $("#customer").val();
-			
-			newOrders.forEach(function(x){
-				amount += x.price * x.qty;
-			});
-
-			newOrders.forEach(function(y){
-				y.amount = amount;
-				y.cash = cash;
-				y.credit = credit;
-				y.customer = customer;
-			});
-
-			fetch('ignite/checkOut/credit', {
-				method: 'POST', // or 'PUT'
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(newOrders),
-			})
-			.then(response => response.json())
-			.then(data => {
-				allItems = [];
-				// console.log(data);
-				window.location.href = 'preview/' + data;
-			})
-			.catch((error) => {
-				console.log('Error:', error);
-			});
+			deposit = ev.value;
+			$('#depositModal').modal('hide');
+			ev.value = '';
+			templateStructure();
 		}
 	}
 
@@ -842,6 +797,112 @@ var orderAjax = function(){
 		});
 	}
 
+	let asCustomer = function(event) {
+		if(event.checked == true){
+			byCustomer = true;
+			$("#customer").parent().removeClass('disabled');
+			if($("#customer").val() != ''){
+				if($("#credit").parent().hasClass('disabled')){
+					$("#credit").parent().removeClass('disabled');
+				}
+			}
+		}
+			else{
+				byCustomer = false;
+				$("#customer").parent().addClass('disabled');
+				if(!$("#credit").parent().hasClass('disabled')){
+					$("#credit").parent().addClass('disabled');
+				}
+			}
+
+	}
+
+	let sellWholeSale = function(e) {
+		if(e.checked == true){
+			saleType = 'W';
+			if($.trim($("#vr_preview").html()) == ''){
+				$("#saleItemSearch").attr('onkeyup', "orderAjax.itemSearch('wholesale')");
+
+				$("#saleCode").val('');
+				$("#itemQty").val('');
+				$("#itemPrice").val('');
+				setTimeout(function(){
+					$("#saleCode").focus();
+				},300);
+			}else{
+				$.alert({
+				    title: 'Alert !',
+				    content: 'You have already selected items, please remove items first.',
+				    backgroundDismiss: false,
+					columnClass: "custom-confirm-box",
+					animation: "zoom",
+					theme: "material"
+				});
+				$(this).prop('checked', false);
+			}
+		}
+			else{
+				saleType = 'R';
+				if($.trim($("#vr_preview").html()) == ''){
+					$("#saleItemSearch").attr('onkeyup', "orderAjax.itemSearch('retail')");
+
+					$("#saleCode").val('');
+					$("#itemQty").val('');
+					$("#itemPrice").val('');
+					setTimeout(function(){
+						$("#saleCode").focus();
+					},300);
+				}else{
+					$.alert({
+					    title: 'Alert !',
+					    content: 'You have already selected items, please remove items first.',
+					    backgroundDismiss: false,
+						columnClass: "custom-confirm-box",
+						animation: "zoom",
+						theme: "material"
+					});
+					$(this).prop('checked', true);
+				}
+			}
+
+			console.log(saleType);
+	}
+
+	let pType = function(e) {
+		if(e.checked == true){
+			paymentType = e.value;
+			if(paymentType == "CRD"){
+				byCustomer = true;
+				$("#deposit").removeClass('disabled');
+				$("#byCustomer").prop('checked', true);
+				$("#customer").parent().removeClass('disabled');
+				if($("#customer").val() != ''){
+					if($("#credit").parent().hasClass('disabled')){
+						$("#credit").parent().removeClass('disabled');
+					}
+				}
+				setTimeout(function(){
+					$("#saleCode").focus();
+				},300);
+			}
+				else{
+					$("#deposit").addClass('disabled');
+					deposit = 0;
+					byCustomer = false;
+					$("#byCustomer").prop('checked', false);
+					$("#customer").parent().addClass('disabled');
+					if(!$("#credit").parent().hasClass('disabled')){
+						$("#credit").parent().addClass('disabled');
+					}
+					templateStructure();
+					setTimeout(function(){
+						$("#saleCode").focus();
+					},300);
+				}
+		}
+		
+	}
+
 
 	return {
 		init: function() {
@@ -856,8 +917,8 @@ var orderAjax = function(){
 		removeItem: function(index) {
 			removeItemFunc(index);
 		},
-		itemSearch: function(type){
-			searchItem(type);
+		itemSearch: function(){
+			searchItem();
 		},
 		itemSelect: function(name, model, code, price, qty){
 			selectItem(name, model, code, price, qty);
@@ -865,17 +926,26 @@ var orderAjax = function(){
 		saleCode: function(code){
 			getItemByCode(code);
 		},
-		credit: function(){
-			getCredit();
+		credit: function(e){
+			getCredit(e);
 		},
-		addCash: function(){
-			inCash();
+		addCash: function(ev){
+			inCash(ev);
 		},
 		submitForm: function(form){
 			formSubmit(form);
 		},
 		addDiscount: function(total, invId){
 			discountAdd(total, invId);
+		},
+		byCustomer: function(e) {
+			asCustomer(e);
+		},
+		wholeSale: function(e) {
+			sellWholeSale(e);
+		},
+		payment: function(e) {
+			pType(e);
 		}
 	}
 }();
@@ -894,7 +964,7 @@ var priceAjax = function(){
 		let currentPath = window.location.pathname;
 		let arr = currentPath.split('/');
 		let itemId = arr[arr.length - 2];
-		if (currentPath.indexOf('inventory/define-price') > 0) {
+		if (currentPath.indexOf('POSv2/define-price') > 0) {
 			// console.log(getPrices(itemId));
 			getPrices(itemId);
 		} else {
@@ -903,7 +973,7 @@ var priceAjax = function(){
 	};
 
 	let getPrices = function(itemId){
-		fetch('http://localhost/inventory/get-defined-price/' + itemId).then(function(res) {
+		fetch('http://localhost/POSv2/get-defined-price/' + itemId).then(function(res) {
 			return res.json();
 		}).then(function(data) {
 
@@ -989,6 +1059,7 @@ var priceAjax = function(){
 			let s_qty = $('#s_qty').val();
 			let s_price = $("#s_price").val();
 			let s_remark = $("#s_remark").val();
+			let s_saleType = $('input[name="saleType"]:checked').val();
 
 			if(s_type == ''){
 				$("#s_countType").parent().addClass('error');
@@ -1016,7 +1087,7 @@ var priceAjax = function(){
 
 			if(s_type != '' && s_qty != '' && s_price != ''){
 				saleObj = {
-					type: 'S',
+					type: s_saleType,
 					countType : s_type,
 					qty : s_qty,
 					price : s_price,
@@ -1317,7 +1388,7 @@ let damageItem = (function () {
 		let currentPath = window.location.pathname;
 		let arr = currentPath.split('/');
 		let itemId = arr[arr.length - 2];
-		if (currentPath.indexOf('inventory/modify-damage') > 0) {
+		if (currentPath.indexOf('POSv2/modify-damage') > 0) {
 			return true;
 		} else {
 			return false;
@@ -1417,7 +1488,7 @@ let chartJs = (function() {
 		let currentPath = window.location.pathname;
 		let arr = currentPath.split('/');
 		let itemId = arr[arr.length - 2];
-		if (currentPath.indexOf('inventory/reports') > 0) {
+		if (currentPath.indexOf('POSv2/reports') > 0) {
 			return true;
 		} else {
 			return false;

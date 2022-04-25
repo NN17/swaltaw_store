@@ -89,7 +89,9 @@ textarea{
 
 .vr_wrapper{
 	margin-top: 20px;
-	min-height: 500px;
+	max-height: 400px;
+	overflow: hidden;
+	overflow-y:  auto;
 }
 
 #itemSearch .scrolling.content{
@@ -136,6 +138,15 @@ textarea{
     width: 2.25rem;
     height: 2.25rem;
     padding: .625rem 0 0 0;
+}
+
+input{
+	font-family: 'ZawDcode' !important;
+	line-height: 20px !important;
+}
+
+.ui.selection.dropdown {
+	line-height: 20px !important;
 }
 
 tbody td{

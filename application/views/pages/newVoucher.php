@@ -15,7 +15,7 @@
 	    </div>
 	    <div class="field">
 	    	<label><?=$this->lang->line('extra_charges')?></label>
-	    	<select name="extCharge" class="ui dropdown" required>
+	    	<select name="extCharge" class="ui dropdown">
 	    		<option> -- Select Extra Charges -- </option>
 	    		<?php foreach($extCharges as $ext): ?>
 	    			<option value="<?=$ext->chargeId?>"><?=$ext->chargeTitle?> ( <?=$ext->chargeAmount?> )</option>

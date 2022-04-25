@@ -10,6 +10,7 @@ use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\CapabilityProfile;
 use Mike42\Escpos\PrintBuffers\EscposPrintBuffer;
 use Mike42\Escpos\PrintBuffers\ImagePrintBuffer;
+use Mike42\Escpos\Experimental\Unifont\UnifontPrintBuffer;
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Escpos
@@ -36,25 +37,22 @@ class Escpos
         $imageBuffer = new ImagePrintBuffer();
         $imageBuffer -> setFont(__DIR__ . "/../../assets/font/ZawDcode.ttf");
         $textBuffer = new EscposPrintBuffer();
+        $unifontBuffer = new UnifontPrintBuffer(__DIR__ . "/../../assets/font/unifont.hex");
 
         try {
             $printer = new Printer($connector);
-            $printer -> setPrintBuffer($imageBuffer);
-
-            /* Name of shop */
+            $tux = EscposImage::load(__DIR__ . "/../../assets/imgs/shop_logo.png", false);
             $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-            $printer->setEmphasis(true);
-            $imageBuffer->setFontSize(60);
-            $printer->text("NEW SKY \n");
-            $imageBuffer->setFontSize(24);
-            $printer->feed();
-            $printer->selectPrintMode();
-            $printer->text("Digital Photo Printing & IT Service \n");
-            $printer->feed();
+            $printer -> bitImage($tux);
 
-            $printer->text("အမှတ်(၂၃)၊ စျေးလမ်း၊ မအူပင်မြို့။\n");
-            $printer->text("TEL: 09 254 093 727 / 09 973 158 768\n");
+            $imageBuffer->setFontSize(24);
+            $printer -> setPrintBuffer($imageBuffer);
+            /* Name of shop */
+            
+            $printer->feed();
+            $printer->text("အမှတ်(၂၁၉)၊ မင်းလမ်း၊ (၁၁)ရပ်ကွက်၊ မအူပင်မြို့။\n");
+            $printer->text("( မှန်ပင်ကျောင်းရှေ့ )\n");
+            $printer->text("TEL: 09 774 440 997\n");
             $printer->text("________________________________________________\n");
             $printer->feed();
 
@@ -66,8 +64,7 @@ class Escpos
             $printer->feed();
 
             $printer->setJustification(Printer::JUSTIFY_LEFT);
-            $printer->text("Date - ".date('d-M-Y', strtotime($invoice->created_date)) . "\n");
-            $printer->text("Time - ".date('h:i:s a', strtotime($invoice->created_time)) . "\n");
+            $printer->text("Date - ".date('d-M-Y', strtotime($invoice->created_date)) .' ( '. date('h:i A', strtotime($invoice->created_time))." )\n");
             $printer->text("Invoice ID - ".$invoice->invoiceSerial."\n");
             
             /* Items */
@@ -91,7 +88,7 @@ class Escpos
                 $printer->text($item->itemName);
                 
                 $printer->setPrintBuffer($textBuffer);
-                $printer->text($this->print_option($itemDetail->itemModel, $item->itemQty, number_format($amount), 48)); // for 58mm Font A
+                $printer->text($this->print_option($itemDetail->codeNumber, $item->itemQty, number_format($amount), 48)); // for 58mm Font A
             }
 
             $printer->setPrintBuffer($textBuffer);
@@ -99,9 +96,18 @@ class Escpos
             
             $printer->setEmphasis(true);
             $printer->text($this->print_option('Total ','', number_format($total), 48));
-            $printer->text($this->print_option('Discount ','', number_format($invoice->discountAmt), 48));
+            if($invoice->discountAmt > 0){
+                $printer->text($this->print_option('Discount ','', number_format($invoice->discountAmt), 48));
+            }
+                else{
+                    $printer->text($this->print_option('Discount ','', '-', 48));
+                }
             $printer->text($this->print_option('GrandTotal ','', number_format($total - $invoice->discountAmt), 48));
-            
+            if($invoice->depositAmt > 0){
+                
+                $printer->text($this->print_option('Deposit','', number_format($invoice->depositAmt)));
+                $printer->text($this->print_option('Different','', number_format($invoice->depositAmt - ($total - $invoice->discountAmt))));
+            }
 
             
             $printer->feed();

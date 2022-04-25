@@ -127,16 +127,16 @@ class Migrate extends CI_Model {
                 'machine' => 'reports/daily',
                 'name' => 'Reports',
                 'lang_name' => 'reports',
-                'icon_class' => 'clipboard outline',
+                'icon_class' => 'chart bar outline',
                 'color' => 'teal',
                 'sub_menu' => false,
                 'description' => 'Reports for sales, stocks in and stock out etc'
               ),
               array(
-                'machine' => 'credits',
-                'name' => 'Credits',
-                'lang_name' => 'credit',
-                'icon_class' => 'calculator',
+                'machine' => 'invoices',
+                'name' => 'Invoices',
+                'lang_name' => 'invoices',
+                'icon_class' => 'folder outline',
                 'color' => 'violet',
                 'sub_menu' => false,
                 'description' => 'Reports for credits list of by customers'
@@ -205,6 +205,24 @@ class Migrate extends CI_Model {
                 'description' => 'Purchase Vouchers'
               ),
               array(
+                'machine' => 'discounts',
+                'name' => 'Discounts',
+                'lang_name' => 'discounts',
+                'icon_class' => 'tags',
+                'color' => 'orange',
+                'sub_menu' => true,
+                'description' => 'Create, Modify and Delete discounts/discounts type for sale items.'
+              ),
+              array(
+                'machine' => 'extra-charges',
+                'name' => 'Extra Charges',
+                'lang_name' => 'extra_charges',
+                'icon_class' => 'money bill alternate outline',
+                'color' => 'blue',
+                'sub_menu' => true,
+                'description' => 'Create, Modify and Delete  Chargs. Such as Transportion charges depend on the items purchase'
+              ),
+              array(
                 'machine' => 'items-price/0',
                 'name' => 'Items and Price',
                 'lang_name' => 'itemPrice',
@@ -212,15 +230,6 @@ class Migrate extends CI_Model {
                 'color' => 'teal',
                 'sub_menu' => true,
                 'description' => 'Define prices for items'
-              ),
-              array(
-                'machine' => 'services',
-                'name' => 'Services',
-                'lang_name' => 'service',
-                'icon_class' => 'braille',
-                'color' => 'green',
-                'sub_menu' => true,
-                'description' => 'Services, Suchs as Printing and Other services ..'
               ),
               array(
                 'machine' => 'damages',
@@ -270,9 +279,11 @@ class Migrate extends CI_Model {
               'type' => 'INT',
               'constraint' => 8
            ),
-           'link_accept' => array(
-              'type' => 'VARCHAR',
-              'constraint' => 255
+           'link' => array(
+              'type' => 'JSON',
+           ),
+           'modify' => array(
+              'type' => 'JSON',
            ),
            'created_at' => array(
               'type' => 'DATETIME'
@@ -315,6 +326,20 @@ class Migrate extends CI_Model {
 
         $this->dbforge->add_key('warehouseId', TRUE);
         $this->dbforge->create_table('warehouse_tbl', TRUE);
+
+        // Insert Default Warehouse
+        $num_row = $this->db->count_all_results('warehouse_tbl');
+        if($num_row < 1){
+            
+            $insert = array(
+                'warehouseName' => 'On Shop',
+                'serial' => 1,
+                'remark' => 'Default Warehouse Created by System',
+                'activeState' => 1,
+                'shop' => 1
+                );
+            $this->db->insert('warehouse_tbl',$insert);
+        }
 
         // Supplier Table
         $this->dbforge->add_field(array(
@@ -510,6 +535,10 @@ class Migrate extends CI_Model {
             'type' => 'INT',
             'constraint' => 8
           ),
+          'voucherId' => array(
+            'type' => 'INT',
+            'constraint' => 8
+          ),
           'supplierId' => array(
             'type' => 'INT',
             'constraint' => 8
@@ -649,6 +678,25 @@ class Migrate extends CI_Model {
             'type' => 'VARCHAR',
             'constraint' => 255
          ),
+         'saleType' => array(
+            'type' => 'CHAR',
+            'constraint' => 1
+         ),
+         'paymentType' => array(
+            'type' => 'CHAR',
+            'constraint' => 3
+         ),
+         'byCustomer' => array(
+            'type' => 'BOOLEAN'
+         ),
+         'customerId' => array(
+            'type' => 'INT',
+            'constraint' => 8
+         ),
+         'depositAmt' => array(
+            'type' => 'INT',
+            'constraint' => 8
+         ),
          'discountAmt' => array(
             'type' => 'INT',
             'constraint' => 8
@@ -721,11 +769,11 @@ class Migrate extends CI_Model {
               'type' => 'INT',
               'constraint' => 8
           ),
-          'creditAmount' => array(
+          'Amount' => array(
               'type' => 'INT',
               'constraint' => 8
           ),
-          'cashAmount' => array(
+          'depositAmt' => array(
               'type' => 'INT',
               'constraint' => 8
           ),
