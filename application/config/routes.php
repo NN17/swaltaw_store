@@ -166,9 +166,13 @@ $route['new-customer'] = 'ignite/newCustomer';
 $route['edit-customer/:num'] = 'ignite/editCustomer';
 
 /*
-* Routes for Credits
+* Routes for Invoices
 */
 $route['invoices/:any'] = 'ignite/invoices';
+$route['update-delivery/:num'] = 'ignite/updateDelivery';
+$route['refer-invoice/:num'] = 'ignite/referInvoice';
+$route['del-invoice/:num'] = 'ignite/delInvoice';
+$route['get-invoice'] = 'ignite/getReferInvoice';
 
 /*
 * Routes for print Receipt

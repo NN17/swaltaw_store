@@ -91,6 +91,12 @@ class Ignite_model extends CI_Model {
         return $query['name'];
     }
 
+    function get_username($id) {
+        $this->db->where('accId', $id);
+        $data = $this->db->get('accounts_tbl')->row();
+        return $data->username;
+    }
+
     /* 
     * Calculate Remaining Day 
     * Date format must be (Y-m-d)
@@ -852,6 +858,11 @@ class Ignite_model extends CI_Model {
                         ON ivtbl.invoiceId = ivdetail.invoiceId
                         WHERE ivtbl.invoiceId = $invID
                         ");
+        return $query;
+    }
+
+    function get_referInvDetail($invId) {
+        $query = $this->db->query("SELECT itemCode AS code, itemName AS name, itemPrice AS price, itemQty AS qty FROM invoice_detail_tbl WHERE invoiceId = $invId");
         return $query;
     }
 

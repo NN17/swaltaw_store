@@ -33,7 +33,7 @@
 				<td><?=$item['itemName']?></td>
 				<td><?=$item['itemModel']?></td>
 				<td><?=$item['brandName']?></td>
-				<td><button class="ui basic button tiny icon olive <?=!empty($item['imgPath'])?'':'disabled'?>" onclick="viewImg('<?=$item['imgPath']?>')"><i class="ui icon file image"></i></button></td>
+				<td><button class="ui basic button tiny icon olive <?=!empty($item['imgPath'])?'':'disabled'?>" onclick="viewImg('<?=$item['imgPath']?>')"><i class="ui icon eye"></i></button></td>
 				<td class="ui right aligned"><strong><?=$p_countType?round($p_countType->price/$p_countType->qty , 2).' / <span class="text-grey">( '.number_format($p_countType->price).' )</span>':'-'?></strong></td>
 				<td class="ui right aligned"><strong>
 					<?php

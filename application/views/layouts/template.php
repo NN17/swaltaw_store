@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="semantic/Semantic-UI-Alert.css" />
     <link rel="stylesheet" type="text/css" href="assets/DataTables.SemanticUI/datatables.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/jquery.datetimepicker.css"/>
-    <link rel="stylesheet" type="text/css" media="screen" href="assets/css/jquery-confirm.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="assets/css/jquery-confirm.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/croppie.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/flaticon.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css" />
@@ -31,8 +31,11 @@
             </a>
             <?php $main_menu = $this->ignite_model->get_limit_data('link_structure_tbl', 'sub_menu', false)->result(); ?>
             <?php foreach($main_menu as $row): ?>
+                <?php 
+                    $machine = explode("/", $row->machine);
+                ?>
                 <?php if($this->auth->checkLinkAccess($this->session->userdata('Id'), $row->linkId)): ?>
-                    <a href="<?=$row->machine?>" class="item <?php if($this->uri->segment(1) == $row->machine){echo 'active';}?>">
+                    <a href="<?=$row->machine?>" class="item <?php if($this->uri->segment(1) == $machine[0]){echo 'active';}?>">
                         <i class="icon <?=$row->color?> <?=$row->icon_class?>"></i> <?=$this->lang->line($row->lang_name)?>
                     </a>
                 <?php endif; ?>
@@ -112,7 +115,7 @@
     <script type="text/javascript" src="semantic/Semantic-UI-Alert.js"></script>
     <script type="text/javascript" src="assets/DataTables.SemanticUI/datatables.min.js"></script>
     <script src="assets/js/jquery.datetimepicker.js"></script>
-    <script src="assets/js/jquery-confirm.js"></script>
+    <script src="assets/js/jquery-confirm.min.js"></script>
     <script type="text/javascript" src="assets/js/croppie.js"></script>
     <script src="assets/js/custom.js"></script>
     <script type="text/javascript">

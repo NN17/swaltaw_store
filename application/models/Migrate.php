@@ -628,7 +628,7 @@ class Migrate extends CI_Model {
         $this->dbforge->add_key('tranId', TRUE);
         $this->dbforge->create_table('transfer_tbl', TRUE);
 
-        // Creating customers_tbl
+        // Create customers_tbl
 
         $this->dbforge->add_field(array(
           'customerId' => array(
@@ -660,6 +660,14 @@ class Migrate extends CI_Model {
           ),
           'remark' => array(
             'type' => 'TEXT'
+          ),
+          'creditBalance' => array(
+            'type' => 'INT',
+            'constraint' => 8
+          ),
+          'memberPoint' => array(
+            'type' => 'INT',
+            'constraint' => 8
           ),
         ));
 
@@ -701,8 +709,15 @@ class Migrate extends CI_Model {
             'type' => 'INT',
             'constraint' => 8
          ),
+         'delivered' => array(
+            'type' => 'BOOLEAN'
+         ),
+         'referId' => array(
+            'type' => 'INT',
+            'constraint' => 8
+         ),
          'created_date' => array(
-            'type' => 'DATE'
+            'type' => 'DATETIME'
          ),
          'created_time' => array(
             'type' => 'TIME'
@@ -711,6 +726,9 @@ class Migrate extends CI_Model {
             'type' => 'INT',
             'constraint' => 8
          ),
+         'active' => array(
+            'type' => 'BOOLEAN'
+         )
       ));
 
       $this->dbforge->add_key('invoiceId', TRUE);
@@ -957,6 +975,30 @@ class Migrate extends CI_Model {
 
       $this->dbforge->add_key('damageId', TRUE);
       $this->dbforge->create_table('damages_tbl', TRUE);
+
+      // Create printer_profile_tbl
+      $this->dbforge->add_field(array(
+        'printerId' => array(
+          'type' => 'INT',
+          'constraint' => 8,
+          'auto_increment' => TRUE
+        ),
+        'printerType' => array(
+          'type' => 'CHAR',
+          'constraint' => 3
+        ),
+        'connectionType' => array(
+          'type' => 'CHAR',
+          'constraint' => 3
+        ),
+        'printerAddress' => array(
+          'type' => 'VARCHAR',
+          'constraint' => 255
+        ),
+      ));
+
+      $this->dbforge->add_key('printerId', TRUE);
+      $this->dbforge->create_table('printer_profile_tbl', TRUE);
         
         // ------------ End of Create Tables ---------------
     }

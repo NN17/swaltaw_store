@@ -1,5 +1,5 @@
 function base_url() {
-	return "http://" + location.hostname + "/POSv2/";
+	return "http://" + location.hostname + "/";
 }	
 
 // setInterval(() => {
@@ -12,6 +12,7 @@ $(document).ready(function() {
 	cropImage.init();
 	chartJs.init();
 	damageItem.init();
+	orderAjax.init();
 
 	$(".ui.dropdown").dropdown();
 	$(".menu .item").tab();
@@ -142,8 +143,14 @@ $(document).ready(function() {
 						    content: 'Item Code, Qty and Price must not be null !',
 						    backgroundDismiss: false,
 							columnClass: "custom-confirm-box",
-							animation: "zoom",
-							theme: "material"
+							animation: 'zoom',
+				    		closeAnimation: 'opacity',
+				    		animationBounce: 1.5,
+							theme: "modern",
+							type: "red",
+							icon: "ui icon",
+							useBootstrap: false,
+							boxWidth: '30%',
 						});
 					}
 						else if(code != '' && (qty == '' || price == '')){
@@ -158,8 +165,14 @@ $(document).ready(function() {
 										    content: 'Available Quantity is ' + maxqty + ' !',
 										    backgroundDismiss: false,
 											columnClass: "custom-confirm-box",
-											animation: "zoom",
-											theme: "material"
+											animation: 'zoom',
+								    		closeAnimation: 'opacity',
+								    		animationBounce: 1.5,
+											theme: "modern",
+											type: "red",
+											icon: "ui icon",
+											useBootstrap: false,
+											boxWidth: '30%',
 										});
 									}else{
 										if($("#itemQty").parent().hasClass('error')){
@@ -214,8 +227,14 @@ $(document).ready(function() {
 	$("[id=delete]").on("click", function() {
 		var url = $(this).data("url");
 		$.confirm({
-			theme: "light",
-			icon: "fa fa-warning",
+			animation: 'zoom',
+    		closeAnimation: 'opacity',
+    		animationBounce: 1.5,
+			theme: "modern",
+			type: "red",
+			icon: "ui icon",
+			useBootstrap: false,
+			boxWidth: '30%',
 			title: "<i class='icon exclamation triangle yellow'></i> Are you sure want to DELETE",
 			backgroundDismiss: false,
 			columnClass: "custom-confirm-box",
@@ -401,6 +420,14 @@ $(document).ready(function() {
 		if (destStatus == 'false' || qtyStatus == 'false') {
 			event.preventDefault();
 			$.alert({
+				animation: 'zoom',
+	    		closeAnimation: 'opacity',
+	    		animationBounce: 1.5,
+				theme: "modern",
+				type: "red",
+				icon: "ui icon",
+				useBootstrap: false,
+				boxWidth: '30%',
 				title: 'Invalid Input!',
 				content: 'Please check form again!',
 				backgroundDismiss: false,
@@ -421,6 +448,14 @@ $(document).ready(function() {
 				content: 'The Code letter is has been exist or not be null. Please Try again .. !',
 				backgroundDismiss: false,
 				columnClass: "custom-confirm-box",
+				animation: 'zoom',
+	    		closeAnimation: 'opacity',
+	    		animationBounce: 1.5,
+				theme: "modern",
+				type: "red",
+				icon: "ui icon",
+				useBootstrap: false,
+				boxWidth: '30%',
 			});
 			$("#LC_err").focus();
 		}
@@ -456,11 +491,13 @@ function item_modal() {
 
 function purchase_price_modal() {
 	$('.tiny.modal.purchase')
+		.modal({closable: false})
 		.modal('show');
 }
 
 function sale_price_modal() {
 	$('.tiny.modal.sale')
+		.modal({closable: false})
 		.modal('show');
 }
 
@@ -535,11 +572,47 @@ var orderAjax = function(){
 	let tempNew = [];
 
 	// Default
-	let byCustomer = false;
+	let byCustomer = 0;
 	let saleType = 'R';
 	let paymentType = 'CSH';
 	let customerId = 0;
 	let deposit = 0;
+	let referId = 0;
+
+	// Check Path
+	let thisPath = function(){
+		let currentPath = window.location.pathname;
+		let arr = currentPath.split('/');
+		let invId = arr[arr.length - 1];
+		if (currentPath.indexOf(base_url() + 'refer-invoice') > 0) {
+			getInvoice(invId);
+		} else {
+			// console.log("don't have")
+		}
+	};
+
+	let getInvoice = function(invId) {
+		$.ajax({
+			url: base_url() + 'get-invoice',
+			type: 'GET',
+			crossDomain: 'TRUE',
+			data:{
+				'invId' : invId
+			},
+			success: function(res) {
+				var obj = $.parseJSON(res);
+				byCustomer = obj.invoice.byCustomer;
+				saleType = obj.invoice.saleType;
+				paymentType = obj.invoice.paymentType;
+				customerId = obj.invoice.customerId;
+				deposit = obj.invoice.depositAmt;
+				newOrders = (obj.detail);
+				referId = obj.invoice.invoiceId;
+
+				templateStructure();
+			}
+		});
+	}
 
 	let createItem = function(code, name, qty, price){
 		orderObject = {
@@ -621,11 +694,38 @@ var orderAjax = function(){
 				    content: 'Customer should not be null, Please select customer.',
 				    backgroundDismiss: false,
 					columnClass: "custom-confirm-box",
-					animation: "zoom",
-					theme: "material"
+					animation: 'zoom',
+		    		closeAnimation: 'opacity',
+		    		animationBounce: 1.5,
+					theme: "modern",
+					type: "red",
+					icon: "ui icon",
+					useBootstrap: false,
+					boxWidth: '30%',
 				});
+				$('#customer').parent().addClass('error');
 			}
-			$('#customer').parent().addClass('error');
+				else {
+					$.ajax({
+						url: base_url() + 'ignite/checkOut',
+						type: "POST",
+						crossDomain: "TRUE",
+						data: {
+							'saleType' : saleType,
+							'customer' : byCustomer,
+							'customerId' : customerId,
+							'paymentType' : paymentType,
+							'depositAmt' : deposit,
+							'referId' : referId,
+							'order' : JSON.stringify(newOrders)
+						},
+						success: function(res){
+							console.log(res);
+							location.href = 'preview/' + res;
+							
+						}
+					});
+				}
 		}
 			else{
 
@@ -639,6 +739,7 @@ var orderAjax = function(){
 						'customerId' : customerId,
 						'paymentType' : paymentType,
 						'depositAmt' : deposit,
+						'referId' : referId,
 						'order' : JSON.stringify(newOrders)
 					},
 					success: function(res){
@@ -735,6 +836,8 @@ var orderAjax = function(){
 	let getCredit = function(e){
 		customerId = e.value;
 
+		console.log(customerId);
+
 		if(customerId != '' && customerId != 0){
 			$.ajax({
 				url: base_url() + 'ignite/getCreditByCustomer',
@@ -799,7 +902,7 @@ var orderAjax = function(){
 
 	let asCustomer = function(event) {
 		if(event.checked == true){
-			byCustomer = true;
+			byCustomer = 1;
 			$("#customer").parent().removeClass('disabled');
 			if($("#customer").val() != ''){
 				if($("#credit").parent().hasClass('disabled')){
@@ -808,7 +911,7 @@ var orderAjax = function(){
 			}
 		}
 			else{
-				byCustomer = false;
+				byCustomer = 0;
 				$("#customer").parent().addClass('disabled');
 				if(!$("#credit").parent().hasClass('disabled')){
 					$("#credit").parent().addClass('disabled');
@@ -835,8 +938,14 @@ var orderAjax = function(){
 				    content: 'You have already selected items, please remove items first.',
 				    backgroundDismiss: false,
 					columnClass: "custom-confirm-box",
-					animation: "zoom",
-					theme: "material"
+					animation: 'zoom',
+		    		closeAnimation: 'opacity',
+		    		animationBounce: 1.5,
+					theme: "modern",
+					type: "red",
+					icon: "ui icon",
+					useBootstrap: false,
+					boxWidth: '30%',
 				});
 				$(this).prop('checked', false);
 			}
@@ -858,8 +967,14 @@ var orderAjax = function(){
 					    content: 'You have already selected items, please remove items first.',
 					    backgroundDismiss: false,
 						columnClass: "custom-confirm-box",
-						animation: "zoom",
-						theme: "material"
+						animation: 'zoom',
+			    		closeAnimation: 'opacity',
+			    		animationBounce: 1.5,
+						theme: "modern",
+						type: "red",
+						icon: "ui icon",
+						useBootstrap: false,
+						boxWidth: '30%',
 					});
 					$(this).prop('checked', true);
 				}
@@ -872,7 +987,7 @@ var orderAjax = function(){
 		if(e.checked == true){
 			paymentType = e.value;
 			if(paymentType == "CRD"){
-				byCustomer = true;
+				byCustomer = 1;
 				$("#deposit").removeClass('disabled');
 				$("#byCustomer").prop('checked', true);
 				$("#customer").parent().removeClass('disabled');
@@ -888,7 +1003,7 @@ var orderAjax = function(){
 				else{
 					$("#deposit").addClass('disabled');
 					deposit = 0;
-					byCustomer = false;
+					byCustomer = 0;
 					$("#byCustomer").prop('checked', false);
 					$("#customer").parent().addClass('disabled');
 					if(!$("#credit").parent().hasClass('disabled')){
@@ -906,7 +1021,7 @@ var orderAjax = function(){
 
 	return {
 		init: function() {
-			return;
+			thisPath();
 		},
 		addItem: function(code, name, qty, price) {
 			createItem(code, name, qty, price);
@@ -964,7 +1079,7 @@ var priceAjax = function(){
 		let currentPath = window.location.pathname;
 		let arr = currentPath.split('/');
 		let itemId = arr[arr.length - 2];
-		if (currentPath.indexOf('POSv2/define-price') > 0) {
+		if (currentPath.indexOf(base_url() + 'define-price') > 0) {
 			// console.log(getPrices(itemId));
 			getPrices(itemId);
 		} else {
@@ -973,7 +1088,7 @@ var priceAjax = function(){
 	};
 
 	let getPrices = function(itemId){
-		fetch('http://localhost/POSv2/get-defined-price/' + itemId).then(function(res) {
+		fetch(base_url() + 'get-defined-price/' + itemId).then(function(res) {
 			return res.json();
 		}).then(function(data) {
 
@@ -1365,6 +1480,37 @@ var igniteAjax = function (){
 		}
 	}
 
+	let confirmDelivered = function(id) {
+		$.confirm({
+			animation: 'right',
+			animationBounce: 1.5,
+    		closeAnimation: 'scale',
+			theme: "Modern",
+			type: "orange",
+			icon: "ui icon",
+			useBootstrap: false,
+			boxWidth: '30%',
+			title: "<i class='ui icon shipping fast yellow'></i> Cash on Delivery",
+			backgroundDismiss: false,
+			columnClass: "custom-confirm-box",
+			content: "This action can not be undone, the data you selected will be changed permanently.",
+			buttons: {
+				Delivered: {
+					btnClass: "ui button green",
+					action: function() {
+						$(location).attr("href", 'update-delivery/' + id);
+					}
+				},
+				cancel: {
+					btnClass: "ui button orange",
+					action: function() {
+					//
+					}
+				}
+			}
+		});
+	}
+
 	return {
 		init: function (){
 			thisPath();
@@ -1377,6 +1523,9 @@ var igniteAjax = function (){
 		},
 		balanceCheck: function(input){
 			checkBalance(input);
+		},
+		delivered: function(id){
+			confirmDelivered(id);
 		}
 	}
 }();
@@ -1388,7 +1537,7 @@ let damageItem = (function () {
 		let currentPath = window.location.pathname;
 		let arr = currentPath.split('/');
 		let itemId = arr[arr.length - 2];
-		if (currentPath.indexOf('POSv2/modify-damage') > 0) {
+		if (currentPath.indexOf(base_url() + 'modify-damage') > 0) {
 			return true;
 		} else {
 			return false;
@@ -1648,6 +1797,28 @@ let chartJs = (function() {
 		init: init
 	};
 })();
+
+var referAjax = function() {
+	// init values
+	let newOrders = [];
+	let orderObject = {};
+	let temp = [];
+	let tempNew = [];
+
+	// Default
+	let byCustomer = false;
+	let saleType = 'R';
+	let paymentType = 'CSH';
+	let customerId = 0;
+	let deposit = 0;
+	
+
+	return {
+		init: function() {
+			thisPath();
+		}
+	}
+}();
 
 // function isOnline(no, yes) {
 // 	var xhr = XMLHttpRequest

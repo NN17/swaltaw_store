@@ -118,6 +118,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 	// Language for credits
 	$lang['invoices'] = 'Invoices';
+	$lang['payment'] = 'Payment';
 
 	// Language for Services
 	$lang['service'] = 'Services';

@@ -29,7 +29,9 @@
 				<th><?=$this->lang->line('inv_serial')?></th>
 				<th class="ui right aligned"><?=$this->lang->line('total_items')?></th>
 				<th class="ui right aligned"><?=$this->lang->line('total_amount')?></th>
+				<th><?=$this->lang->line('payment')?></th>
 				<th><?=$this->lang->line('status')?></th>
+				<th>Created By</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -47,7 +49,18 @@
 				<td class="ui right aligned"><?=$totalItems?></td>
 				<td class="ui right aligned"><?=number_format($totalAmount)?></td>
 				<td><?=$inv->paymentType?></td>
-				<td></td>
+				<td>
+					<?php if($inv->delivered == false && $inv->paymentType == 'COD'): ?>
+					<button class="ui tiny button circular orange icon" onclick="igniteAjax.delivered(<?=$inv->invoiceId?>)"><i class="ui icon shipping fast"></i></button>
+					<?php else: ?>
+					<button class="ui tiny button circular green icon"><i class="ui icon check circle"></i></button>
+					<?php endif; ?>
+				</td>
+				<td><?=$this->ignite_model->get_username($inv->created_by)?></td>
+				<td>
+					<a href="refer-invoice/<?=$inv->invoiceId?>" class="ui button icon circular tiny yellow"><i class="ui icon edit outline"></i></a>
+					<a href="javascript:void(0)" class="ui tiny button icon circular red" id="delete" data-url="del-invoice/<?=$inv->invoiceId?>"><i class="ui icon trash alternate outline"></i></a>
+				</td>
 			</tr>
 			<?php 
 				$i++;

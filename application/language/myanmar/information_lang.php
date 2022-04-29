@@ -118,6 +118,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 	// Language for credits
 	$lang['invoices'] = 'ပြေစာများ';
+	$lang['payment'] = 'ငွေပေးချေမှု';
 
 	// Language for Services
 	$lang['service'] = 'ဝန်ဆောင်မှုများ';

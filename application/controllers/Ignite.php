@@ -63,11 +63,33 @@ class Ignite extends CI_Controller {
         $customerId = $this->input->post('customerId');
         $payment = $this->input->post('paymentType');
         $depositAmt = $this->input->post('depositAmt');
+        $referId = $this->input->post('referId');
+
+        $deliveryState = 0;
 
         $arr = json_decode($this->input->post('order'));
 
         $max = $this->ignite_model->max_value('invoices_tbl', 'invoiceId');
         $serial = 'INV-'.$sType.'-'.date('myd').sprintf('%05d', $max+1);
+
+        if($referId > 0){
+            $invDetail = $this->ignite_model->get_limit_data('invoice_detail_tbl', 'invoiceId', $referId)->result();
+
+            $this->db->where('invoiceId', $referId);
+            $this->db->update('invoices_tbl', array('active', false));
+
+            foreach($invDetail as $detail){
+                $item = $this->ignite_model->get_limit_data('items_price_tbl', 'codeNumber', $detail->itemCode)->row();
+                $balance = $this->ignite_model->get_limit_data('stocks_balance_tbl', 'itemId', $item->itemId)->row();
+
+                $bal = array(
+                    'qty' => $balance->qty + $detail->itemQty
+                );
+
+                $this->db->where('itemId', $item->itemId);
+                $this->db->update('stocks_balance_tbl', $bal);
+            }
+        }
 
         $inv = array(
             'invoiceSerial' => $serial,
@@ -77,9 +99,12 @@ class Ignite extends CI_Controller {
             'customerId' => $customerId,
             'depositAmt' => $depositAmt,
             'discountAmt' => 0,
-            'created_date' => date('Y-m-d'),
+            'delivered' => $deliveryState,
+            'referId' => $referId,
+            'created_date' => date('Y-m-d H:i:s A'),
             'created_time' => date('H:i:s A'),
             'created_by' => $this->session->userdata('Id'),
+            'active' => true
         );
 
         $this->db->insert('invoices_tbl', $inv);
@@ -210,6 +235,36 @@ class Ignite extends CI_Controller {
             }
         $data['content'] = 'pages/invoices';
         $this->load->view('layouts/template', $data);
+    }
+
+    public function updateDelivery(){
+        $id = $this->uri->segment(2);
+
+        $this->db->where('invoiceId', $id);
+        $this->db->update('invoices_tbl',array('delivered' => true));
+        redirect('invoices/~');
+    }
+
+    public function referInvoice() {
+        $refId = $this->uri->segment(2);
+
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Invoices', 'invoices/~');
+        $this->breadcrumb->add('Refer Invoice');
+
+        $data['customers'] = $this->ignite_model->get_data('customers_tbl')->result();
+        $data['invoice'] = $this->ignite_model->get_limit_data('invoices_tbl', 'invoiceId', $refId)->row();
+        $data['content'] = 'pages/referInvoice';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function getReferInvoice() {
+        $invId = $this->input->get('invId');
+
+        $data['invoice'] = $this->ignite_model->get_limit_data('invoices_tbl', 'invoiceId', $invId)->row();
+        $data['detail'] = $this->ignite_model->get_referInvDetail($invId)->result();
+
+        echo json_encode($data, JSON_UNESCAPED_UNICODE);
     }
 
     /*
