@@ -14,6 +14,7 @@
 			<th><?=$this->lang->line('voucher_serial')?></th>
 			<th class="ui right aligned"><?=$this->lang->line('total_cat')?></th>
 			<th class="ui right aligned"><?=$this->lang->line('total_pamt')?></th>
+			<th></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -26,10 +27,19 @@
 		<tr>
 			<td><?=$i?></td>
 			<td><?=date('d-m-Y',strtotime($voucher->vDate))?></td>
-			<td><a href="purchase_detail/<?=$voucher->voucherId?>"><?=$this->ignite_model->supplier($voucher->supplier)?></a></td>
+			<td><a href="detail-purchase/<?=$voucher->voucherId?>"><?=$this->ignite_model->supplier($voucher->supplier)?></a></td>
 			<td><?=$voucher->vSerial?></td>
 			<td class="ui right aligned"><?=$total_item?></td>
 			<td class="ui right aligned"><strong><?=number_format($total_amount)?></strong></td>
+			<td class="ui right aligned">
+				<?php if($this->ignite_model->check_active_purchase($voucher->voucherId) == 'empty'): ?>
+					<button class="ui tiny button circular icon" onclick="igniteAjax.setAllPurchaseActive(<?=$voucher->voucherId?>)"><i class="icon shopping bag"></i></button>
+				<?php elseif($this->ignite_model->check_active_purchase($voucher->voucherId) == 'less'): ?>
+					<button class="ui tiny button circular icon yellow"><i class="icon shopping bag"></i></button>
+				<?php elseif($this->ignite_model->check_active_purchase($voucher->voucherId) == 'passed'): ?>
+					<button class="ui tiny button circular icon olive disabled"><i class="icon shopping bag"></i></button>
+				<?php endif; ?>
+			</td>
 			
 		</tr>
 		<?php 

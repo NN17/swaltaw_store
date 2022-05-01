@@ -76,7 +76,7 @@ class Ignite extends CI_Controller {
             $invDetail = $this->ignite_model->get_limit_data('invoice_detail_tbl', 'invoiceId', $referId)->result();
 
             $this->db->where('invoiceId', $referId);
-            $this->db->update('invoices_tbl', array('active', false));
+            $this->db->update('invoices_tbl', array('active' => false));
 
             foreach($invDetail as $detail){
                 $item = $this->ignite_model->get_limit_data('items_price_tbl', 'codeNumber', $detail->itemCode)->row();
@@ -228,10 +228,10 @@ class Ignite extends CI_Controller {
         $this->breadcrumb->add('Credits');
         $data['pType'] = $this->uri->segment(2);
         if($data['pType'] == '~'){
-            $data['invoices'] = $this->ignite_model->get_data_order('invoices_tbl', 'created_date', 'DESC')->result();
+            $data['invoices'] = $this->ignite_model->getAllInvoices()->result();
         }
             else{
-                $data['invoices'] = $this->ignite_model->get_limit_data_order('invoices_tbl','paymentType', $data['pType'], 'created_date', 'DESC')->result();
+                $data['invoices'] = $this->ignite_model->getInvoicesByType($data['pType'])->result();
             }
         $data['content'] = 'pages/invoices';
         $this->load->view('layouts/template', $data);
@@ -265,6 +265,27 @@ class Ignite extends CI_Controller {
         $data['detail'] = $this->ignite_model->get_referInvDetail($invId)->result();
 
         echo json_encode($data, JSON_UNESCAPED_UNICODE);
+    }
+
+    public function delInvoice() {
+        $invId = $this->uri->segment(2);
+
+        $invs = $this->ignite_model->get_invoice_items($invId)->result();
+        // Restore balance
+        foreach($invs as $inv){
+            $bal = $this->ignite_model->get_limit_data('stocks_balance_tbl', 'itemId', $inv->itemId)->row();
+            $upd = array(
+                'qty' => $bal->qty + $inv->itemQty
+            );
+
+            $this->db->where('itemId', $inv->itemId);
+            $this->db->update('stocks_balance_tbl', $upd);
+        }
+
+        $this->db->where('invoiceId', $invId);
+        $this->db->update('invoices_tbl', array('active' => false));
+
+        redirect('invoices/~');
     }
 
     /*
@@ -1019,7 +1040,8 @@ class Ignite extends CI_Controller {
             'voucherId' => $voucher,
             'purchaseDate' => $date,
             'quantity' => $qty,
-            'remark' => $remark
+            'remark' => $remark,
+            'active' => false
         );
 
         $this->db->insert('purchase_tbl', $arr);
@@ -1046,9 +1068,25 @@ class Ignite extends CI_Controller {
             $this->db->insert('stocks_balance_tbl', $arr);
         }
 
-        $this->session->set_tempdata('success', 'New Purchase Successfully Created.', 5);
+        $this->session->set_tempdata('success', 'New Purchase Successfully Created.', 3);
 
         redirect('purchase/0');
+    }
+
+    public function setAllPurchase() {
+        $vrId = $this->uri->segment(2);
+
+        $this->db->where('voucherId', $vrId);
+        $this->db->update('purchase_tbl', ['active' => true]);
+        redirect('purchase/0');
+    }
+
+    public function setPurchase() {
+        $pId = $this->uri->segment(2);
+
+        $this->db->where('purchaseId', $pId);
+        $this->db->update('purchase_tbl', ['active' => true]);
+        redirect($_SERVER['HTTP_REFERER']);
     }
 
     public function editPurchase(){
@@ -1062,6 +1100,8 @@ class Ignite extends CI_Controller {
 
         $data['items'] = $this->ignite_model->get_allItems();
         $data['warehouses'] = $this->ignite_model->get_data('warehouse_tbl')->result_array();
+        $data['vouchers'] = $this->ignite_model->get_data_order('vouchers_tbl','created_at', 'DESC')->result();
+        $data['suppliers'] = $this->ignite_model->get_data('supplier_tbl')->result();
 
         $data['content'] = 'pages/editPurchase';
         $this->load->view('layouts/template', $data);
@@ -1527,7 +1567,7 @@ class Ignite extends CI_Controller {
             $data['yYear'] = date('Y');
         }
 
-        $data['dailyData'] = $this->ignite_model->get_limit_data('invoices_tbl', 'created_date', $data['dDate'])->result();
+        $data['dailyData'] = $this->ignite_model->get_dailyReportsData($data['dDate'])->result();
 
         $data['content'] = 'pages/reports';
         $this->load->view('layouts/template', $data);
@@ -2074,6 +2114,19 @@ class Ignite extends CI_Controller {
         session_destroy();
 
         redirect(base_url());
+    }
+
+    public function exportPdf(){
+        $data['name'] = $this->uri->segment(2);
+
+        $data['content'] = 'htmlPdfs/'.str_replace('-','_',$data['name']);
+        $data['items'] = $this->ignite_model->get_stock_items()->result();
+        $data['warehouse'] = $this->ignite_model->get_limit_data('warehouse_tbl', 'activeState', true)->result();
+
+        $mpdf = new mPDF();
+        $html = $this->load->view('layouts/pdf_template', $data, true);
+        $mpdf->WriteHTML($html);
+        $mpdf->Output();
     }
 
     /*

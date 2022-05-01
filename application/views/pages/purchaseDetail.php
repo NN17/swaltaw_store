@@ -17,6 +17,7 @@
 			<th class="ui right aligned"><?=$this->lang->line('quantity')?></th>
 			<th class="ui right aligned"><?=$this->lang->line('amount')?></th>
 			<th><?=$this->lang->line('warehouse')?></th>
+			<th><?=$this->lang->line('status')?></th>
 			<th></th>
 		</tr>
 	</thead>
@@ -37,6 +38,13 @@
 			<td class="ui right aligned"><?=number_format($item['quantity'])?></td>
 			<td class="ui right aligned"><strong><?=number_format($item['price'] * $item['quantity'])?></strong></td>
 			<td><?=$item['warehouseName']?></td>
+			<td>
+				<?php if($this->ignite_model->check_purchase($item['purchaseId']) == false): ?>
+					<button class="ui tiny button circular icon" onclick="igniteAjax.setPurchaseActive(<?=$item['purchaseId']?>, '<?=$item['itemName']?>')"><i class="icon shopping bag"></i></button>
+				<?php else: ?>
+					<button class="ui tiny button circular icon olive disabled"><i class="icon shopping bag"></i></button>
+				<?php endif; ?>
+			</td>
 			<td>
 				<a href="edit-purchase/<?=$item['purchaseId']?>" class="ui button circular orange tiny icon disabled"><i class="ui icon cog"></i></a>
 				<a href="javascript:void(0)" class="ui button circular red tiny icon disabled" id="delete" data-url="ignite/delPurchase/<?=$item['purchaseId']?>"><i class="ui icon remove"></i></a>

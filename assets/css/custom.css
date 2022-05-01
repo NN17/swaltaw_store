@@ -152,3 +152,7 @@ input{
 tbody td{
 	/*font-family: 'Zawgyi-One' !important;*/
 }
+
+.text-red {
+	color:  red !important;
+}

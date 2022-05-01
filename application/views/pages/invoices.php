@@ -31,6 +31,7 @@
 				<th class="ui right aligned"><?=$this->lang->line('total_amount')?></th>
 				<th><?=$this->lang->line('payment')?></th>
 				<th><?=$this->lang->line('status')?></th>
+				<th>Referred</th>
 				<th>Created By</th>
 				<th></th>
 			</tr>
@@ -45,7 +46,7 @@
 			<tr>
 				<td class="ui right aligned"><?=$i?></td>
 				<td><?=date('d-M-Y',strtotime($inv->created_date))?></td>
-				<td><?=$inv->invoiceSerial?></td>
+				<td><a href="javascript:void(0)" onclick="igniteAjax.detailInv('<?=$inv->invoiceId?>')"><?=$inv->invoiceSerial?></a></td>
 				<td class="ui right aligned"><?=$totalItems?></td>
 				<td class="ui right aligned"><?=number_format($totalAmount)?></td>
 				<td><?=$inv->paymentType?></td>
@@ -56,6 +57,7 @@
 					<button class="ui tiny button circular green icon"><i class="ui icon check circle"></i></button>
 					<?php endif; ?>
 				</td>
+				<td><?=$inv->referId > 0?'<button class="ui button icon circular olive tiny" onclick="igniteAjax.detailInv('.$inv->referId.')"><i class="ui icon thumbtack"></i></button>':'-'?></td>
 				<td><?=$this->ignite_model->get_username($inv->created_by)?></td>
 				<td>
 					<a href="refer-invoice/<?=$inv->invoiceId?>" class="ui button icon circular tiny yellow"><i class="ui icon edit outline"></i></a>
@@ -68,4 +70,28 @@
 			?>
 		</tbody>
 	</table>
+</div>
+
+<!-- Invoice Detail Modal -->
+<div class="ui large modal" id="invDetail">
+	<div class="itemSearch-header">
+  		<h3 id="invDetailHead">Invoice Detail</h3>
+	</div>
+  	<div class="scrolling content">
+  			<div id="invDate" class="text-right"></div>
+    		<table class="ui table">
+    				<thead>
+    						<tr>
+    							<th>No</th>
+    							<th>Description</th>
+    							<th class="ui right aligned">Rate</th>
+    							<th class="ui right aligned">Qty</th>
+    							<th class="ui right aligned">Amount</th>
+    						</tr>
+    				</thead>
+    				<tbody id="invDetailBody">
+    					
+    				</tbody>
+    		</table>
+  	</div>
 </div>

@@ -134,7 +134,9 @@ $route['get-defined-price/(:num)'] = 'ignite/getDefinedPrice';
 $route['purchase/(:num)'] = 'ignite/purchase';
 $route['create-purchase'] = 'ignite/newPurchase';
 $route['edit-purchase/(:num)'] = 'ignite/editPurchase';
-$route['purchase_detail/(:num)'] = 'ignite/purchaseDetail';
+$route['detail-purchase/(:num)'] = 'ignite/purchaseDetail';
+$route['set-all-purchase/:num'] = 'ignite/setAllPurchase';
+$route['set-purchase/:num'] = 'ignite/setPurchase';
 
 /*
 * Routes for Sales
@@ -146,6 +148,7 @@ $route['create-transfer'] = 'ignite/newTransfer';
 * Routes for Stocks Balance
 */
 $route['stock-balance'] = 'ignite/stockBalance';
+$route['export-pdf/:any'] = 'ignite/exportPdf';
 
 /*
 * Routes for users

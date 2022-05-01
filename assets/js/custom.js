@@ -1,5 +1,5 @@
 function base_url() {
-	return "http://" + location.hostname + "/";
+	return "http://" + location.hostname + "/POSv2/";
 }	
 
 // setInterval(() => {
@@ -584,10 +584,10 @@ var orderAjax = function(){
 		let currentPath = window.location.pathname;
 		let arr = currentPath.split('/');
 		let invId = arr[arr.length - 1];
-		if (currentPath.indexOf(base_url() + 'refer-invoice') > 0) {
+		if (currentPath.indexOf('POSv2/refer-invoice') > 0) {
 			getInvoice(invId);
 		} else {
-			// console.log("don't have")
+			console.log(currentPath.indexOf(base_url() + 'refer-invoice'));
 		}
 	};
 
@@ -610,6 +610,8 @@ var orderAjax = function(){
 				referId = obj.invoice.invoiceId;
 
 				templateStructure();
+
+				console.log(saleType);
 			}
 		});
 	}
@@ -752,7 +754,7 @@ var orderAjax = function(){
 	};
 
 	let removeItemFunc = function(index){
-		newOrders.splice(index);
+		newOrders.splice(index, 1);
 		if($("#itemQty").parent().hasClass('error')){
 			$("#itemQty").parent().removeClass('error');
 		}
@@ -1079,7 +1081,7 @@ var priceAjax = function(){
 		let currentPath = window.location.pathname;
 		let arr = currentPath.split('/');
 		let itemId = arr[arr.length - 2];
-		if (currentPath.indexOf(base_url() + 'define-price') > 0) {
+		if (currentPath.indexOf('POSv2/define-price') > 0) {
 			// console.log(getPrices(itemId));
 			getPrices(itemId);
 		} else {
@@ -1279,10 +1281,10 @@ var priceAjax = function(){
 
 	let removeItemFunc = function(index, type){
 		if(type == 'P'){
-			purchasePrice.splice(index);
+			purchasePrice.splice(index, 1);
 		}
 			else if(type == 'S'){
-				salePrice.splice(index);
+				salePrice.splice(index, 1);
 			}
 
 		priceTemplate(type);
@@ -1511,6 +1513,68 @@ var igniteAjax = function (){
 		});
 	}
 
+	let allPurchaseActive = function(vrId) {
+		$.confirm({
+			animation: 'right',
+			animationBounce: 1.5,
+    		closeAnimation: 'scale',
+			theme: "Modern",
+			type: "orange",
+			icon: "ui icon",
+			useBootstrap: false,
+			boxWidth: '30%',
+			title: "<i class='ui icon shipping fast yellow'></i> Purchase Arrives",
+			backgroundDismiss: false,
+			columnClass: "custom-confirm-box",
+			content: "Pleas confirm, All purchase have been arrived.",
+			buttons: {
+				Arrived: {
+					btnClass: "ui button green",
+					action: function() {
+						$(location).attr("href", 'set-all-purchase/' + vrId);
+					}
+				},
+				Cancel: {
+					btnClass: "ui button orange",
+					action: function() {
+					//
+					}
+				}
+			}
+		});
+	}
+
+	let activatePurchase = function(pId, itemName) {
+		$.confirm({
+			animation: 'right',
+			animationBounce: 1.5,
+    		closeAnimation: 'scale',
+			theme: "Modern",
+			type: "orange",
+			icon: "ui icon",
+			useBootstrap: false,
+			boxWidth: '30%',
+			title: "<i class='ui icon shipping fast yellow'></i> Purchase Arrives",
+			backgroundDismiss: false,
+			columnClass: "custom-confirm-box",
+			content: "Pleas confirm, this purchase <strong class='text-red'>'"+ itemName +"'</strong> have been arrived.",
+			buttons: {
+				Arrived: {
+					btnClass: "ui button green",
+					action: function() {
+						$(location).attr("href", 'set-purchase/' + pId);
+					}
+				},
+				Cancel: {
+					btnClass: "ui button orange",
+					action: function() {
+					//
+					}
+				}
+			}
+		});
+	}
+
 	return {
 		init: function (){
 			thisPath();
@@ -1526,6 +1590,12 @@ var igniteAjax = function (){
 		},
 		delivered: function(id){
 			confirmDelivered(id);
+		},
+		setAllPurchaseActive: function(vrId) {
+			allPurchaseActive(vrId);
+		},
+		setPurchaseActive: function(pId, itemName) {
+			activatePurchase(pId, itemName);
 		}
 	}
 }();
@@ -1537,7 +1607,7 @@ let damageItem = (function () {
 		let currentPath = window.location.pathname;
 		let arr = currentPath.split('/');
 		let itemId = arr[arr.length - 2];
-		if (currentPath.indexOf(base_url() + 'modify-damage') > 0) {
+		if (currentPath.indexOf('POSv2/modify-damage') > 0) {
 			return true;
 		} else {
 			return false;

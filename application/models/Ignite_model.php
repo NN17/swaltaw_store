@@ -573,12 +573,15 @@ class Ignite_model extends CI_Model {
             ON ip.itemId = ct.related_item_id
             LEFT JOIN brands_tbl AS bd
             ON bd.brandId = ip.brandId
+            LEFT JOIN purchase_tbl AS ps
+            ON ps.itemId = sb.itemId
             WHERE (ip.itemName LIKE '$key%'
-            OR ip.itemModel LIKE '$key%'
+            OR ip.codeNumber LIKE '$key%'
             OR bd.brandName LIKE '$key%')
             AND sb.qty > 0
             AND wh.shop = true
             AND ct.type = '$type'
+            AND ps.active = true
             ");
         return $query->result_array();
     }
@@ -740,6 +743,13 @@ class Ignite_model extends CI_Model {
         return $query->invoice;
     }
 
+    function get_dailyReportsData($date) {
+        $data = $this->db->query("SELECT * FROM invoices_tbl
+            WHERE created_date BETWEEN '$date 00:00:00' AND '$date 23:59:59'
+            ");
+        return $data;
+    }
+
     function get_M_Total($day, $month, $year){
         $date = $year.'-'.sprintf('%02d',$month).'-'.sprintf('%02d',$day);
         $query = $this->db->query("SELECT * FROM invoices_tbl AS inv
@@ -749,7 +759,7 @@ class Ignite_model extends CI_Model {
             ON ip.codeNumber =  detail.itemCode
             LEFT JOIN count_type_tbl AS ct
             ON ct.related_item_id = ip.itemId
-            WHERE inv.created_date = '$date'
+            WHERE inv.created_date BETWEEN '$date 00:00:00' AND '$date 23:59:59'
             AND ct.type = 'P'
             ")->result();
 
@@ -763,7 +773,7 @@ class Ignite_model extends CI_Model {
         }
 
         $query2 = $this->db->query("SELECT * FROM invoices_tbl
-                WHERE created_date = '$date'
+                WHERE created_date BETWEEN '$date 00:00:00' AND '$date 23:59:59'
                 ")->result();
         $disTotal = 0;
         foreach($query2 as $inv){
@@ -864,6 +874,68 @@ class Ignite_model extends CI_Model {
     function get_referInvDetail($invId) {
         $query = $this->db->query("SELECT itemCode AS code, itemName AS name, itemPrice AS price, itemQty AS qty FROM invoice_detail_tbl WHERE invoiceId = $invId");
         return $query;
+    }
+
+    function getAllInvoices() {
+        $data = $this->db->query("SELECT * FROM invoices_tbl
+            WHERE active = true
+            ORDER BY created_date DESC
+            ");
+        return $data;
+    }
+
+    function getInvoicesByType($type) {
+        $data = $this->db->query("SELECT * FROM invoices_tbl
+            WHERE active = true
+            AND paymentType = '$type'
+            ORDER BY created_date DESC
+            ");
+        return $data;
+    }
+
+    function get_invoice_items($invId) {
+        $data = $this->db->query("SELECT * FROM invoice_detail_tbl AS inv
+            LEFT JOIN items_price_tbl AS ip
+            ON ip.codeNumber = inv.itemCode
+            WHERE inv.invoiceId = $invId
+            ");
+        return $data;
+    }
+
+    function check_active_purchase($vrId) {
+        $this->db->where('voucherId', $vrId);
+        $data = $this->db->get('purchase_tbl')->result();
+
+        $counter = count($data);
+        $active = 0;
+        foreach($data as $row) {
+            if($row->active){
+                $active ++;
+            }
+        }
+
+        if($active == 0) {
+            return 'empty';
+        }
+            elseif ($active < $counter) {
+                return 'less';
+            }
+                elseif($active == $counter) {
+                    return 'passed';
+                }
+    }
+
+    function check_purchase($pId) {
+        $this->db->where('purchaseId', $pId);
+        $this->db->where('active', true);
+        $data = $this->db->get('purchase_tbl')->row();
+
+        if(empty($data)) {
+            return false;
+        }
+            else{
+                return true;
+            }
     }
 
 }

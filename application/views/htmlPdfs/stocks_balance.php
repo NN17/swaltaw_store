@@ -1,15 +1,4 @@
-<div class="ui clearing segment blue">
-	<h3 class="ui left floated blue header"><?=$this->lang->line('stocks')?></h3>
-
-	<a href="create-purchase" class="ui right floated button olive">
-	    <i class="icon file excel outline"></i> Export Excel
-	</a>
-	<a href="export-pdf/stocks-balance" class="ui right floated button red">
-	    <i class="icon file pdf outline"></i> Export PDF
-	</a>
-</div>
-
-<table class="ui celled table" id="dataTable">
+<table class="ui celled table">
 	<thead>
 		<tr>
 			<th class="ui right aligned">#</th>
@@ -40,23 +29,7 @@
 				<?php $totalQty = 0; ?>
 				<?php foreach($warehouse as $row): ?>
 					<?php 
-						// $pItems = $this->ignite_model->get_purchase_items_by_warehouse($row->warehouseId, $item->itemId)->row(); 
-						// $transItems = $this->ignite_model->get_transfer_items_by_warehouse($row->warehouseId, $item->itemId)->row();
-						// // Define purchase quantity is greater than 0
-						// if($pItems->qty > 0){
-						// 	$pQty = $pItems->qty;
-						// }else{
-						// 	$pQty = 0;
-						// }
-						// // Definte transfer qty is greater than 0
-						// if($transItems->qty > 0){
-						// 	$tQty = $transItems->qty;
-						// }else{
-						// 	$tQty = 0;
-						// }
-
-						// $diff = $pQty-$tQty;
-						// $totalQty += $diff;
+						
 						$balance = $this->ignite_model->get_limit_datas('stocks_balance_tbl', ['itemId' => $item->itemId, 'warehouseId' => $row->warehouseId])->row();
 						if(isset($balance->qty)){
 							$totalQty += $balance->qty;
