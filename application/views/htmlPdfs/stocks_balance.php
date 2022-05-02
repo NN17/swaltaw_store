@@ -1,4 +1,4 @@
-<table class="ui celled table">
+<table class="table table-striped table-hover myanmar">
 	<thead>
 		<tr>
 			<th class="ui right aligned">#</th>

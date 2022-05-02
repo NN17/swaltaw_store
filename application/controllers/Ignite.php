@@ -1,4 +1,5 @@
 <?php
+use Dompdf\Dompdf;
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Ignite extends CI_Controller {
@@ -2123,10 +2124,16 @@ class Ignite extends CI_Controller {
         $data['items'] = $this->ignite_model->get_stock_items()->result();
         $data['warehouse'] = $this->ignite_model->get_limit_data('warehouse_tbl', 'activeState', true)->result();
 
-        $mpdf = new mPDF();
-        $html = $this->load->view('layouts/pdf_template', $data, true);
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A4-L']);
+        $html = $this->load->view('layouts/pdf_template',$data,true);
         $mpdf->WriteHTML($html);
         $mpdf->Output();
+    }
+
+    public function exportExcel() {
+        $alphabet = range('A', 'Z');
+        echo $alphabet[0];
+
     }
 
     /*

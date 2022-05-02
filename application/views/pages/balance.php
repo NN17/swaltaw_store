@@ -1,10 +1,10 @@
 <div class="ui clearing segment blue">
 	<h3 class="ui left floated blue header"><?=$this->lang->line('stocks')?></h3>
 
-	<a href="create-purchase" class="ui right floated button olive">
+	<a href="export-excel" class="ui right floated button olive">
 	    <i class="icon file excel outline"></i> Export Excel
 	</a>
-	<a href="export-pdf/stocks-balance" class="ui right floated button red">
+	<a href="export-pdf/stocks-balance" target="_blank" class="ui right floated button red">
 	    <i class="icon file pdf outline"></i> Export PDF
 	</a>
 </div>

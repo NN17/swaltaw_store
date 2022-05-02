@@ -149,6 +149,7 @@ $route['create-transfer'] = 'ignite/newTransfer';
 */
 $route['stock-balance'] = 'ignite/stockBalance';
 $route['export-pdf/:any'] = 'ignite/exportPdf';
+$route['export-excel'] = 'ignite/exportExcel';
 
 /*
 * Routes for users

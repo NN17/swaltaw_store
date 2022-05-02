@@ -15,10 +15,9 @@ class Generater extends CI_Controller {
 		$data['items'] = $this->ignite_model->get_stock_items()->result();
         $data['warehouse'] = $this->ignite_model->get_limit_data('warehouse_tbl', 'activeState', true)->result();
 
-		$mpdf = new \Mpdf\Mpdf();
+		$this->load->library('pdf');
 		$html = $this->load->view('layouts/pdf_template', $data, true);
-		$mpdf->WriteHTML($html);
-		$mpdf->Output();
+		$this->pdf->createPDF($html, 'mypdf', false);
 	}
 
 }

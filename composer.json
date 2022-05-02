@@ -13,7 +13,9 @@
 	"require": {
 		"php": ">=5.3.7",
 		"mike42/escpos-php": "^3.0",
-		"mpdf/mpdf": "^6.1"
+		"mpdf/mpdf": "^8.0",
+		"dompdf/dompdf": "^1.2",
+		"phpoffice/phpspreadsheet": "^1.23"
 	},
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"

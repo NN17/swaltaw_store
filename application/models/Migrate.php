@@ -133,7 +133,7 @@ class Migrate extends CI_Model {
                 'description' => 'Reports for sales, stocks in and stock out etc'
               ),
               array(
-                'machine' => 'invoices',
+                'machine' => 'invoices/~',
                 'name' => 'Invoices',
                 'lang_name' => 'invoices',
                 'icon_class' => 'folder outline',
@@ -552,6 +552,9 @@ class Migrate extends CI_Model {
           ),
           'remark' => array(
             'type' => 'TEXT'
+          ),
+          'active' => array(
+            'type' => 'BOOLEAN'
           ),
         ));
 

@@ -587,7 +587,7 @@ var orderAjax = function(){
 		if (currentPath.indexOf('POSv2/refer-invoice') > 0) {
 			getInvoice(invId);
 		} else {
-			console.log(currentPath.indexOf(base_url() + 'refer-invoice'));
+			// console.log(currentPath.indexOf(base_url() + 'refer-invoice'));
 		}
 	};
 
@@ -1093,7 +1093,7 @@ var priceAjax = function(){
 		fetch(base_url() + 'get-defined-price/' + itemId).then(function(res) {
 			return res.json();
 		}).then(function(data) {
-
+			console.log(data);
 			data.forEach(function(x){
 				if(x.type == 'P'){
 
@@ -1108,7 +1108,7 @@ var priceAjax = function(){
 					purchasePrice.push(purchaseObj);
 					priceTemplate(x.type);
 				}
-					else if(x.type == 'S'){
+					else {
 						saleObj = {
 							type: x.type,
 							countType : x.count_type,
@@ -1252,7 +1252,7 @@ var priceAjax = function(){
 			$("#p_body").html(html);
 			$(".tiny.modal.purchase").modal('hide');
 		}
-			else if(type == 'S'){
+			else {
 				let html = '';
 
 				if(salePrice.length > 0){
@@ -1283,7 +1283,7 @@ var priceAjax = function(){
 		if(type == 'P'){
 			purchasePrice.splice(index, 1);
 		}
-			else if(type == 'S'){
+			else {
 				salePrice.splice(index, 1);
 			}
 
