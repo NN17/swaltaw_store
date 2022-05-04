@@ -611,7 +611,7 @@ var orderAjax = function(){
 
 				templateStructure();
 
-				console.log(saleType);
+				// console.log(saleType);
 			}
 		});
 	}
@@ -683,7 +683,7 @@ var orderAjax = function(){
 		$("#subTotal").html(total);
 		$('#depositAmt').html(deposit);
 		$("#grandTotal").html(gTotal);
-		$("#saleCode").val('').focus();
+		$("#saleCode").val('');
 		$("#itemQty").val('');
 		$("#itemPrice").val('');
 	};
@@ -722,7 +722,7 @@ var orderAjax = function(){
 							'order' : JSON.stringify(newOrders)
 						},
 						success: function(res){
-							console.log(res);
+							// console.log(res);
 							location.href = 'preview/' + res;
 							
 						}
@@ -745,7 +745,7 @@ var orderAjax = function(){
 						'order' : JSON.stringify(newOrders)
 					},
 					success: function(res){
-						console.log(res);
+						// console.log(res);
 						location.href = 'preview/' + res;
 						
 					}
@@ -803,7 +803,7 @@ var orderAjax = function(){
 		$("#itemPrice").val(price);
 		setTimeout(function() { 
 				$('input[name="itemQty"]').focus().select();
-			}, 300);
+			}, 1000);
 	}
 
 	let getItemByCode = function(code){
@@ -822,14 +822,14 @@ var orderAjax = function(){
 					$("#itemPrice").val(res.wholesalePrice);
 					setTimeout(function() { 
 						$('input[name="itemQty"]').focus().select();
-					}, 300);
+					}, 1000);
 				}else{
 					$("#saleCode").data('name', res.itemName);
 					$("#itemQty").val(1).data('balance', res.qty);
 					$("#itemPrice").val(res.retailPrice);
 					setTimeout(function() { 
 						$('input[name="itemQty"]').focus().select();
-					}, 300);
+					}, 1000);
 				}
 			}
 		});
@@ -861,7 +861,7 @@ var orderAjax = function(){
 
 			setTimeout(function(){
 				$("#saleCode").focus();
-			},300);
+			},1000);
 		}
 	}
 
@@ -933,7 +933,7 @@ var orderAjax = function(){
 				$("#itemPrice").val('');
 				setTimeout(function(){
 					$("#saleCode").focus();
-				},300);
+				},1000);
 			}else{
 				$.alert({
 				    title: 'Alert !',
@@ -962,7 +962,7 @@ var orderAjax = function(){
 					$("#itemPrice").val('');
 					setTimeout(function(){
 						$("#saleCode").focus();
-					},300);
+					},1000);
 				}else{
 					$.alert({
 					    title: 'Alert !',
@@ -1000,7 +1000,7 @@ var orderAjax = function(){
 				}
 				setTimeout(function(){
 					$("#saleCode").focus();
-				},300);
+				},1000);
 			}
 				else{
 					$("#deposit").addClass('disabled');
@@ -1014,7 +1014,7 @@ var orderAjax = function(){
 					templateStructure();
 					setTimeout(function(){
 						$("#saleCode").focus();
-					},300);
+					},1000);
 				}
 		}
 		
@@ -1171,7 +1171,7 @@ var priceAjax = function(){
 			}else{
 				console.log('false');
 			}
-		}else if(type == 'S'){
+		}else{
 			let s_type = $('#s_countType').val();
 			let s_qty = $('#s_qty').val();
 			let s_price = $("#s_price").val();
@@ -1213,7 +1213,7 @@ var priceAjax = function(){
 
 				salePrice.push(saleObj);
 
-				priceTemplate('S');
+				priceTemplate('R');
 			}else{
 				console.log('false');
 			}
@@ -1497,13 +1497,13 @@ var igniteAjax = function (){
 			columnClass: "custom-confirm-box",
 			content: "This action can not be undone, the data you selected will be changed permanently.",
 			buttons: {
-				Delivered: {
+				Receive_Payment: {
 					btnClass: "ui button green",
 					action: function() {
 						$(location).attr("href", 'update-delivery/' + id);
 					}
 				},
-				cancel: {
+				Cancel: {
 					btnClass: "ui button orange",
 					action: function() {
 					//
@@ -1575,6 +1575,37 @@ var igniteAjax = function (){
 		});
 	}
 
+	let paymentReceived = function(invId) {
+		$.confirm({
+			animation: 'right',
+			animationBounce: 1.5,
+    		closeAnimation: 'scale',
+			theme: "Modern",
+			type: "orange",
+			icon: "ui icon",
+			useBootstrap: false,
+			boxWidth: '30%',
+			title: "<i class='ui icon hourglass outline yellow'></i> Received Payment",
+			backgroundDismiss: false,
+			columnClass: "custom-confirm-box",
+			content: "This action can not be undone, the data you selected will be changed permanently.",
+			buttons: {
+				Receive_Payment: {
+					btnClass: "ui button green",
+					action: function() {
+						$(location).attr("href", 'update-payment/' + invId);
+					}
+				},
+				Cancel: {
+					btnClass: "ui button orange",
+					action: function() {
+					//
+					}
+				}
+			}
+		});
+	}
+
 	return {
 		init: function (){
 			thisPath();
@@ -1596,6 +1627,9 @@ var igniteAjax = function (){
 		},
 		setPurchaseActive: function(pId, itemName) {
 			activatePurchase(pId, itemName);
+		},
+		receivePayment: function(invId) {
+			paymentReceived(invId)
 		}
 	}
 }();

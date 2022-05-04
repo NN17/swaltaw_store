@@ -177,6 +177,7 @@ $route['update-delivery/:num'] = 'ignite/updateDelivery';
 $route['refer-invoice/:num'] = 'ignite/referInvoice';
 $route['del-invoice/:num'] = 'ignite/delInvoice';
 $route['get-invoice'] = 'ignite/getReferInvoice';
+$route['update-payment/:num'] = 'ignite/updatePayment';
 
 /*
 * Routes for print Receipt

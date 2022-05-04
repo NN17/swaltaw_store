@@ -539,7 +539,7 @@ class Ignite_model extends CI_Model {
             ON ip.itemId = ctype.related_item_id
             WHERE ip.active = true
             AND ctype.type = 'P'
-            ORDER BY ip.itemName
+            ORDER BY ip.codeNumber
             ");
 
         return $query;
@@ -888,6 +888,26 @@ class Ignite_model extends CI_Model {
         $data = $this->db->query("SELECT * FROM invoices_tbl
             WHERE active = true
             AND paymentType = '$type'
+            ORDER BY created_date DESC
+            ");
+        return $data;
+    }
+
+    function getCODinvoices() {
+        $data = $this->db->query("SELECT * FROM invoices_tbl
+            WHERE active = true
+            AND paymentType = 'COD'
+            AND delivered = false
+            ORDER BY created_date DESC
+            ");
+        return $data;
+    }
+
+    function getMBKinvoices() {
+        $data = $this->db->query("SELECT * FROM invoices_tbl
+            WHERE active = true
+            AND paymentType = 'MBK'
+            AND pReceived = false
             ORDER BY created_date DESC
             ");
         return $data;

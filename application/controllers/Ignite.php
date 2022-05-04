@@ -37,9 +37,18 @@ class Ignite extends CI_Controller {
     public function login(){
         $username = $this->input->post('username', TRUE);
         $password = $this->input->post('psw', TRUE);
+        $remember = $this->input->post('remember');
 
         $login = $this->ignite_model->loginState($username, $password);
         if($login['status']){
+            if(!empty($remember)){
+                set_cookie ("loginId", $username, time()+ (10 * 365 * 24 * 60 * 60));  
+                set_cookie ("loginPass", $password,  time()+ (10 * 365 * 24 * 60 * 60));
+            }
+                else{
+                    set_cookie ("loginId",""); 
+                    set_cookie ("loginPass","");
+                }
             redirect('home');
             // echo 'true';
         }else{
@@ -228,12 +237,18 @@ class Ignite extends CI_Controller {
         $this->breadcrumb->add('Home', 'home');
         $this->breadcrumb->add('Credits');
         $data['pType'] = $this->uri->segment(2);
-        if($data['pType'] == '~'){
+        if($data['pType'] == '~') {
             $data['invoices'] = $this->ignite_model->getAllInvoices()->result();
         }
-            else{
-                $data['invoices'] = $this->ignite_model->getInvoicesByType($data['pType'])->result();
+            elseif($data['pType'] == 'COD') {
+                $data['invoices'] = $this->ignite_model->getCODinvoices()->result();
             }
+                elseif($data['pType'] == 'MBK') {
+                    $data['invoices'] = $this->ignite_model->getMBKinvoices()->result();
+                }
+                    else{
+                        $data['invoices'] = $this->ignite_model->getInvoicesByType($data['pType'])->result();
+                    }
         $data['content'] = 'pages/invoices';
         $this->load->view('layouts/template', $data);
     }
@@ -286,6 +301,14 @@ class Ignite extends CI_Controller {
         $this->db->where('invoiceId', $invId);
         $this->db->update('invoices_tbl', array('active' => false));
 
+        redirect('invoices/~');
+    }
+
+    public function updatePayment() {
+        $invId = $this->uri->segment(2);
+
+        $this->db->where('invoiceId', $invId);
+        $this->db->update('invoices_tbl',array('pReceived' => true));
         redirect('invoices/~');
     }
 
@@ -2131,9 +2154,10 @@ class Ignite extends CI_Controller {
     }
 
     public function exportExcel() {
-        $alphabet = range('A', 'Z');
-        echo $alphabet[0];
-
+       $this->load->library('excel');
+       $balance = $this->ignite_model->get_stock_items()->result();
+       $warehouse = $this->ignite_model->get_limit_data('warehouse_tbl', 'activeState', true)->result();
+       $this->excel->create($balance, $warehouse);
     }
 
     /*

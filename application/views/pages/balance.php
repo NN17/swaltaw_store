@@ -24,6 +24,7 @@
 			<?php endforeach; ?>
 			<!-- End of warehouse loop -->
 			<th class="ui right aligned">Total</th>
+			<th class="ui right aligned">Amount</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -66,8 +67,10 @@
 				<?php endforeach; ?>
 				<!-- End of warehouse loop -->
 				<td class="ui right aligned <?=$totalQty<5?'negative':'positive'?>"><strong><?=$totalQty?></strong></td>
+				<td class="ui right aligned"><?=number_format($totalQty * $item->price)?></td>
 			</tr>
 			<?php $i++; ?>
 		<?php endforeach; ?>
+		
 	</tbody>
 </table>

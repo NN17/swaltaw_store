@@ -25,6 +25,7 @@
     <link rel="stylesheet" type="text/css" href="semantic/components/form.css">
     <link rel="stylesheet" type="text/css" href="semantic/components/input.css">
     <link rel="stylesheet" type="text/css" href="semantic/components/button.css">
+    <link rel="stylesheet" type="text/css" href="semantic/components/checkbox.css">
     <link rel="stylesheet" type="text/css" href="semantic/components/list.css">
     <link rel="stylesheet" type="text/css" href="semantic/components/message.css">
     <link rel="stylesheet" type="text/css" href="semantic/components/icon.css">
@@ -118,20 +119,25 @@
             <?=form_open('ignite/login','class="ui large form"')?>
             <div class="ui stacked segment auth-form-body">
                 <div class="field">
-                <div class="ui left icon input">
-                    <i class="user icon"></i>
-                    <!-- <input type="text" name="email" placeholder="E-mail address"> -->
-                    <?=form_input('username', set_value('username'), 'placeholder="Username"')?>
-                </div>
+                    <div class="ui left icon input">
+                        <i class="user icon"></i>
+                        <input type="text" name="username" value="<?=isset($_COOKIE['loginId'])?$_COOKIE['loginId']:''?>" placeholder="Username">
+                    </div>
                 </div>
                 <div class="field">
-                <div class="ui left icon input">
-                    <i class="lock icon"></i>
-                    <!-- <input type="password" name="password" placeholder="Password"> -->
-                    <?=form_password('psw', set_value('psw'), 'placeholder="Password"')?>
-                </div>
+                    <div class="ui left icon input">
+                        <i class="lock icon"></i>
+                       <input type="password" name="psw" value="<?=isset($_COOKIE['loginPass'])?$_COOKIE['loginPass']:''?>" placeholder="Password">
+                    </div>
                 </div>
                 <?=form_submit('save','Login', 'class="ui fluid large red submit button"')?>
+
+                <div class="field" style="margin-top:20px"> 
+                    <div class="ui checkbox">
+                        <input type="checkbox" name="remember" <?=isset($_COOKIE['loginId'])?'checked':''?>>
+                        <label>Remember Me</label>
+                    </div>
+                </div>
                 <!-- <div class="ui fluid large teal submit button">Login</div> -->
             </div>
 

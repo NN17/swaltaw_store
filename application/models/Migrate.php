@@ -715,6 +715,9 @@ class Migrate extends CI_Model {
          'delivered' => array(
             'type' => 'BOOLEAN'
          ),
+         'pReceived' => array(
+            'type' => 'BOOLEAN'
+         ),
          'referId' => array(
             'type' => 'INT',
             'constraint' => 8

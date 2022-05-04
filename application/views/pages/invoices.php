@@ -53,6 +53,8 @@
 				<td>
 					<?php if($inv->delivered == false && $inv->paymentType == 'COD'): ?>
 					<button class="ui tiny button circular orange icon" onclick="igniteAjax.delivered(<?=$inv->invoiceId?>)"><i class="ui icon shipping fast"></i></button>
+					<?php elseif($inv->pReceived == false && $inv->paymentType == 'MBK'): ?>
+						<button class="ui tiny button circular orange icon" onclick="igniteAjax.receivePayment(<?=$inv->invoiceId?>)"><i class="ui icon hourglass outline"></i></button>
 					<?php else: ?>
 					<button class="ui tiny button circular green icon"><i class="ui icon check circle"></i></button>
 					<?php endif; ?>
