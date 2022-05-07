@@ -55,6 +55,7 @@ $route['translate_uri_dashes'] = FALSE;
 
 $route['home'] = 'ignite/home';
 $route['preview/(:num)'] = 'ignite/checkOutPreview';
+$route['payment-refund'] = 'ignite/refundPayment';
 
 /*
 * Route for Language Switching

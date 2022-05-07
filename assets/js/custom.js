@@ -650,6 +650,8 @@ var orderAjax = function(){
 
 
 		templateStructure();
+
+		$('#saleCode').focus();
 	};
 
 	let templateStructure = function(){
@@ -892,11 +894,7 @@ var orderAjax = function(){
 			},
 			success: function(res){
 				if(res == 'success'){
-					var gTotal = total - discount;
-
-					$("#disTotal").html(Intl.NumberFormat().format(discount));
-					$("#gTotal").html(Intl.NumberFormat().format(gTotal));
-					$("#discountModal").modal('hide');
+					location.href = 'preview/' + invId;
 				}
 			}
 		});
@@ -1606,6 +1604,63 @@ var igniteAjax = function (){
 		});
 	}
 
+	let paymentRefund = function(e, inv) {
+		if(e.keyCode == 13){
+			let total = $('#gTotal').html();
+			total = parseInt(total.replace(',',''));
+			console.log(total);
+
+			if(e.target.value == ''){
+				$.alert({
+				    title: 'Invalid Input',
+				    content: 'Payment should not be NULL !',
+				    backgroundDismiss: false,
+					columnClass: "custom-confirm-box",
+					animation: 'top',
+		    		closeAnimation: 'opacity',
+		    		animationBounce: 1.5,
+					theme: "modern",
+					type: "red",
+					icon: "ui icon",
+					useBootstrap: false,
+					boxWidth: '30%',
+				});
+			}
+				else if(e.target.value < total){
+					$.alert({
+					    title: 'Invalid Input',
+					    content: 'Payment should not be less than Total Amount !',
+					    backgroundDismiss: false,
+						columnClass: "custom-confirm-box",
+						animation: 'top',
+			    		closeAnimation: 'opacity',
+			    		animationBounce: 1.5,
+						theme: "modern",
+						type: "red",
+						icon: "ui icon",
+						useBootstrap: false,
+						boxWidth: '30%',
+					});
+					$('#payment').focus().select();
+				}
+					else{
+						let payment = e.target.value;
+						$.ajax({
+							url: base_url() + 'payment-refund',
+							type: 'POST',
+							crossDomain: 'TRUE',
+							data: {
+								'payment' : payment,
+								'invId' : inv
+							},
+							success: function(res){
+								location.href = 'preview/' + inv;
+							}
+						});
+					}
+		}
+	}
+
 	return {
 		init: function (){
 			thisPath();
@@ -1630,6 +1685,9 @@ var igniteAjax = function (){
 		},
 		receivePayment: function(invId) {
 			paymentReceived(invId)
+		},
+		refundPayment: function(e, inv) {
+			paymentRefund(e, inv);
 		}
 	}
 }();

@@ -712,6 +712,10 @@ class Migrate extends CI_Model {
             'type' => 'INT',
             'constraint' => 8
          ),
+         'payment' => array(
+            'type' => 'INT',
+            'constraint' => 8
+         ),
          'delivered' => array(
             'type' => 'BOOLEAN'
          ),

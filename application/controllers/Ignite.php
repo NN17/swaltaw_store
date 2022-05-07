@@ -109,6 +109,7 @@ class Ignite extends CI_Controller {
             'customerId' => $customerId,
             'depositAmt' => $depositAmt,
             'discountAmt' => 0,
+            'payment' => 0,
             'delivered' => $deliveryState,
             'referId' => $referId,
             'created_date' => date('Y-m-d H:i:s A'),
@@ -179,10 +180,18 @@ class Ignite extends CI_Controller {
         $data['discounts'] = $this->ignite_model->get_limit_data('discounts_tbl', 'active', true)->result();
         $data['invoice'] = $this->ignite_model->get_limit_data('invoices_tbl','invoiceId', $invId)->row();
         $data['items'] = $this->ignite_model->get_limit_data('invoice_detail_tbl', 'invoiceId',$invId)->result();
-        $data['credit'] = $this->ignite_model->get_limit_data('credits_tbl', 'invoiceId', $invId)->row();
-        $data['customer'] = $this->ignite_model->get_limit_data('customers_tbl', 'customerId', @$data['credit']->customerId)->row();
+        
         $data['content'] = 'pages/invoicePreview';
         $this->load->view('layouts/template', $data);
+    }
+
+    public function refundPayment() {
+        $payment = $this->input->post('payment');
+        $invId = $this->input->post('invId');
+
+        $this->db->where('invoiceId', $invId);
+        $this->db->update('invoices_tbl', ['payment' => $payment]);
+        echo 'Success';
     }
 
     public function getCreditByCustomer(){

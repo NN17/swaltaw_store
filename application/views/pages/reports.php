@@ -71,8 +71,8 @@
 					<td><a href="javascript:void(0)" onclick="igniteAjax.detailInv('<?=$dRow->invoiceId?>')"><?=$dRow->invoiceSerial?></a></td>
 					<td class="ui right aligned"><?=number_format($dTotalItems)?></td>
 					<td class="ui right aligned"><?=number_format($dTotalAmount)?></td>
-					<td class="ui right aligned"><?=number_format($dNetProfit->sTotal - ($dNetProfit->pTotal + $dRow->discountAmt))?></td>
-					<td class="ui center aligned"><?=round((($dNetProfit->sTotal - ($dNetProfit->pTotal + $dRow->discountAmt))/$dNetProfit->pTotal) * 100, 2)?> %</td>
+					<td class="ui right aligned"><?=number_format($dNetProfit['sTotal'] - ($dNetProfit['pTotal'] + $dRow->discountAmt))?></td>
+					<td class="ui center aligned"><?=round((($dNetProfit['sTotal'] - ($dNetProfit['pTotal'] + $dRow->discountAmt))/$dNetProfit['pTotal']) * 100, 2)?> %</td>
 				</tr>
 			<?php
 				$i ++; 

@@ -720,15 +720,21 @@ class Ignite_model extends CI_Model {
     }
 
     function get_dNetProfit($invID){
-        $query = $this->db->query("SELECT SUM(ct.price) AS pTotal, SUM(idetail.itemPrice) AS sTotal FROM invoice_detail_tbl AS idetail
+        $query = $this->db->query("SELECT * FROM invoice_detail_tbl AS idetail
             LEFT JOIN items_price_tbl AS ip
             ON ip.codeNumber = idetail.itemCode
             LEFT JOIN count_type_tbl AS ct
             ON ct.related_item_id = ip.itemId
             WHERE idetail.invoiceId = $invID
             AND ct.type = 'p'
-            ")->row();
-        return $query;
+            ")->result();
+        $sTotal = 0;
+        $pTotal = 0;
+        foreach($query as $row) {
+            $sTotal += $row->itemPrice * $row->itemQty;
+            $pTotal += $row->price * $row->itemQty;
+        }
+        return ['sTotal' => $sTotal, 'pTotal' => $pTotal];
     }
 
     function get_dMarginRate($invID){
@@ -746,6 +752,7 @@ class Ignite_model extends CI_Model {
     function get_dailyReportsData($date) {
         $data = $this->db->query("SELECT * FROM invoices_tbl
             WHERE created_date BETWEEN '$date 00:00:00' AND '$date 23:59:59'
+            AND active = true
             ");
         return $data;
     }
@@ -761,6 +768,7 @@ class Ignite_model extends CI_Model {
             ON ct.related_item_id = ip.itemId
             WHERE inv.created_date BETWEEN '$date 00:00:00' AND '$date 23:59:59'
             AND ct.type = 'P'
+            AND inv.active = true
             ")->result();
 
         $total = 0;
@@ -773,7 +781,9 @@ class Ignite_model extends CI_Model {
         }
 
         $query2 = $this->db->query("SELECT * FROM invoices_tbl
-                WHERE created_date BETWEEN '$date 00:00:00' AND '$date 23:59:59'
+                WHERE created_date BETWEEN '$date 00:00:00' 
+                AND '$date 23:59:59'
+                AND active = true
                 ")->result();
         $disTotal = 0;
         foreach($query2 as $inv){
