@@ -664,7 +664,7 @@ class Ignite_model extends CI_Model {
                 LEFT JOIN stocks_balance_tbl AS sb_tbl
                 ON sb_tbl.itemId = ip_tbl.itemId
                 WHERE ip_tbl.itemId = $id
-                AND ct_tbl.type = 'S'
+                AND ct_tbl.type = 'R'
                 ")->row();
 
         $array = array(
@@ -719,7 +719,7 @@ class Ignite_model extends CI_Model {
         return ($total-$inv->discountAmt);
     }
 
-    function get_dNetProfit($invID){
+    function get_dGrossProfit($invID){
         $query = $this->db->query("SELECT * FROM invoice_detail_tbl AS idetail
             LEFT JOIN items_price_tbl AS ip
             ON ip.codeNumber = idetail.itemCode
@@ -735,6 +735,84 @@ class Ignite_model extends CI_Model {
             $pTotal += $row->price * $row->itemQty;
         }
         return ['sTotal' => $sTotal, 'pTotal' => $pTotal];
+    }
+
+    function get_dNetProfit($invID, $sType) {
+        $items = $this->db->query("SELECT * FROM invoice_detail_tbl AS invDetail
+            LEFT JOIN items_price_tbl AS ip_tbl
+            ON ip_tbl.codeNumber = invDetail.itemCode
+            LEFT JOIN count_type_tbl AS ct_tbl
+            ON ct_tbl.related_item_id = ip_tbl.itemId
+            WHERE invDetail.invoiceId = $invID
+            AND ct_tbl.type = 'P'
+            ")->result();
+
+        $ProfitTotal = 0;
+        $totalCharge = 0;
+        foreach($items as $item) {
+            $charge = $this->db->query("SELECT * FROM purchase_tbl AS ps
+                LEFT JOIN vouchers_tbl AS vr
+                ON vr.voucherId = ps.voucherId
+                WHERE ps.itemId = $item->itemId
+                ")->row();
+
+            $chargeAmt = $charge->chargeAmt;
+
+            $totalItem = $this->db->query("SELECT SUM(quantity) AS pQty FROM purchase_tbl
+                WHERE voucherId = $charge->voucherId
+                ")->row();
+            $avgCharge = round($chargeAmt / $totalItem->pQty);
+            $totalCharge += $avgCharge;
+
+            $dmg = $this->db->query("SELECT SUM(qty) AS dQty FROM damages_tbl
+                WHERE related_item_id = $item->itemId
+                ")->row();
+
+            $pTotalPrice = $charge->quantity * $item->price;
+            $pActualPrice = round($pTotalPrice / ($charge->quantity - $dmg->dQty));
+
+            $sPrice = $this->db->query("SELECT * FROM count_type_tbl
+                WHERE related_item_id = $item->itemId
+                AND type = '$sType'
+                ")->row();
+
+            $totalSale = $sPrice->price * $item->itemQty;
+            $actualSale = ($pActualPrice + $avgCharge) * $item->itemQty;
+
+            $netProfit = $totalSale - $actualSale;
+            $ProfitTotal += $netProfit;
+        }
+
+        return $ProfitTotal;
+
+    }
+
+    function get_daily_invoices($day, $month, $year) {
+        $dStart = $year.'-'.$month.'-'.sprintf('%02d', $day).' 00:00:00';
+        $dEnd = $year.'-'.$month.'-'.sprintf('%02d', $day).' 23:59:59';
+
+        $data = $this->db->query("SELECT invoiceId, saleType, discountAmt FROM invoices_tbl
+            WHERE created_date
+            BETWEEN '$dStart'
+            AND '$dEnd'
+            AND active = true
+            ")->result();
+
+        return $data;
+    }
+
+    function get_monthly_invoices($month, $year) {
+        $dStart = $year.'-'.$month.'-01 00:00:00';
+        $dEnd = $year.'-'.$month.'-31 23:59:59';
+
+        $data = $this->db->query("SELECT invoiceId, saleType, discountAmt FROM invoices_tbl
+            WHERE created_date
+            BETWEEN '$dStart'
+            AND '$dEnd'
+            AND active = true
+            ")->result();
+
+        return $data;
     }
 
     function get_dMarginRate($invID){

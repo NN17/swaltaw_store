@@ -15,7 +15,7 @@
 
 		<div class="field">
 			<label><?=$this->lang->line('quantity')?></label>
-			<?=form_number('qty', '', 'placeholder="Quantity" onchange="igniteAjax.balanceCheck(this)" id="dQty" data-qty="" required')?>
+			<?=form_number('qty', '', 'placeholder="Quantity" onchange="igniteAjax.balanceCheck(this)" id="dQty" required')?>
 		</div>
 	    
 	    <div class="field">

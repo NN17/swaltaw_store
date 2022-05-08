@@ -6,6 +6,11 @@
   <div class="<?=$tab == 'daily'?'active':''?> item" data-tab="daily">Daily</div>
   <div class="<?=$tab == 'monthly'?'active':''?> item" data-tab="monthly">Monthly</div>
   <div class="<?=$tab == 'yearly'?'active':''?> item" data-tab="yearly">Yearly</div>
+
+  <div class="item right floated">
+  	<i class="ui icon square light-green"></i><label>Total Sale</label> &nbsp;
+  	<i class="ui icon square slate-grey"></i><label>Gross Profit</label>
+  </div>
 </div>
 
 <!-- Daily Tab -->
@@ -54,6 +59,7 @@
 				<th class="ui right aligned"><?=$this->lang->line('total_items')?></th>
 				<th class="ui right aligned"><?=$this->lang->line('total_amount')?></th>
 				<th class="ui right aligned"><?=$this->lang->line('gross_profit')?></th>
+				<th class="ui right aligned"><?=$this->lang->line('net_profit')?></th>
 				<th class="ui center aligned"><?=$this->lang->line('margin')?></th>
 			</tr>
 		</thead>
@@ -63,7 +69,8 @@
 				foreach($dailyData as $dRow):
 					$dTotalItems = $this->ignite_model->get_dTotalItems($dRow->invoiceId);
 					$dTotalAmount = $this->ignite_model->get_dTotalAmount($dRow->invoiceId);
-					$dNetProfit = $this->ignite_model->get_dNetProfit($dRow->invoiceId);
+					$dGrossProfit = $this->ignite_model->get_dGrossProfit($dRow->invoiceId);
+					$dNetProfit = $this->ignite_model->get_dNetProfit($dRow->invoiceId, $dRow->saleType);
 			?>
 				<tr>
 					<td class="ui right aligned"><?=$i?></td>
@@ -71,8 +78,9 @@
 					<td><a href="javascript:void(0)" onclick="igniteAjax.detailInv('<?=$dRow->invoiceId?>')"><?=$dRow->invoiceSerial?></a></td>
 					<td class="ui right aligned"><?=number_format($dTotalItems)?></td>
 					<td class="ui right aligned"><?=number_format($dTotalAmount)?></td>
-					<td class="ui right aligned"><?=number_format($dNetProfit['sTotal'] - ($dNetProfit['pTotal'] + $dRow->discountAmt))?></td>
-					<td class="ui center aligned"><?=round((($dNetProfit['sTotal'] - ($dNetProfit['pTotal'] + $dRow->discountAmt))/$dNetProfit['pTotal']) * 100, 2)?> %</td>
+					<td class="ui right aligned"><?=number_format($dGrossProfit['sTotal'] - ($dGrossProfit['pTotal'] + $dRow->discountAmt))?></td>
+					<td class="ui right aligned"><?=number_format($dNetProfit-$dRow->discountAmt)?></td>
+					<td class="ui center aligned"><?=round((($dGrossProfit['sTotal'] - ($dGrossProfit['pTotal'] + $dRow->discountAmt))/$dGrossProfit['pTotal']) * 100, 2)?> %</td>
 				</tr>
 			<?php
 				$i ++; 
@@ -140,6 +148,7 @@
 				<th><?=$this->lang->line('total_inv')?></th>
 				<th class="ui right aligned"><?=$this->lang->line('total_amount')?></th>
 				<th class="ui right aligned"><?=$this->lang->line('gross_profit')?></th>
+				<th class="ui right aligned"><?=$this->lang->line('net_profit')?></th>
 				<th class="ui center aligned"><?=$this->lang->line('margin')?></th>
 			</tr>
 		</thead>
@@ -148,6 +157,13 @@
 				for($i = 1; $i <= $days; $i++):
 					$invTotal = $this->ignite_model->get_M_invTotal($i, $mMonth, $mYear);
 					$amtTotal = $this->ignite_model->get_M_Total($i, $mMonth, $mYear);
+					$invoices = $this->ignite_model->get_daily_invoices($i, $mMonth, $mYear);
+					$nProfitTotal = 0;
+					foreach($invoices as $inv){
+							$mNetProfit = $this->ignite_model->get_dNetProfit($inv->invoiceId, $inv->saleType);
+							$nProfitTotal += $mNetProfit - $inv->discountAmt;
+					}
+					
 			?>
 				<tr>
 					<td><?=$i?></td>
@@ -155,6 +171,7 @@
 					<td><?=$invTotal?></td>
 					<td class="ui right aligned"><?=number_format($amtTotal['total'])?></td>
 					<td class="ui right aligned"><?=number_format($amtTotal['profit'])?></td>
+					<td class="ui right aligned"><?=number_format($nProfitTotal)?></td>
 					<td class="ui center aligned"><?=$amtTotal['pTotal'] > 0 ?round(($amtTotal['profit'] / $amtTotal['pTotal']) * 100, 2): '0'?> %</td>
 				</tr>
 			<?php 
@@ -211,6 +228,7 @@
 				<th><?=$this->lang->line('date')?></th>
 				<th class="ui right aligned"><?=$this->lang->line('total_inv')?></th>
 				<th class="ui right aligned"><?=$this->lang->line('total_amount')?></th>
+				<th class="ui right aligned"><?=$this->lang->line('net_profit')?></th>
 				<th class="ui right aligned"><?=$this->lang->line('gross_profit')?></th>
 			</tr>
 		</thead>
@@ -219,12 +237,19 @@
 				for($k = 1; $k <= 12; $k++): 
 					$y_invTotal = $this->ignite_model->get_Y_invTotal($k, $yYear);
 					$y_Total = $this->ignite_model->get_Y_Total($k, $yYear);
+					$yInvoices = $this->ignite_model->get_monthly_invoices($k, $yYear);
+					$yProfitTotal = 0;
+					foreach($yInvoices as $yInv){
+							$yNetProfit = $this->ignite_model->get_dNetProfit($yInv->invoiceId, $yInv->saleType);
+							$yProfitTotal += $yNetProfit - $yInv->discountAmt;
+					}
 			?>
 				<tr>
 					<td><?=$k?></td>
 					<td><?=$this->ignite_model->getMonth($k)?></td>
 					<td class="ui right aligned"><?=$y_invTotal?></td>
 					<td class="ui right aligned"><?=number_format($y_Total['total'])?></td>
+					<td class="ui right aligned"><?=number_format($yProfitTotal)?></td>
 					<td class="ui right aligned"><?=number_format($y_Total['total'] - $y_Total['gpTotal'])?></td>
 				</tr>
 			<?php endfor; ?>

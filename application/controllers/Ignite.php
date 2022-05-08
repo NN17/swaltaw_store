@@ -218,7 +218,8 @@ class Ignite extends CI_Controller {
 
         $itemDetail = $this->ignite_model->itemDetail($itemId);
 
-        echo json_encode($itemDetail);
+        // header('Content-Type: application/json');
+        echo json_encode($itemDetail, JSON_UNESCAPED_UNICODE);
     }
 
     public function getItemByCode(){

@@ -1422,8 +1422,9 @@ var igniteAjax = function (){
 				itemId : itemId.value
 			},
 			success: function(res){
+				console.log(res);
 				var obj = $.parseJSON(res);
-				$('#dQty').attr('data-qty', obj.balance);
+				$('#dQty').attr('data-qty', parseInt(obj.balance));
 				if(obj.imgPath == ""){
 					var path = 'assets/imgs/preview.png';
 				}else{
@@ -1923,7 +1924,7 @@ let chartJs = (function() {
 					    labels: xValues,
 					    datasets: [
 						    { 
-						    	borderColor: "blueviolet",
+						    	borderColor: "lightgreen",
 						      	data: obj.data,
 						      	fill: false
 						  	},

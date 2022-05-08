@@ -183,3 +183,11 @@ input[type=number] {
 .customer-info {
 	padding: 10px 0px 10px 0px;
 }
+
+.light-green {
+	color: lightgreen !important;
+}
+
+.slate-grey {
+	color: slategray !important;
+}
