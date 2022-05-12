@@ -115,10 +115,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['customer'] = 'ဖောက်သည်များ';
 	$lang['new_customer'] = 'ဖောက်သည်အသစ် ထည့်သွင်းရန်';
 	$lang['edit_customer'] = 'ဖောက်သည်အချက်အလက် ပြင်ဆင်ရန်';
+	$lang['customer_point'] = 'အသင်းဝင်ရမှတ်';
 
 	// Language for credits
 	$lang['invoices'] = 'ပြေစာများ';
 	$lang['payment'] = 'ငွေပေးချေမှု';
+	$lang['credit_bal'] = 'အကြွေးပမာဏ';
+
+	// Language for payments
+	$lang['payment'] = 'ငွေပေးချေမှု';
+	$lang['pay_amount'] = 'ပေးချေသည့် ပမာဏ';
+	$lang['total_pay'] = 'စုစုပေါင်းပေးချေမှု';
 
 	// Language for Services
 	$lang['service'] = 'ဝန်ဆောင်မှုများ';

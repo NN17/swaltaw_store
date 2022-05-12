@@ -115,10 +115,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	$lang['customer'] = 'Customers';
 	$lang['new_customer'] = 'New Customer';
 	$lang['edit_customer'] = 'Edit Customer';
+	$lang['customer_point'] = 'Member Point';
 
 	// Language for credits
 	$lang['invoices'] = 'Invoices';
 	$lang['payment'] = 'Payment';
+	$lang['credit_bal'] = 'Credit Balance';
+
+	// Language for payments
+	$lang['payment'] = 'Payments';
+	$lang['pay_amount'] = 'Pay Amount';
+	$lang['total_pay'] = 'Total Payment';
 
 	// Language for Services
 	$lang['service'] = 'Services';

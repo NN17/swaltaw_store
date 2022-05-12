@@ -815,6 +815,20 @@ class Ignite_model extends CI_Model {
         return $data;
     }
 
+    function get_yearly_invoices($year) {
+        $dStart = $year.'-01-01 00:00:00';
+        $dEnd = $year.'-12-31 23:59:59';
+
+        $data = $this->db->query("SELECT invoiceId, saleType, discountAmt FROM invoices_tbl
+            WHERE created_date
+            BETWEEN '$dStart'
+            AND '$dEnd'
+            AND active = true
+            ")->result();
+
+        return $data;
+    }
+
     function get_dMarginRate($invID){
 
     }
@@ -1044,6 +1058,59 @@ class Ignite_model extends CI_Model {
             else{
                 return true;
             }
+    }
+
+    function get_invTotalbyCustomer($id) {
+        $total = $this->db->query("SELECT COUNT(invoiceId) AS inv FROM invoices_tbl
+            WHERE byCustomer = true
+            AND customerId = $id
+            ")->row();
+
+        return $total->inv;
+    }
+
+    function get_amtTotalbyCustomer($id) {
+        $amt = $this->db->query("SELECT * FROM invoices_tbl AS inv
+            LEFT JOIN invoice_detail_tbl AS inv_detail
+            ON inv_detail.invoiceId = inv.invoiceId
+            WHERE inv.byCustomer = true
+            AND inv.customerId = $id
+            ")->result();
+
+        $total = 0;
+        $invId = 0;
+        foreach($amt as $row) {
+            $total += ($row->itemQty * $row->itemPrice);
+            if($invId != $row->invoiceId) {
+                $total = $total - $row->discountAmt;
+                $invId = $row->invoiceId;
+            }
+        }
+        return $total;
+    }
+
+    function get_creditBalance($id) {
+        $crd = $this->db->query("SELECT * FROM credits_tbl AS crd
+            LEFT JOIN invoices_tbl AS inv
+            ON inv.invoiceId = crd.invoiceId
+            WHERE crd.customerId = $id
+            ")->result();
+    }
+
+    function get_totalPayment($customerId) {
+        $pay = $this->db->query("SELECT SUM(payAmt) AS payAmt FROM payments_tbl
+            WHERE customerId = $customerId
+            ")->row();
+        return $pay->payAmt;
+    }
+
+    function get_invoicesByCustomer($customerId) {
+        $invoices = $this->db->query("SELECT * FROM invoices_tbl
+            WHERE byCustomer = true
+            AND customerId = $customerId
+            AND active = true
+            ")->result();
+        return $invoices;
     }
 
 }

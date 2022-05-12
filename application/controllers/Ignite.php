@@ -1568,6 +1568,36 @@ class Ignite extends CI_Controller {
         redirect('customers');
     }
 
+    public function payCredit() {
+        $payAmt = $this->input->post('payAmt');
+        $remark = $this->input->post('remark');
+        $customerId = $this->input->post('customerId');
+
+        $arr = array(
+            'customerId' => $customerId,
+            'payAmt' => $payAmt,
+            'remark' => $remark,
+            'created_at' => date('Y-m-d h:i:s A')
+        );
+
+        $this->db->insert('payments_tbl', $arr);
+        echo 'Success';
+    }
+
+    public function detailCustomer() {
+        $customerId = $this->uri->segment(2);
+
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Customer', 'customers');
+        $this->breadcrumb->add('Detail');
+
+        $data['customer'] = $this->ignite_model->get_limit_data('customers_tbl', 'customerId', $customerId)->row();
+        $data['invoices'] = $this->ignite_model->get_invoicesByCustomer($customerId);
+
+        $data['content'] = 'pages/detailCustomer';
+        $this->load->view('layouts/template', $data);
+    }
+
     /*
     * Reports
     */
@@ -1622,13 +1652,22 @@ class Ignite extends CI_Controller {
         $chartData['days'] = [];
         $chartData['datas'] = [];
         $chartData['gross'] = [];
+        $chartData['net'] = [];
 
         for($i = 1; $i <= $days; $i++){
             $amtTotal = $this->ignite_model->get_M_Total($i, $month, $year);
+            $invoices = $this->ignite_model->get_daily_invoices($i, $month, $year);
+
+            $net = 0;
+            foreach($invoices as $inv) {
+                $dNetProfit = $this->ignite_model->get_dNetProfit($inv->invoiceId, $inv->saleType);
+                $net += $dNetProfit - $inv->discountAmt;
+            }
             
             array_push($chartData['days'], date('M', strtotime($year.'-'.$month.'-1')).' '.$i);
             array_push($chartData['datas'], $amtTotal['total']);
             array_push($chartData['gross'], $amtTotal['profit']);
+            array_push($chartData['net'], $net);
         }
 
         echo json_encode($chartData);
@@ -1640,13 +1679,23 @@ class Ignite extends CI_Controller {
         $chartData['months'] = [];
         $chartData['datas'] = [];
         $chartData['gross'] = [];
+        $chartData['net'] = [];
 
         for($i = 1; $i <= 12; $i++){
 
             $y_data = $this->ignite_model->get_Y_Total($i, $year);
+            $invoices = $this->ignite_model->get_monthly_invoices($i, $year);
+
+            $net = 0;
+            foreach($invoices as $inv) {
+                $dNetProfit = $this->ignite_model->get_dNetProfit($inv->invoiceId, $inv->saleType);
+                $net += $dNetProfit - $inv->discountAmt;
+            }
+
             array_push($chartData['months'], $this->ignite_model->getShortMonth($i));
             array_push($chartData['datas'], $y_data['total']);
             array_push($chartData['gross'], ($y_data['total'] - $y_data['gpTotal']));
+            array_push($chartData['net'], $net);
         }
 
         echo json_encode($chartData);
@@ -1658,12 +1707,21 @@ class Ignite extends CI_Controller {
         $chartData['years'] = [];
         $chartData['data'] = [];
         $chartData['gross'] = [];
+        $chartData['net'] = [];
 
         for($i=($year-10); $i<= $year; $i++){
             $y_data = $this->ignite_model->get_yChart($i);
+            $invoices = $this->ignite_model->get_yearly_invoices($i);
+            $net = 0;
+            foreach($invoices as $inv) {
+                $dNetProfit = $this->ignite_model->get_dNetProfit($inv->invoiceId, $inv->saleType);
+                $net += $dNetProfit - $inv->discountAmt;
+            }
+
             array_push($chartData['years'], $i);
             array_push($chartData['data'], $y_data['total']);
             array_push($chartData['gross'], ($y_data['total'] - $y_data['gpTotal']));
+            array_push($chartData['net'], $net);
         }
 
         echo json_encode($chartData);

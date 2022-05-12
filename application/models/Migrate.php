@@ -1009,6 +1009,32 @@ class Migrate extends CI_Model {
 
       $this->dbforge->add_key('printerId', TRUE);
       $this->dbforge->create_table('printer_profile_tbl', TRUE);
+
+      // Create payments_tbl
+      $this->dbforge->add_field(array(
+        'paymentId' => array(
+          'type' => 'INT',
+          'constraint' => 8,
+          'auto_increment' => TRUE
+        ),
+        'customerId' => array(
+          'type' => 'INT',
+          'constraint' => 8
+        ),
+        'payAmt' => array(
+          'type' => 'INT',
+          'constraint' => 8
+        ),
+        'remark' => array(
+          'type' => 'TEXT'
+        ),
+        'created_at' => array(
+          'type' => 'DATETIME'
+        ),
+      ));
+
+      $this->dbforge->add_key('paymentId', TRUE);
+      $this->dbforge->create_table('payments_tbl', TRUE);
         
         // ------------ End of Create Tables ---------------
     }

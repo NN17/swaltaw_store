@@ -1662,6 +1662,53 @@ var igniteAjax = function (){
 		}
 	}
 
+	let payModalOpen = function(cId) {
+		$("#payCrd").modal({closable: false}).modal('show');
+		$("#paymentBtn").attr('onclick', 'igniteAjax.addPayment('+cId+')');
+	}
+
+	let paymentAdd = function(cId) {
+		var payAmt = $("#payAmt").val();
+		var remark = $("#payRemark").val();
+		if(payAmt == "") {
+			$.alert({
+			    title: 'Invalid Input',
+			    content: 'Payment should not be Null !',
+			    backgroundDismiss: false,
+				columnClass: "custom-confirm-box",
+				animation: 'top',
+	    		closeAnimation: 'opacity',
+	    		animationBounce: 1.5,
+				theme: "modern",
+				type: "red",
+				icon: "ui icon",
+				useBootstrap: false,
+				boxWidth: '30%',
+			});
+
+			$("#payAmt").focus();
+		}
+			else{
+				
+				$.ajax({
+					url: base_url() + 'pay-credit',
+					type: 'POST',
+					crossDomain: 'TRUE',
+					data: {
+						'customerId' : cId,
+						'payAmt' : payAmt,
+						'remark' : remark
+					},
+					success: function(res){
+						$("#payCrd").modal('hide');
+						// console.log(res);
+						location.href = 'customers';
+					}
+				});
+			}
+
+	}
+
 	return {
 		init: function (){
 			thisPath();
@@ -1689,6 +1736,12 @@ var igniteAjax = function (){
 		},
 		refundPayment: function(e, inv) {
 			paymentRefund(e, inv);
+		},
+		payModal: function(cId) {
+			payModalOpen(cId);
+		},
+		addPayment: function(cId) {
+			paymentAdd(cId);
 		}
 	}
 }();
@@ -1838,6 +1891,10 @@ let chartJs = (function() {
 					      		backgroundColor: 'slategrey',
 					      		data: obj.gross
 					    	},
+					    	{
+					    		backgroundColor: 'orange',
+					    		data: obj.net
+					    	}
 					    ]
 					  },
 					  options: {
@@ -1884,7 +1941,12 @@ let chartJs = (function() {
 						    	borderColor: "slategrey",
 						      	data: obj.gross,
 						      	fill: false
-						    }
+						    },
+						    {
+					    		borderColor: 'orange',
+					    		data: obj.net,
+					    		fill: false
+					    	}
 					    ]
 					  },
 					  options: {
@@ -1933,6 +1995,11 @@ let chartJs = (function() {
 						      	data: obj.gross,
 						      	fill: false
 						  	},
+						  	{
+					    		borderColor: "orange",
+					    		data: obj.net,
+					    		fill: false
+					    	}
 					    ]
 					  },
 					  options: {

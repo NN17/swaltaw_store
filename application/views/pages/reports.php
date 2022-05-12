@@ -9,7 +9,8 @@
 
   <div class="item right floated">
   	<i class="ui icon square light-green"></i><label>Total Sale</label> &nbsp;
-  	<i class="ui icon square slate-grey"></i><label>Gross Profit</label>
+  	<i class="ui icon square slate-grey"></i><label>Gross Profit</label> &nbsp;
+  	<i class="ui icon square orange"></i><label>Net Profit</label>
   </div>
 </div>
 

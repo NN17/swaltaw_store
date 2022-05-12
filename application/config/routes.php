@@ -169,6 +169,8 @@ $route['enable-user/:num'] = 'ignite/enableUser';
 $route['customers'] = 'ignite/customer';
 $route['new-customer'] = 'ignite/newCustomer';
 $route['edit-customer/:num'] = 'ignite/editCustomer';
+$route['pay-credit'] = 'ignite/payCredit';
+$route['customer-detail/:num'] = 'ignite/detailCustomer';
 
 /*
 * Routes for Invoices
