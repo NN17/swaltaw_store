@@ -1125,8 +1125,8 @@ var priceAjax = function(){
 
 	let newPrice = function(type){
 		if(type == 'P'){
-			let p_type = $('#p_countType').val();
-			let p_qty = $('#p_qty').val();
+			let p_type = 'Pcs';
+			let p_qty = 1;
 			let p_price = $("#p_price").val();
 			let p_remark = $("#p_remark").val();
 
@@ -1170,8 +1170,8 @@ var priceAjax = function(){
 				console.log('false');
 			}
 		}else{
-			let s_type = $('#s_countType').val();
-			let s_qty = $('#s_qty').val();
+			let s_type = 'Pcs';
+			let s_qty = 1;
 			let s_price = $("#s_price").val();
 			let s_remark = $("#s_remark").val();
 			let s_saleType = $('input[name="saleType"]:checked').val();

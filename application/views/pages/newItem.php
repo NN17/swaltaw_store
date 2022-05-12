@@ -24,7 +24,7 @@
 		</div>
 	</div>
 
-	<div class="field">
+	<!-- <div class="field">
     	<?=form_label($this->lang->line('brand'))?>
     	<div class="ui grid">
 			<div class="twelve wide column">
@@ -39,9 +39,9 @@
 				<a href="javascript:void(0)" class="ui icon circular button yellow" onclick="brand_modal()"><i class="icon plus"></i></a>
 			</div>
 		</div>
-    </div>
+    </div> -->
 
-    <div class="field">
+    <!-- <div class="field">
     	<?=form_label($this->lang->line('supplier'))?>
     	<div class="ui grid">
 			<div class="twelve wide column">
@@ -56,7 +56,7 @@
 				<a href="javascript:void(0)" class="ui icon circular button pink" onclick="supplier_modal()"><i class="icon plus"></i></a>
 			</div>
 		</div>
-    </div>
+    </div> -->
 
    	<div class="field">
         <?=form_label($this->lang->line('item_code'))?>

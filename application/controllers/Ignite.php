@@ -623,10 +623,10 @@ class Ignite extends CI_Controller {
         $referer = $this->input->post('referer');
 
         $category = $this->input->post('category');
-        $brand = $this->input->post('brand');
-        $supplier = $this->input->post('supplier');
+        // $brand = $this->input->post('brand');
+        // $supplier = $this->input->post('supplier');
         $name = $this->input->post('name');
-        $model = '-';
+        // $model = '-';
         $code = $this->input->post('code');
         $currency = $this->input->post('currency');
         $remark = $this->input->post('remark');
@@ -641,13 +641,13 @@ class Ignite extends CI_Controller {
 
         $arr = array(
             'itemName' => $name,
-            'itemModel' => $model,
+            // 'itemModel' => $model,
             'categoryId' => $category,
             'codeNumber' => $code,
-            'brandId' => $brand,
+            // 'brandId' => $brand,
             'currency' => $currency,
             'imgPath' => $path,
-            'supplierId' => $supplier,
+            // 'supplierId' => $supplier,
             'remark' => $remark,
             'referId' => 0,
             'active' => TRUE
@@ -696,8 +696,8 @@ class Ignite extends CI_Controller {
             $price_arr = array(
                 'related_item_id' => $itemId,
                 'type' => $row['type'],
-                'count_type' => $row['countType'],
-                'qty' => $row['qty'],
+                'count_type' => 'Pcs',
+                'qty' => 1,
                 'price' => $row['price'],
                 'remark' => $row['remark'],
                 'created_at' => date('Y-m-d H:i:s A')
@@ -739,33 +739,30 @@ class Ignite extends CI_Controller {
     public function updateItem(){
         $itemId = $this->uri->segment(3);
 
-
         $category = $this->input->post('category');
-        $brand = $this->input->post('brand');
-        $supplier = $this->input->post('supplier');
         $name = $this->input->post('name');
-        $model = $this->input->post('model');
         $code = $this->input->post('code');
         $currency = $this->input->post('currency');
         $remark = $this->input->post('remark');
 
-        $upload = $this->ignite_model->upload_img('itemImage', 'assets/uploads', $code);
-        if($upload['status']){
-            $path = $upload['path'];
-        }
-            else{
-                $path = '';
+        if ($_FILES['itemImage']['size'] > 0) {
+            $upload = $this->ignite_model->upload_img('itemImage', 'assets/uploads', $code);
+            if($upload['status']){
+                $path = $upload['path'];
             }
+        }else{
+            $item = $this->ignite_model->get_limit_data('items_price_tbl', 'itemId', $itemId)->row();
+            $path = $item->imgPath;
+        }
+
+        echo $path;
 
         $arr = array(
             'itemName' => $name,
-            'itemModel' => $model,
             'categoryId' => $category,
             'codeNumber' => $code,
-            'brandId' => $brand,
             'currency' => $currency,
             'imgPath' => $path,
-            'supplierId' => $supplier,
             'remark' => $remark,
             'referId' => 0,
             'active' => TRUE

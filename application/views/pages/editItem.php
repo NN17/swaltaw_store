@@ -23,7 +23,7 @@
 		</div>
 	</div>
 
-	<div class="field">
+	<!-- <div class="field">
     	<?=form_label($this->lang->line('brand'))?>
     	<div class="ui grid">
 			<div class="twelve wide column">
@@ -55,17 +55,17 @@
 				<a href="javascript:void(0)" class="ui icon circular button pink" onclick="supplier_modal()"><i class="icon plus"></i></a>
 			</div>
 		</div>
-    </div>
+    </div> -->
 
     <div class="field">
         <?=form_label($this->lang->line('name'))?>
         <?=form_input('name',$item['itemName'],'placeholder="'.$this->lang->line('item_name').'" required')?>  
     </div>
 
-    <div class="field">
+    <!-- <div class="field">
         <?=form_label($this->lang->line('item_model'))?>
         <?=form_input('model',$item['itemModel'],'placeholder="'.$this->lang->line('item_model').'" required')?>  
-    </div>
+    </div> -->
 
    	<div class="field">
         <?=form_label($this->lang->line('item_code'))?>

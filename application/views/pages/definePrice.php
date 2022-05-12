@@ -66,15 +66,6 @@
 	    <?=$this->lang->line('new_count_type')?> (Purchase)
 	</div>
 	<div class="content ui form">
-		    <div class="field">
-		    	<label><?=$this->lang->line('item_count_type')?></label>
-		    	<?=form_input('countType','','placeholder="'.$this->lang->line('item_count_type').'" id="p_countType" required')?>
-		    </div>
-
-		    <div class="field">
-		    	<label><?=$this->lang->line('quantity')?></label>
-		    	<?=form_number('qty','','placeholder="'.$this->lang->line('quantity').'" id="p_qty" required')?>
-		    </div>
 
 		    <div class="field">
 		    	<label><?=$this->lang->line('item_price')?></label>
@@ -87,6 +78,7 @@
 		    </div>
 	</div>
 	<div class="actions">
+		<button class="ui button cancel">Cancel</button>
 	    <button class="ui button olive" onclick="priceAjax.addPrice('P')">Save</button>
 	</div>
 </div>
@@ -97,15 +89,6 @@
 	    <?=$this->lang->line('new_count_type')?> (Sale)
 	</div>
 	<div class="content ui form">
-		    <div class="field">
-		    	<label><?=$this->lang->line('item_count_type')?></label>
-		    	<?=form_input('countType','','placeholder="'.$this->lang->line('item_count_type').'" id="s_countType" required')?>
-		    </div>
-
-		    <div class="field">
-		    	<label><?=$this->lang->line('quantity')?></label>
-		    	<?=form_number('qty','','placeholder="'.$this->lang->line('quantity').'" id="s_qty" required')?>
-		    </div>
 
 		    <div class="field">
 		    	<label><?=$this->lang->line('item_price')?></label>
@@ -136,6 +119,7 @@
 		    </div>
 	</div>
 	<div class="actions">
+		<button class="ui button cancel">Cancel</button>
 	    <button class="ui button green" onclick="priceAjax.addPrice('S')">Save</button>
 	</div>
 </div>
