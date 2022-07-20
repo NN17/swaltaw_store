@@ -623,10 +623,7 @@ class Ignite extends CI_Controller {
         $referer = $this->input->post('referer');
 
         $category = $this->input->post('category');
-        // $brand = $this->input->post('brand');
-        // $supplier = $this->input->post('supplier');
         $name = $this->input->post('name');
-        // $model = '-';
         $code = $this->input->post('code');
         $currency = $this->input->post('currency');
         $remark = $this->input->post('remark');
@@ -641,13 +638,10 @@ class Ignite extends CI_Controller {
 
         $arr = array(
             'itemName' => $name,
-            // 'itemModel' => $model,
             'categoryId' => $category,
             'codeNumber' => $code,
-            // 'brandId' => $brand,
             'currency' => $currency,
             'imgPath' => $path,
-            // 'supplierId' => $supplier,
             'remark' => $remark,
             'referId' => 0,
             'active' => TRUE
