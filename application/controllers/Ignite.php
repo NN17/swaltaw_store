@@ -1032,6 +1032,7 @@ class Ignite extends CI_Controller {
         $data['items'] = $this->ignite_model->get_allItems();
         $data['warehouses'] = $this->ignite_model->get_data('warehouse_tbl')->result_array();
         $data['vouchers'] = $this->ignite_model->get_data_order('vouchers_tbl','created_at', 'DESC')->result();
+        $data['extCharges'] = $this->ignite_model->get_data_order('extra_charges_tbl', 'created_at', 'DESC')->result();
         $data['suppliers'] = $this->ignite_model->get_data('supplier_tbl')->result();
 
         $data['content'] = 'pages/newPurchase';
