@@ -1016,7 +1016,7 @@ class Ignite extends CI_Controller {
         $vocId = $this->uri->segment(2);
 
         $this->breadcrumb->add('Home', 'home');
-        $this->breadcrumb->add('Stocks In', 'purchase/0');
+        $this->breadcrumb->add('Stocks In', 'purchase');
         $this->breadcrumb->add('Detail');
 
         $data['purchaseItem'] = $this->ignite_model->get_purchaseItem($vocId);
@@ -1052,7 +1052,6 @@ class Ignite extends CI_Controller {
 
     public function addPurchase(){
         $itemId = $this->input->post('item');
-        $countType = $this->input->post('countType');
         $warehouse = $this->input->post('warehouse');
         $voucher = $this->input->post('voucher');
         $date = $this->input->post('pDate');
@@ -1061,7 +1060,7 @@ class Ignite extends CI_Controller {
 
         $arr = array(
             'itemId' => $itemId,
-            'count_type_id' => $countType,
+            'count_type_id' => 0,
             'warehouseId' => $warehouse,
             'voucherId' => $voucher,
             'purchaseDate' => $date,
@@ -1072,43 +1071,75 @@ class Ignite extends CI_Controller {
 
         $this->db->insert('purchase_tbl', $arr);
 
-        // Check balance exist
-        $balance = $this->ignite_model->get_limit_datas('stocks_balance_tbl', ['itemId' => $itemId, 'warehouseId' => $warehouse])->row_array();
-        
-        if(!empty($balance)){
-            $arr = array(
-                'qty' => $qty + $balance['qty'],
-            );
-
-            $this->db->where('itemId', $itemId);
-            $this->db->where('warehouseId', $warehouse);
-            $this->db->update('stocks_balance_tbl', $arr);
-        }
-        else{
-            $arr = array(
-                'itemId' => $itemId,
-                'qty' => $qty,
-                'warehouseId' => $warehouse,
-            );
-
-            $this->db->insert('stocks_balance_tbl', $arr);
-        }
-
         $this->session->set_tempdata('success', 'New Purchase Successfully Created.', 3);
 
-        redirect('purchase/0');
+        redirect($_SERVER['HTTP_REFERER']);
     }
 
     public function setAllPurchase() {
         $vrId = $this->uri->segment(2);
 
+        $purchaseItems = $this->ignite_model->get_limit_datas('purchase_tbl', ['voucherId' => $vrId, 'active' => false])->result();
+
+        foreach($purchaseItems as $item) {
+
+            // Check balance exist
+            $balance = $this->ignite_model->get_limit_datas('stocks_balance_tbl', ['itemId' => $item->itemId, 'warehouseId' => $item->warehouseId])->row_array();
+            
+            if(!empty($balance)){
+                $arr = array(
+                    'qty' => $item->quantity + $balance['qty'],
+                );
+
+                $this->db->where('itemId', $item->itemId);
+                $this->db->where('warehouseId', $item->warehouseId);
+                $this->db->update('stocks_balance_tbl', $arr);
+            }
+            else{
+                $arr = array(
+                    'itemId' => $item->itemId,
+                    'qty' => $item->quantity,
+                    'warehouseId' => $item->warehouseId,
+                );
+
+                $this->db->insert('stocks_balance_tbl', $arr);
+            }
+
+        }
+
         $this->db->where('voucherId', $vrId);
         $this->db->update('purchase_tbl', ['active' => true]);
-        redirect('purchase/0');
+
+        $this->session->set_tempdata('success', 'Purchase Successfully Arrived and set balance data.', 3);
+        redirect('purchase');
     }
 
     public function setPurchase() {
         $pId = $this->uri->segment(2);
+
+        $purchaseItem = $this->ignite_model->get_limit_data('purchase_tbl', 'purchaseId', $pId)->row();
+
+        // Check balance exist
+        $balance = $this->ignite_model->get_limit_datas('stocks_balance_tbl', ['itemId' => $purchaseItem->itemId, 'warehouseId' => $purchaseItem->warehouseId])->row_array();
+        
+        if(!empty($balance)){
+            $arr = array(
+                'qty' => $purchaseItem->quantity + $balance['qty'],
+            );
+
+            $this->db->where('itemId', $purchaseItem->itemId);
+            $this->db->where('warehouseId', $purchaseItem->warehouseId);
+            $this->db->update('stocks_balance_tbl', $arr);
+        }
+        else{
+            $arr = array(
+                'itemId' => $purchaseItem->itemId,
+                'qty' => $purchaseItem->quantity,
+                'warehouseId' => $purchaseItem->warehouseId,
+            );
+
+            $this->db->insert('stocks_balance_tbl', $arr);
+        }
 
         $this->db->where('purchaseId', $pId);
         $this->db->update('purchase_tbl', ['active' => true]);
@@ -1127,6 +1158,7 @@ class Ignite extends CI_Controller {
         $data['items'] = $this->ignite_model->get_allItems();
         $data['warehouses'] = $this->ignite_model->get_data('warehouse_tbl')->result_array();
         $data['vouchers'] = $this->ignite_model->get_data_order('vouchers_tbl','created_at', 'DESC')->result();
+        $data['vouchers'] = $this->ignite_model->get_data_order('vouchers_tbl','created_at', 'DESC')->result();
         $data['suppliers'] = $this->ignite_model->get_data('supplier_tbl')->result();
 
         $data['content'] = 'pages/editPurchase';
@@ -1135,9 +1167,22 @@ class Ignite extends CI_Controller {
 
     public function updatePurchase(){
         $purchaseId = $this->uri->segment(3);
+        $lastPurchase = $this->ignite_model->get_limit_data('purchase_tbl', 'purchaseId', $purchaseId)->row();
+
+        // Restore Balance
+        $balance = $this->ignite_model->get_limit_datas('stocks_balance_tbl', ['itemId' => $lastPurchase->itemId, 'warehouseId' => $lastPurchase->warehouseId])->row();
+
+        $balArr = array(
+            'qty' => ($balance->qty - $lastPurchase->quantity)
+        );
+
+        $this->db->where('balanceId', $balance->balanceId);
+        $this->db->update('stocks_balance_tbl', $balArr);
+        // End of Restore Balance
 
         $itemId = $this->input->post('item');
         $warehouse = $this->input->post('warehouse');
+        $voucher = $this->input->post('voucher');
         $date = $this->input->post('pDate');
         $qty = $this->input->post('qty');
         $remark = $this->input->post('remark');
@@ -1145,6 +1190,7 @@ class Ignite extends CI_Controller {
         $arr = array(
             'itemId' => $itemId,
             'warehouseId' => $warehouse,
+            'voucherId' => $voucher,
             'purchaseDate' => $date,
             'quantity' => $qty,
             'remark' => $remark
@@ -1153,7 +1199,9 @@ class Ignite extends CI_Controller {
         $this->db->where('purchaseId', $purchaseId);
         $this->db->update('purchase_tbl', $arr);
 
-        redirect('purchase/0');
+        $this->session->set_tempdata('success', 'Purchase Successfully Updated.', 3);
+
+        redirect('purchase');
     }
 
     public function delPurchase(){
@@ -1161,7 +1209,7 @@ class Ignite extends CI_Controller {
 
         $this->db->where('purchaseId', $purchaseId);
         $this->db->delete('purchase_tbl');
-        redirect('purchase/0');
+        redirect('purchase');
     }
 
     /*

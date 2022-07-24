@@ -106,7 +106,7 @@ class Migrate extends CI_Model {
                 'description' => 'Balance sheet for stocks ..'
               ),
               array(
-                'machine' => 'purchase/0',
+                'machine' => 'purchase',
                 'name' => 'Stocks In',
                 'lang_name' => 'purchase',
                 'icon_class' => 'plus square',

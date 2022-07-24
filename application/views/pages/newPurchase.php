@@ -12,7 +12,7 @@
 				<select name="item" class="ui search dropdown" id="item" required>
 					<option value="">Select</option>
 					<?php foreach($items as $item):?>
-					<option value="<?=$item['itemId']?>"><?=$item['itemName']?> ( <?=$item['categoryName'].' / '.$item['brandName']?> ) <?=$item['price']?></option>
+					<option value="<?=$item['itemId']?>"><?=$item['itemName']?> - <?=$item['codeNumber']?> ( <?=$item['categoryName'].' / '.$item['brandName']?> ) <?=$item['price']?></option>
 					<?php endforeach; ?>
 				</select>
 			</div>
@@ -60,12 +60,12 @@
         <label><?=$this->lang->line('date')?></label>
         <?=form_input('pDate','','placeholder="'.$this->lang->line('purchase_date').'" id="datepicker" required')?>
     </div>
-    <div class="field">
+    <!-- <div class="field">
         <label><?=$this->lang->line('item_count_type')?></label>
         <select name="countType" class="ui search dropdown" id="countType" required>
             <option value="">Select</option>
         </select>
-    </div>
+    </div> -->
     <div class="field">
         <label><?=$this->lang->line('quantity')?></label>
         <?=form_number('qty','','placeholder="'.$this->lang->line('quantity').'" min="1" required')?>

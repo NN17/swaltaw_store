@@ -42,12 +42,12 @@
 				<?php if($this->ignite_model->check_purchase($item['purchaseId']) == false): ?>
 					<button class="ui tiny button circular icon" onclick="igniteAjax.setPurchaseActive(<?=$item['purchaseId']?>, '<?=$item['itemName']?>')"><i class="icon shopping bag"></i></button>
 				<?php else: ?>
-					<button class="ui tiny button circular icon olive disabled"><i class="icon shopping bag"></i></button>
+					<button class="ui tiny button circular icon green"><i class="icon shopping bag"></i></button>
 				<?php endif; ?>
 			</td>
 			<td>
-				<a href="edit-purchase/<?=$item['purchaseId']?>" class="ui button circular orange tiny icon disabled"><i class="ui icon cog"></i></a>
-				<a href="javascript:void(0)" class="ui button circular red tiny icon disabled" id="delete" data-url="ignite/delPurchase/<?=$item['purchaseId']?>"><i class="ui icon remove"></i></a>
+				<a href="edit-purchase/<?=$item['purchaseId']?>" class="ui button circular orange tiny icon <?=$this->ignite_model->check_purchase($item['purchaseId'])?'disabled':''?>"><i class="ui icon cog"></i></a>
+				<a href="javascript:void(0)" class="ui button circular red tiny icon <?=$this->ignite_model->check_purchase($item['purchaseId'])?'disabled':''?>" id="delete" data-url="ignite/delPurchase/<?=$item['purchaseId']?>"><i class="ui icon remove"></i></a>
 			</td>
 		</tr>
 		<?php 

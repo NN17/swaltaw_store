@@ -132,7 +132,7 @@ $route['get-defined-price/(:num)'] = 'ignite/getDefinedPrice';
 /*
 * Routes for Purchase
 */
-$route['purchase/(:num)'] = 'ignite/purchase';
+$route['purchase'] = 'ignite/purchase';
 $route['create-purchase'] = 'ignite/newPurchase';
 $route['edit-purchase/(:num)'] = 'ignite/editPurchase';
 $route['detail-purchase/(:num)'] = 'ignite/purchaseDetail';

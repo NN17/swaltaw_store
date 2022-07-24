@@ -412,8 +412,11 @@ class Ignite_model extends CI_Model {
                 ON supplier.supplierId = ip.supplierId
                 LEFT JOIN count_type_tbl AS ct
                 ON ct.related_item_id = ip.itemId
+                LEFT JOIN purchase_tbl AS ps
+                ON ps.itemId = ip.itemId
                 WHERE ip.active = TRUE
                 AND ct.type = 'P'
+                AND ps.active = false
                 ORDER BY ip.itemName ASC
         ");
         return $data->result_array();

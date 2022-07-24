@@ -40,6 +40,23 @@
     </div>
 
     <div class="field">
+        <?=form_label($this->lang->line('voucher'))?>
+        <div class="ui grid">
+            <div class="twelve wide column">
+                <select name="voucher" class="ui search dropdown" required>
+                    <option value="">Select</option>
+                    <?php foreach($vouchers as $voucher): ?>
+                        <option value="<?=$voucher->voucherId?>" <?=$voucher->voucherId == $purchase['voucherId']?'selected':''?>><?=$voucher->vSerial?> ( <?=$this->ignite_model->supplier($voucher->supplier)?> )</option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="four wide column">
+                <a href="javascript:void(0)" class="ui icon circular button purple" onclick="openModal('voucher')"><i class="icon plus"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="field">
         <label><?=$this->lang->line('date')?></label>
         <?=form_input('pDate',$purchase['purchaseDate'],'placeholder="'.$this->lang->line('purchase_date').'" id="datepicker" required')?>
     </div>
