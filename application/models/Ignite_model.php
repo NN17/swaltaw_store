@@ -412,11 +412,9 @@ class Ignite_model extends CI_Model {
                 ON supplier.supplierId = ip.supplierId
                 LEFT JOIN count_type_tbl AS ct
                 ON ct.related_item_id = ip.itemId
-                LEFT JOIN purchase_tbl AS ps
-                ON ps.itemId = ip.itemId
                 WHERE ip.active = TRUE
                 AND ct.type = 'P'
-                AND ps.active = false
+                AND ip.purchased = false
                 ORDER BY ip.itemName ASC
         ");
         return $data->result_array();
@@ -578,9 +576,9 @@ class Ignite_model extends CI_Model {
             ON bd.brandId = ip.brandId
             LEFT JOIN purchase_tbl AS ps
             ON ps.itemId = sb.itemId
-            WHERE (ip.itemName LIKE '$key%'
-            OR ip.codeNumber LIKE '$key%'
-            OR bd.brandName LIKE '$key%')
+            WHERE (ip.itemName LIKE '%$key%'
+            OR ip.codeNumber LIKE '%$key%'
+            OR bd.brandName LIKE '%$key%')
             AND sb.qty > 0
             AND wh.shop = true
             AND ct.type = '$type'

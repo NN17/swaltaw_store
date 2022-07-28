@@ -1105,6 +1105,10 @@ class Ignite extends CI_Controller {
                 $this->db->insert('stocks_balance_tbl', $arr);
             }
 
+            // Set Purchase on items_price_table
+            $this->db->where('itemId', $item->itemId);
+            $this->db->update('items_price_tbl', ['purchased' => true]);
+
         }
 
         $this->db->where('voucherId', $vrId);
@@ -1143,6 +1147,11 @@ class Ignite extends CI_Controller {
 
         $this->db->where('purchaseId', $pId);
         $this->db->update('purchase_tbl', ['active' => true]);
+
+        // Set Purchase on items_price_tbl
+        $this->db->where('itemId', $purchaseItem->itemId);
+        $this->db->update('items_price_tbl', ['purchased' => true]);
+        
         redirect($_SERVER['HTTP_REFERER']);
     }
 
@@ -2042,25 +2051,16 @@ class Ignite extends CI_Controller {
         $referer = $this->input->post('referer');
         $vDate = $this->input->post('vDate');
         $vSerial = $this->input->post('vSerial');
-        $chargeId = $this->input->post('extCharge');
+        $chargeAmt = $this->input->post('extCharge');
         $supplier = $this->input->post('supplier');
         $remark = $this->input->post('remark');
-
-        if(!empty($chargeId)){
-            $extCharge = $this->ignite_model->get_limit_data('extra_charges_tbl','chargeId', $chargeId)->row();
-            $amount = $extCharge->chargeAmount;
-        }
-            else{
-                $chargeId = 0;
-                $amount = 0;
-            }
 
         $insert = array(
             'vDate' => $vDate,
             'vSerial' => $vSerial,
             'supplier' => $supplier,
-            'extCharge' => $chargeId,
-            'chargeAmt' => $amount,
+            'extCharge' => 1,
+            'chargeAmt' => $chargeAmt,
             'remark' => $remark,
             'created_at' => date('Y-m-d H:i:s A')
         );
@@ -2090,17 +2090,14 @@ class Ignite extends CI_Controller {
         $vDate = $this->input->post('vDate');
         $vSerial = $this->input->post('vSerial');
         $supplier = $this->input->post('supplier');
-        $chargeId = $this->input->post('extCharge');
+        $chargeAmt = $this->input->post('extCharge');
         $remark = $this->input->post('remark');
-
-        $extCharge = $this->ignite_model->get_limit_data('extra_charges_tbl','chargeId', $chargeId)->row();
 
         $update = array(
             'vDate' => $vDate,
             'vSerial' => $vSerial,
             'supplier' => $supplier,
-            'extCharge' => $extCharge->chargeId,
-            'chargeAmt' => $extCharge->chargeAmount,
+            'chargeAmt' => $chargeAmt,
             'remark' => $remark,
         );
 

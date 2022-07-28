@@ -13,7 +13,7 @@
 	</div>
 	<div class="three wide column">
 		<div class="ui huge fluid icon input">
-			<input name="itemPrice" type="number" placeholder="Price" id="itemPrice" readonly />
+			<input name="itemPrice" type="number" placeholder="Price" id="itemPrice" />
 			<i class="dollar sign icon"></i>
 		</div>
 	</div>

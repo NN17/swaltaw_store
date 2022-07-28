@@ -27,7 +27,7 @@
 		}
 	?>
 	<!-- Chart for Daily records -->
-	<canvas id="dailyChart" data-month="<?=date('m', strtotime($dDate))?>" style="width:70vw; height: 35vh"></canvas>
+	<canvas id="dailyChart" data-month="<?=date('m', strtotime($dDate))?>" data-token="<?=$this->security->get_csrf_hash()?>" style="width:70vw; height: 35vh"></canvas>
 
 	<div class="ui divider"></div>
 	<div class="filter ui form">

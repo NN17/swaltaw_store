@@ -1870,6 +1870,7 @@ let chartJs = (function() {
 				type: 'POST',
 				crossDomain: 'TRUE',
 				data:{
+					csrf_posv2: $("#dailyChart").data('token'),
 					month: $("#dailyChart").data('month'),
 					year: dt.getFullYear()
 				},

@@ -32,7 +32,7 @@
 			<td><?=$i?></td>
 			<td><?=$item['purchaseDate']?></td>
 			<td><?=$item['codeNumber']?></td>
-			<td><?=$item['itemName']?> ( <?=$item['brandName']?> )</td>
+			<td><?=$item['itemName']?> <?=!empty($item['brnadName'])?' ( '.$item['brandName'].' )':''?></td>
 			<td><?=$item['itemModel']?></td>
 			<td class="ui right aligned"><?=number_format($item['price'])?></td>
 			<td class="ui right aligned"><?=number_format($item['quantity'])?></td>

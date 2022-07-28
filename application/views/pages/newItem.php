@@ -42,8 +42,8 @@
     </div>
 
     <div class="field">
-        <?=form_label($this->lang->line('name'))?>
-        <?=form_input('name',set_value('name'),'placeholder="'.$this->lang->line('item_name').'" required')?>  
+        <?=form_label($this->lang->line('name') . " ( Item Name must not include ' or \" )")?>
+        <?=form_input('name',set_value('name'),'placeholder="'.$this->lang->line('item_name').'" pattern="[^\'\x22]+" required')?>  
     </div>
 
 

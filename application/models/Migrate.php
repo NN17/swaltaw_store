@@ -508,6 +508,9 @@ class Migrate extends CI_Model {
             'type' => 'INT',
             'constraint' => 8
           ),
+          'purchased' => array(
+            'type' => 'BOOLEAN'
+          ),
           'active' => array(
             'type' => 'BOOLEAN'
           ),
