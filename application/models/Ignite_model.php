@@ -565,7 +565,7 @@ class Ignite_model extends CI_Model {
     }
 
     function get_saleItemSearch($key, $type){
-        $query = $this->db->query("SELECT sb.qty AS qty, ct.price AS price, ip.itemName AS itemName, ip.itemModel AS itemModel, ip.codeNumber AS codeNumber  FROM stocks_balance_tbl AS sb
+        $query = $this->db->query("SELECT sb.qty AS qty, ct.price AS price, ip.itemName AS itemName, ip.itemModel AS itemModel, ip.codeNumber AS codeNumber, ip.imgPath  FROM stocks_balance_tbl AS sb
             LEFT JOIN warehouse_tbl AS wh
             ON wh.warehouseId = sb.warehouseId
             LEFT JOIN items_price_tbl AS ip
@@ -581,7 +581,7 @@ class Ignite_model extends CI_Model {
             OR bd.brandName LIKE '%$key%')
             AND sb.qty > 0
             AND wh.shop = true
-            AND ct.type = '$type'
+            AND ct.type = 'R'
             AND ps.active = true
             ");
         return $query->result_array();
@@ -1112,6 +1112,14 @@ class Ignite_model extends CI_Model {
             AND active = true
             ")->result();
         return $invoices;
+    }
+
+    function get_sellPrice($itemId, $type) {
+        $this->db->where('related_item_id', $itemId);
+        $this->db->where('type', $type);
+        $data = $this->db->get('count_type_tbl');
+
+        return $data;
     }
 
 }

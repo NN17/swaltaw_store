@@ -80,20 +80,23 @@
   		<h3 id="invDetailHead">Invoice Detail</h3>
 	</div>
   	<div class="scrolling content">
-  			<div id="invDate" class="text-right"></div>
-    		<table class="ui table">
-    				<thead>
-    						<tr>
-    							<th>No</th>
-    							<th>Description</th>
-    							<th class="ui right aligned">Rate</th>
-    							<th class="ui right aligned">Qty</th>
-    							<th class="ui right aligned">Amount</th>
-    						</tr>
-    				</thead>
-    				<tbody id="invDetailBody">
-    					
-    				</tbody>
-    		</table>
+  	<div id="invDate" class="text-right"></div>
+		<table class="ui table">
+				<thead>
+						<tr>
+							<th>No</th>
+							<th>Description</th>
+							<th class="ui right aligned">Rate</th>
+							<th class="ui right aligned">Qty</th>
+							<th class="ui right aligned">Amount</th>
+						</tr>
+				</thead>
+				<tbody id="invDetailBody">
+					
+				</tbody>
+		</table>
+  	</div>
+  	<div class="invDetail-footer mid-padding text-center">
+  		<button class="ui button large green" id="printReceipt" onclick="igniteAjax.receiptPrint()">Print Receipt</button>
   	</div>
 </div>

@@ -150,7 +150,7 @@
         <thead>
             <tr>
                 <th><?=$this->lang->line('item_name')?></th>
-                <th><?=$this->lang->line('item_model')?></th>
+                <th><?=$this->lang->line('image')?></th>
                 <th class="ui right aligned"><?=$this->lang->line('price')?></th>
                 <th class="ui right aligned"><?=$this->lang->line('available_qty')?></th>
             </tr>
@@ -174,5 +174,15 @@
     		<input type="number" autofocus onkeypress="orderAjax.addCash(this)" />
     	</div>
   	</div>
+</div>
+
+<!-- Image Modal -->
+<div class="ui tiny modal imgPreview">
+	<div class="header">
+	    Preview Image
+	</div>
+	<div class="content centered" id="imgContent">
+	    
+	</div>
 </div>
 

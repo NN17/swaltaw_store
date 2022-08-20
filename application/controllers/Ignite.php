@@ -240,7 +240,7 @@ class Ignite extends CI_Controller {
     }
 
     /*
-    * Credits
+    * Invoices Section
     */
 
     public function invoices(){
@@ -320,6 +320,17 @@ class Ignite extends CI_Controller {
         $this->db->where('invoiceId', $invId);
         $this->db->update('invoices_tbl',array('pReceived' => true));
         redirect('invoices/~');
+    }
+
+    public function rePrint() {
+        $serial = $this->input->post('serial');
+
+        $invoice = $this->ignite_model->get_limit_data('invoices_tbl', 'invoiceSerial', $serial)->row();
+        $items = $this->ignite_model->get_limit_data('invoice_detail_tbl', 'invoiceId', $invoice->invoiceId)->result();
+        $this->load->library('escpos');
+
+        $this->escpos->print_receipt($invoice, $items);
+        echo 'success';
     }
 
     /*

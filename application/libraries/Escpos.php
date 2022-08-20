@@ -31,7 +31,7 @@ class Escpos
         header('Content-type: text/html; charset=utf-8');
         mb_internal_encoding("UTF-8");
         // $profile = CapabilityProfile::load("XP-80C");
-        $connector = new NetworkPrintConnector("192.168.1.199", 9100);
+        $connector = new NetworkPrintConnector("192.168.0.199", 9100);
         $printer = new Printer($connector);
 
         $imageBuffer = new ImagePrintBuffer();
@@ -41,7 +41,7 @@ class Escpos
 
         try {
             $printer = new Printer($connector);
-            $tux = EscposImage::load(__DIR__ . "/../../assets/imgs/shop_logo.png", false);
+            $tux = EscposImage::load(__DIR__ . "/../../assets/imgs/print_logo.png", false);
             $printer->setJustification(Printer::JUSTIFY_CENTER);
             $printer -> bitImage($tux);
 
@@ -52,7 +52,7 @@ class Escpos
             $printer->feed();
             $printer->text("အမှတ်(၂၁၉)၊ မင်းလမ်း၊ (၁၁)ရပ်ကွက်၊ မအူပင်မြို့။\n");
             $printer->text("( မှန်ပင်ကျောင်းရှေ့ )\n");
-            $printer->text("TEL: 09 774 440 997\n");
+            $printer->text("TEL: 09 982 148 887\n");
             $printer->text("________________________________________________\n");
             $printer->feed();
 
@@ -112,8 +112,10 @@ class Escpos
             
             $printer->feed();
 
+            $printer -> setPrintBuffer($imageBuffer);
             $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->text("- Thank You - \n");
+            $printer->text("*** ဝယ်ပြီးပစ္စည်း ပြန်လဲမပေးပါ *** \n");
+            $printer->text("အားပေးမှုကို ကျေးဇူးအထူးတင်ရှိပါသည်\n");
 
 
             /* Cut the receipt and open the cash drawer */

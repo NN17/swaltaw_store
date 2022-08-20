@@ -32,7 +32,8 @@ $(document).ready(function() {
 		});
 
 	$('#dataTable').DataTable({
-		"pageLength" : 25
+		"pageLength" : 25,
+		"autoWidth" : false,
 	});
 
 	$('#dataTable2').DataTable({
@@ -131,6 +132,7 @@ $(document).ready(function() {
 				else if(key == 13){
 
 					var code = $("#saleCode").val();
+					var img = $("#saleCode").attr('data-img');
 					var name = $("#saleCode").attr('data-name');
 					var qty = parseInt($("#itemQty").val());
 					var price = $("#itemPrice").val();
@@ -179,7 +181,7 @@ $(document).ready(function() {
 											$("#itemQty").parent().removeClass('error');
 										}
 										// console.log(key);
-										orderAjax.addItem(code, name, qty, price);
+										orderAjax.addItem(code, name, img, qty, price);
 									}
 								}
 				}
@@ -616,10 +618,12 @@ var orderAjax = function(){
 		});
 	}
 
-	let createItem = function(code, name, qty, price){
+	let createItem = function(code, name, imgPath, qty, price){
+
 		orderObject = {
 			code: code,
 			name: name,
+			imgPath: imgPath,
 			qty: qty,
 			price: price
 		}
@@ -664,7 +668,7 @@ var orderAjax = function(){
 				total += amount;
 				html += `<tr>
 					<td class="ui right aligned">${y+1}</td>
-					<td>${x.name}</td>
+					<td><button class="ui basic button tiny icon olive" onclick="viewImg('${x.imgPath}')"><i class="ui icon eye"></i></button> &nbsp; ${x.name}</td>
 					<td class="ui right aligned">${Intl.NumberFormat().format(x.price)}</td>
 					<td class="ui right aligned">${x.qty}</td>
 					<td class="ui right aligned">${Intl.NumberFormat().format(amount)}</td>
@@ -765,7 +769,7 @@ var orderAjax = function(){
 
 	let searchItem = function(){
 		let keyword = $("#saleItemSearch").val();
-
+		console.log(saleType);
 		$.ajax({
 			url: base_url() + 'ignite/saleItemSearch',
 			type: "GET",
@@ -779,9 +783,9 @@ var orderAjax = function(){
 				if(result.length > 0){
 					// console.log(result);
 					result.forEach(function(x){
-						html += `<tr onclick="orderAjax.itemSelect('${x.itemName.replace('"','&quot;')}', '${x.itemModel}', '${x.codeNumber}', ${x.price}, ${x.qty})" class="item">
+						html += `<tr onclick="orderAjax.itemSelect('${x.itemName.replace('"','&quot;')}', '${x.itemModel}', '${x.codeNumber}', '${x.imgPath}', ${x.price}, ${x.qty})" class="item">
 								<td>${x.itemName}</td>
-								<td>${x.itemModel}</td>
+								<td><img src="${x.imgPath}" class="img-thumbnail" style="width:100px" /></td>
 								<td class="ui right aligned">${Intl.NumberFormat().format(x.price)}</td>
 								<td class="ui right aligned">${x.qty}</td>
 							</tr>`;
@@ -795,11 +799,12 @@ var orderAjax = function(){
 		});
 	};
 
-	let selectItem = function(name, model, code, price, qty){
+	let selectItem = function(name, model, code, imgPath, price, qty){
 		
 		$("#saleItemSearch").val('');
 		$("#searchContent").html('');
 		$("#saleCode").val(code).attr('data-name', name);
+		$("#saleCode").attr('data-img', imgPath);
 		$("#itemSearch").modal('hide');
 		$("#itemQty").val(1).attr('data-balance', qty);
 		$("#itemPrice").val(price);
@@ -1023,8 +1028,8 @@ var orderAjax = function(){
 		init: function() {
 			thisPath();
 		},
-		addItem: function(code, name, qty, price) {
-			createItem(code, name, qty, price);
+		addItem: function(code, name, imgPath, qty, price) {
+			createItem(code, name, imgPath, qty, price);
 		},
 		checkOutOrder: function() {
 			checkOut();
@@ -1035,8 +1040,8 @@ var orderAjax = function(){
 		itemSearch: function(){
 			searchItem();
 		},
-		itemSelect: function(name, model, code, price, qty){
-			selectItem(name, model, code, price, qty);
+		itemSelect: function(name, model, code, imgPath, price, qty){
+			selectItem(name, model, code, imgPath, price, qty);
 		},
 		saleCode: function(code){
 			getItemByCode(code);
@@ -1407,6 +1412,7 @@ var igniteAjax = function (){
 
 				$('#invDetailHead').html('Invoice Detail ( '+invId+' )');
 				$('#invDate').html(invDate);
+				$("#printReceipt").attr('data-invid', invId);
 				$('#invDetailBody').html(html);
 				$('#invDetail').modal().modal('show');
 			}
@@ -1709,6 +1715,22 @@ var igniteAjax = function (){
 
 	}
 
+
+	let printReceipt = function() {
+		var serial = $("#printReceipt").attr('data-invid');
+		$.ajax({
+			url: base_url() + 'rePrint',
+			type: 'POST',
+			crossDomain: 'TRUE',
+			data: {
+				'serial' : serial
+			},
+			success: function(res){
+				$('#invDetail').modal().modal('hide');
+			}
+		});
+	}
+
 	return {
 		init: function (){
 			thisPath();
@@ -1742,6 +1764,9 @@ var igniteAjax = function (){
 		},
 		addPayment: function(cId) {
 			paymentAdd(cId);
+		},
+		receiptPrint: function() {
+			printReceipt();
 		}
 	}
 }();
