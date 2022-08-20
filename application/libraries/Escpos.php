@@ -46,10 +46,10 @@ class Escpos
             $printer -> bitImage($tux);
 
             $imageBuffer->setFontSize(24);
-            $printer -> setPrintBuffer($imageBuffer);
             /* Name of shop */
-            
+            $printer->setPrintBuffer($textBuffer);
             $printer->feed();
+            $printer -> setPrintBuffer($imageBuffer);
             $printer->text("အမှတ်(၂၁၉)၊ မင်းလမ်း၊ (၁၁)ရပ်ကွက်၊ မအူပင်မြို့။\n");
             $printer->text("( မှန်ပင်ကျောင်းရှေ့ )\n");
             $printer->text("TEL: 09 982 148 887\n");
