@@ -827,6 +827,37 @@ class Ignite extends CI_Controller {
         redirect('items-price/0');
     }
 
+    public function searchItemPrice() {
+        $value = $this->input->post('name');
+
+        $array = $this->ignite_model->search_items($value);
+
+        $modify = $this->auth->checkModify($this->session->userdata('Id'), 'items-price/0');
+
+        $items = array();
+
+        foreach($array as $row) {
+            $p_price = $this->ignite_model->get_price($row->itemId, 'P');
+            $r_price = $this->ignite_model->get_price($row->itemId, 'R');
+            $w_price = $this->ignite_model->get_price($row->itemId, 'W');
+
+            array_push($items, array(
+                'itemId' => $row->itemId,
+                'codeNumber' => $row->codeNumber,
+                'itemName' => $row->itemName,
+                'imgPath' => $row->imgPath,
+                'pPrice' => $p_price->price,
+                'rPrice' => $r_price->price,
+                'wPrice' => $w_price->price,
+                'modify' => $modify
+                )
+            );
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($items);
+    }
+
     /*
     * Categories Section
     */

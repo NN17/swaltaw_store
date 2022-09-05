@@ -5,6 +5,10 @@
 	</a>
 </div>
 
+<div class="ui large icon input">
+  <input type="text" placeholder="Search..." onkeyup="igniteAjax.searchItem()" id="searchItems">
+  <i class="search icon"></i>
+</div>
 
 <table class="ui teal table" id="">
 	<thead>
@@ -17,7 +21,7 @@
 			<th></th>
 		</tr>
 	</thead>
-	<tbody>
+	<tbody id="itemPriceBody">
 		<?php 
 			$cat = "";
 			foreach($items as $item):

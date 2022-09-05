@@ -384,6 +384,49 @@ class Ignite_model extends CI_Model {
         return $data->result_array();
     }
 
+    function search_items($input) {
+        $data = $this->db->query("SELECT * FROM items_price_tbl AS ip
+                LEFT JOIN categories_tbl AS cat
+                ON cat.categoryId = ip.categoryId
+                LEFT JOIN brands_tbl AS brand
+                ON brand.brandId = ip.brandId
+                LEFT JOIN currency_tbl AS currency
+                ON currency.currencyId = ip.currency
+                LEFT JOIN supplier_tbl AS supplier
+                ON supplier.supplierId = ip.supplierId
+                WHERE ip.active = TRUE
+                AND ip.itemName LIKE '%$input%'
+                ORDER BY ip.itemId DESC, cat.categoryName ASC, brand.brandName ASC
+        ");
+        return $data->result();
+    }
+
+    function get_price($itemId, $type) {
+        $data = $this->db->query("SELECT * FROM items_price_tbl AS ip
+                LEFT JOIN count_type_tbl AS ct
+                ON ct.related_item_id = ip.itemId
+                WHERE ct.type = '$type'
+                AND ip.itemId = $itemId
+                ");
+        return $data->row();
+    }
+
+    function get_allItemsPrice(){
+        $data = $this->db->query("SELECT * FROM items_price_tbl AS ip
+                LEFT JOIN categories_tbl AS cat
+                ON cat.categoryId = ip.categoryId
+                LEFT JOIN brands_tbl AS brand
+                ON brand.brandId = ip.brandId
+                LEFT JOIN currency_tbl AS currency
+                ON currency.currencyId = ip.currency
+                LEFT JOIN supplier_tbl AS supplier
+                ON supplier.supplierId = ip.supplierId
+                WHERE ip.active = TRUE
+                ORDER BY ip.itemId DESC, cat.categoryName ASC, brand.brandName ASC
+        ");
+        return $data->result_array();
+    }
+
     function get_items_rows(){
         $rows = $this->db->query("SELECT COUNT(ip.itemId) AS itemId FROM items_price_tbl AS ip
             LEFT JOIN categories_tbl AS cat
@@ -581,8 +624,9 @@ class Ignite_model extends CI_Model {
             OR bd.brandName LIKE '%$key%')
             AND sb.qty > 0
             AND wh.shop = true
-            AND ct.type = 'R'
+            AND ct.type = '$type'
             AND ps.active = true
+            GROUP BY ps.itemId
             ");
         return $query->result_array();
     }

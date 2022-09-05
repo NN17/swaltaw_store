@@ -128,6 +128,8 @@ $route['define-price/(:num)/(:any)'] = 'ignite/defineItemPrice';
 $route['new-item/(:any)'] = 'ignite/newItem';
 $route['edit-item/(:num)'] = 'ignite/editItem';
 $route['get-defined-price/(:num)'] = 'ignite/getDefinedPrice';
+$route['search-items'] = 'ignite/searchItemPrice';
+$route['retail-price'] = 'ignite/getRetailPrice';
 
 /*
 * Routes for Purchase

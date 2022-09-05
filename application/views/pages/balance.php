@@ -65,7 +65,7 @@
 					<td><?=$item->itemName?></td>
 					<td class="text-center"><button class="ui basic button tiny icon olive <?=!empty($item->imgPath)?'':'disabled'?>" onclick="viewImg('<?=$item->imgPath?>')"><i class="ui icon eye"></i></button></td>
 					<td class="ui right aligned"><?=number_format($retailPrice->price)?></td>
-					<td class="ui right aligned"><?=number_format($wholeSalePrice->price)?></td>
+					<td class="ui right aligned"><?=number_format(@$wholeSalePrice->price)?></td>
 					<td class="ui right aligned negative"><?=number_format($item->price)?></td>
 
 					<!-- Loop for warehouse -->

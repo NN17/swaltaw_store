@@ -1731,6 +1731,68 @@ var igniteAjax = function (){
 		});
 	}
 
+	let itemSearch = function() {
+		var input = $("#searchItems").val();
+		// console.log(input);
+		$.ajax({
+			url: base_url() + 'search-items',
+			type: 'POST',
+			crossDomain: 'TRUE',
+			data: {
+				'name' : input
+			},
+			success: function(res){
+				
+				let html;
+				if(res.length > 0){
+					console.log(res);
+					res.forEach(function(x){
+						if(x.imgPath != '') {
+							var image = '';
+						}
+							else{
+								image = 'disabled';
+							}
+
+						if(x.rPrice == '' && x.wPrice == '') {
+							priceClass = 'yellow';
+						}
+							else{
+								priceClass = 'green';
+							}
+
+						if(x.modify == true) {
+							var modify = ''
+						}
+							else{
+								modify = 'disabled'
+							}
+
+						html += `<tr>
+								<td>${x.codeNumber}</td>
+								<td>${x.itemName}</td>
+								<td><button class="ui basic button tiny icon olive ${image}" onclick="viewImg('${x.imgPath}')"><i class="ui icon eye"></i></button></td>
+								<td class="ui right aligned">${x.pPrice}</td>
+								<td class="ui right aligned">${x.rPrice} / ${x.wPrice}</td>
+								<td>
+									<a href="define-price/${(x.itemId)}/~" class="ui button icon tiny circular ${priceClass} ${modify}" data-content="Update Price"><i class="ui icon money bill alternate outline"></i></a>
+									<a href="edit-item/${x.itemId}" class="ui icon button tiny orange circular ${modify}"><i class="ui icon cog"></i></a>
+									<a href="javascript:void(0)" class="ui icon button tiny red circular ${modify}" id="delete" data-url="ignite/deleteItem/${x.itemId}"><i class="ui icon remove"></i></a>
+								</td>
+							</tr>`;
+					});
+
+					
+				}else{
+					html = '';
+				}
+
+				$("#itemPriceBody").html(html);
+
+			}
+		});
+	}
+
 	return {
 		init: function (){
 			thisPath();
@@ -1767,6 +1829,9 @@ var igniteAjax = function (){
 		},
 		receiptPrint: function() {
 			printReceipt();
+		},
+		searchItem() {
+			itemSearch();
 		}
 	}
 }();
