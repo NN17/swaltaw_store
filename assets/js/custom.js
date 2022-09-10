@@ -1791,6 +1791,47 @@ var igniteAjax = function (){
 
 			}
 		});
+
+	}
+
+	let invoiceSearch = function () {
+		let keyword = $("#invSearch").val();
+
+		$.ajax({
+			url: base_url() + 'search-invoices',
+			type: 'POST',
+			crossDomain: 'TRUE',
+			data: {
+				'keyword' : keyword
+			},
+			success: function(res){
+				console.log(res);
+				let html;
+				var obj =  $.parseJSON(res);
+				if(obj.length > 0) {
+					var i = 1;
+					obj.forEach(function(x) {
+						html += `<tr>
+							<td class="text-right">${i}</td>
+							<td>${x.date}</td>
+							<td><a href="javascript:void(0)" onclick="igniteAjax.detailInv('${x.invId}')">${x.serial}</a></td>
+							<td class="ui right aligned">${x.totalItems}</td>
+							<td class="ui right aligned">${x.totalAmt}</td>
+							<td>${x.pType}</td>
+							<td>${x.status}</td>
+							<td>${x.refer}</td>
+							<td>${x.user}</td>
+							<td><a href="refer-invoice/${x.invId}" class="ui button icon circular tiny yellow"><i class="ui icon edit outline"></i></a>
+								<a href="javascript:void(0)" class="ui tiny button icon circular red" id="delete" data-url="del-invoice/${x.invId}"><i class="ui icon trash alternate outline"></i></a></td>
+						</tr>`;
+
+						i++;
+					});
+				}
+
+				$("#invBody").html(html);
+			}
+		});
 	}
 
 	return {
@@ -1832,6 +1873,9 @@ var igniteAjax = function (){
 		},
 		searchItem() {
 			itemSearch();
+		},
+		searchInvoice() {
+			invoiceSearch();
 		}
 	}
 }();

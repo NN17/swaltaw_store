@@ -384,7 +384,7 @@ class Ignite_model extends CI_Model {
         return $data->result_array();
     }
 
-    function search_items($input) {
+    function search_items($key) {
         $data = $this->db->query("SELECT * FROM items_price_tbl AS ip
                 LEFT JOIN categories_tbl AS cat
                 ON cat.categoryId = ip.categoryId
@@ -394,8 +394,10 @@ class Ignite_model extends CI_Model {
                 ON currency.currencyId = ip.currency
                 LEFT JOIN supplier_tbl AS supplier
                 ON supplier.supplierId = ip.supplierId
-                WHERE ip.active = TRUE
-                AND ip.itemName LIKE '%$input%'
+                WHERE (ip.itemName LIKE '%$key%'
+                OR ip.codeNumber LIKE '%$key%'
+                OR brand.brandName LIKE '%$key%')
+                AND ip.active = TRUE
                 ORDER BY ip.itemId DESC, cat.categoryName ASC, brand.brandName ASC
         ");
         return $data->result();
@@ -821,7 +823,13 @@ class Ignite_model extends CI_Model {
                 AND type = '$sType'
                 ")->row();
 
-            $totalSale = $sPrice->price * $item->itemQty;
+            if(!empty($sPrice->price)){
+                $salePrice = $sPrice->price;
+            }else{
+                $salePrice = 0;
+            }
+
+            $totalSale = $salePrice * $item->itemQty;
             $actualSale = ($pActualPrice + $avgCharge) * $item->itemQty;
 
             $netProfit = $totalSale - $actualSale;
@@ -1023,39 +1031,59 @@ class Ignite_model extends CI_Model {
         return $query;
     }
 
-    function getAllInvoices() {
+    function getAllInvoices($start, $limit) {
         $data = $this->db->query("SELECT * FROM invoices_tbl
             WHERE active = true
             ORDER BY created_date DESC
+            LIMIT $start, $limit
             ");
         return $data;
     }
 
-    function getInvoicesByType($type) {
+    function get_invoice_rows($type) {
+        if($type == "~") {
+            $data = $this->db->query("SELECT COUNT(invoiceId) AS inv FROM invoices_tbl
+                WHERE active = true
+                ")->row();
+        }
+            else{
+                $data = $this->db->query("SELECT COUNT(invoiceId) AS inv FROM invoices_tbl
+                WHERE active = true
+                AND paymentType = '$type'
+                ")->row();
+            }
+
+        return $data->inv;
+    }
+
+    function getInvoicesByType($type, $start, $limit) {
         $data = $this->db->query("SELECT * FROM invoices_tbl
             WHERE active = true
             AND paymentType = '$type'
             ORDER BY created_date DESC
+            LIMIT $start, $limit
             ");
         return $data;
     }
 
-    function getCODinvoices() {
+    function getCODinvoices($start, $limit) {
         $data = $this->db->query("SELECT * FROM invoices_tbl
             WHERE active = true
             AND paymentType = 'COD'
             AND delivered = false
             ORDER BY created_date DESC
+            LIMIT $start, $limit
             ");
         return $data;
     }
 
-    function getMBKinvoices() {
+    function getMBKinvoices($start, $limit) {
         $data = $this->db->query("SELECT * FROM invoices_tbl
             WHERE active = true
             AND paymentType = 'MBK'
             AND pReceived = false
             ORDER BY created_date DESC
+            LIMIT $start, $limit
             ");
         return $data;
     }
@@ -1066,6 +1094,20 @@ class Ignite_model extends CI_Model {
             ON ip.codeNumber = inv.itemCode
             WHERE inv.invoiceId = $invId
             ");
+        return $data;
+    }
+
+    function get_invoiceSearch($key) {
+        $data = $this->db->query("SELECT * FROM invoices_tbl AS inv
+            LEFT JOIN invoice_detail_tbl AS inv_detail
+            ON inv_detail.invoiceId = inv.invoiceId
+            WHERE inv.active = true
+            AND (inv_detail.itemCode LIKE '%$key%' OR
+            inv_detail.itemName LIKE '%$key%')
+            GROUP BY inv.invoiceSerial
+            ORDER BY inv.created_date DESC
+            ")->result();
+
         return $data;
     }
 

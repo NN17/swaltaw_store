@@ -21,7 +21,12 @@
 </div>
 <div class="ui segment">
   
-	<table class="ui table" id="dataTable">
+  	<div class="ui large icon input">
+	  <input type="text" placeholder="Search..." onkeyup="igniteAjax.searchInvoice()" id="invSearch">
+	  <i class="search icon"></i>
+	</div>
+
+	<table class="ui table">
 		<thead>
 			<tr>
 				<th class="ui right aligned">#</th>
@@ -36,9 +41,9 @@
 				<th></th>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody id="invBody">
 			<?php 
-				$i = 1;
+				$i = $page+1;
 				foreach($invoices as $inv):
 					$totalItems = $this->ignite_model->get_dTotalItems($inv->invoiceId);
 					$totalAmount = $this->ignite_model->get_dTotalAmount($inv->invoiceId);
@@ -72,6 +77,10 @@
 			?>
 		</tbody>
 	</table>
+
+	<div class="ui pagination center aligned">
+		<?=$this->pagination->create_links();?>
+	</div>
 </div>
 
 <!-- Invoice Detail Modal -->

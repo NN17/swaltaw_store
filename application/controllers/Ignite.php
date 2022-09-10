@@ -245,22 +245,94 @@ class Ignite extends CI_Controller {
 
     public function invoices(){
         $this->breadcrumb->add('Home', 'home');
-        $this->breadcrumb->add('Credits');
+        $this->breadcrumb->add('Invoices');
         $data['pType'] = $this->uri->segment(2);
+
+        $this->load->library('pagination');
+
+        $config['base_url'] = base_url().'invoices/'.$data["pType"].'/';
+        $config['total_rows'] = $this->ignite_model->get_invoice_rows($data['pType']);
+        $config['per_page'] = 25;
+        $config['uri_segment'] = 3;
+        $config['first_url'] = 'invoices/'.$data["pType"].'/0';
+        // $config['num_tag_open'] = '<div class="ui button tiny circular olive">';
+        // $config['num_tag_close'] = '</div>';
+        $config['attributes'] = array('class' => 'ui button tiny circular olive');
+        $config['cur_tag_open'] = '<div class="ui button tiny circular">';
+        $config['cur_tag_close'] = '</div>';
+
+        $this->pagination->initialize($config);
+
+        $data['page'] = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+
+
         if($data['pType'] == '~') {
-            $data['invoices'] = $this->ignite_model->getAllInvoices()->result();
+            $data['invoices'] = $this->ignite_model->getAllInvoices($data['page'], $config['per_page'])->result();
         }
             elseif($data['pType'] == 'COD') {
-                $data['invoices'] = $this->ignite_model->getCODinvoices()->result();
+                $data['invoices'] = $this->ignite_model->getCODinvoices($data['page'], $config['per_page'])->result();
             }
                 elseif($data['pType'] == 'MBK') {
-                    $data['invoices'] = $this->ignite_model->getMBKinvoices()->result();
+                    $data['invoices'] = $this->ignite_model->getMBKinvoices($data['page'], $config['per_page'])->result();
                 }
                     else{
-                        $data['invoices'] = $this->ignite_model->getInvoicesByType($data['pType'])->result();
+                        $data['invoices'] = $this->ignite_model->getInvoicesByType($data['pType'], $data['page'], $config['per_page'])->result();
                     }
         $data['content'] = 'pages/invoices';
         $this->load->view('layouts/template', $data);
+    }
+
+    public function searchInvoices() {
+        $key = $this->input->post('keyword');
+
+        $invoices = $this->ignite_model->get_invoiceSearch($key);
+
+        $result = array();
+        foreach($invoices as $inv) {
+            // Check Payment Status
+            if($inv->delivered == false && $inv->paymentType == 'COD'){
+                $status = '<button class="ui tiny button circular orange icon" onclick="igniteAjax.delivered('.$inv->invoiceId.')"><i class="ui icon shipping fast"></i></button>';
+            }
+                elseif($inv->pReceived == false && $inv->paymentType == 'MBK') {
+                    $status = '<button class="ui tiny button circular orange icon" onclick="igniteAjax.receivePayment('.$inv->invoiceId.')"><i class="ui icon hourglass outline"></i></button>';
+                }
+                    else {
+                        $status = '<button class="ui tiny button circular green icon"><i class="ui icon check circle"></i></button>';
+                    }
+
+            // Check Referred
+            if($inv->referId > 0) {
+                $refer = '<button class="ui button icon circular olive tiny" onclick="igniteAjax.detailInv('.$inv->referId.')"><i class="ui icon thumbtack"></i></button>';
+            }
+                else {
+                    $refer = '-';
+                }
+
+            $invDetail = $this->ignite_model->get_limit_data('invoice_detail_tbl', 'invoiceId', $inv->invoiceId)->result();
+
+            $itemCount = 0;
+            $amtTotal = 0;
+            foreach($invDetail as $row) {
+                $amtTotal += $row->itemPrice * $row->itemQty;
+                $itemCount ++;
+            }
+
+            $invoice = array(
+                'invId' => $inv->invoiceId,
+                'date' => date('d-m-Y', strtotime($inv->created_date)),
+                'serial' => $inv->invoiceSerial,
+                'totalItems' => $itemCount,
+                'totalAmt' => $amtTotal,
+                'pType' => $inv->paymentType,
+                'status' => $status,
+                'refer' => $refer,
+                'user' => $this->ignite_model->get_username($inv->created_by),
+            );
+
+            array_push($result, $invoice);
+        }
+
+        echo json_encode($result);
     }
 
     public function updateDelivery(){
@@ -830,7 +902,13 @@ class Ignite extends CI_Controller {
     public function searchItemPrice() {
         $value = $this->input->post('name');
 
-        $array = $this->ignite_model->search_items($value);
+        if ($value == '') {
+            $array = $this->ignite_model->get_itemsPrice(1,25);
+        }
+            else{
+
+                $array = $this->ignite_model->search_items($value);
+            }
 
         $modify = $this->auth->checkModify($this->session->userdata('Id'), 'items-price/0');
 
@@ -846,9 +924,9 @@ class Ignite extends CI_Controller {
                 'codeNumber' => $row->codeNumber,
                 'itemName' => $row->itemName,
                 'imgPath' => $row->imgPath,
-                'pPrice' => $p_price->price,
-                'rPrice' => $r_price->price,
-                'wPrice' => $w_price->price,
+                'pPrice' => @$p_price->price,
+                'rPrice' => @$r_price->price,
+                'wPrice' => @$w_price->price,
                 'modify' => $modify
                 )
             );
