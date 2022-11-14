@@ -195,7 +195,9 @@ $route['print/:num'] = 'ignite/printReceipt';
 /*
 * Routes for Reports
 */
-$route['reports/:any'] = 'ignite/reports';
+$route['reports/daily'] = 'ignite/dailyReport';
+$route['reports/monthly'] = 'ignite/monthlyReport';
+$route['reports/yearly'] = 'ignite/yearlyReport';
 
 /*
 * Routes for Services
@@ -215,6 +217,14 @@ $route['damages'] = 'ignite/damages';
 $route['create-damage'] = 'ignite/newDamage';
 $route['modify-damage/(:num)'] = 'ignite/editDamage';
 $route['delete-damage/(:num)'] = 'ignite/deleteDamage';
+
+/*
+Routes for Purchase Return
+*/
+$route['purchase-return'] = 'ignite/purchaseReturn';
+$route['create-return'] = 'ignite/newReturn';
+$route['modify-return/:num'] = 'ignite/editReturn';
+$route['delete-return/:num'] = 'ignite/deleteReturn';
 
 /*
 * Routes for Logout

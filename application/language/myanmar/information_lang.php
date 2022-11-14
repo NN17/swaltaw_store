@@ -168,3 +168,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	// Languages for Damages
 	$lang['new_damage'] = 'အပျက်အဆီးအသစ်';
 	$lang['edit_damage'] = 'အပျက်အဆီး ပြင်ဆင်ရန်';
+
+	// Languages for Purchase Return
+	$lang['return'] = 'ပစ္စည်ပြန်ပေး';
+	$lang['new_return'] = 'ပစ္စည်းပြန်ပေးမှု အသစ်';
+	$lang['edit_return'] = 'ပြန်ပေးမှု ပြင်ဆင်ရန်';

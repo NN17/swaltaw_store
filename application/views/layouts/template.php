@@ -109,16 +109,16 @@
         <?php $this->load->view('errors/error_401')?>
     <?php endif;?>
 
-    <script src="assets/js/jquery-3.4.1.min.js"></script>
-    <script src="semantic/semantic.min.js"></script>
-    <script type="text/javascript" src="assets/js/Chart.js"></script>
-    <script type="text/javascript" src="semantic/Semantic-UI-Alert.js"></script>
-    <script type="text/javascript" src="assets/DataTables.SemanticUI/datatables.min.js"></script>
-    <script src="assets/js/jquery.datetimepicker.js"></script>
-    <script src="assets/js/jquery-confirm.min.js"></script>
-    <script type="text/javascript" src="assets/js/croppie.js"></script>
-    <script src="assets/js/custom.js"></script>
-    <script type="text/javascript">
+    <script defer  src="assets/js/jquery-3.4.1.min.js"></script>
+    <script defer  src="semantic/semantic.min.js"></script>
+    <script defer  type="text/javascript" src="assets/js/Chart.js"></script>
+    <script defer  type="text/javascript" src="semantic/Semantic-UI-Alert.js"></script>
+    <script defer  type="text/javascript" src="assets/DataTables.SemanticUI/datatables.min.js"></script>
+    <script defer  src="assets/js/jquery.datetimepicker.js"></script>
+    <script defer  src="assets/js/jquery-confirm.min.js"></script>
+    <script defer  type="text/javascript" src="assets/js/croppie.js"></script>
+    <script defer  src="assets/js/custom.js"></script>
+    <script defer  type="text/javascript">
         <?php 
             if($this->session->tempdata('success')): 
         ?>

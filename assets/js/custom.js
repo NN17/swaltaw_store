@@ -2033,11 +2033,14 @@ let chartJs = (function() {
 					    ]
 					  },
 					  options: {
+					  	parsing: false,
+			            normalized: true,
+			            animation: false,
 					    legend: {display: false},
 					    scales: {
 					      yAxes: [{
 					        ticks: {
-					        	stepSize: 5000,
+					        	stepSize: 100000,
 					          	beginAtZero: true
 					        }
 					      }],
@@ -2089,7 +2092,7 @@ let chartJs = (function() {
 					    scales: {
 					      yAxes: [{
 					        ticks: {
-					        	stepSize : 10000,
+					        	stepSize : 1000000,
 					          	beginAtZero: true
 					        }
 					      }],
@@ -2142,7 +2145,7 @@ let chartJs = (function() {
 					    scales: {
 					      yAxes: [{
 					        ticks: {
-					        	stepSize : 50000,
+					        	stepSize : 5000000,
 					          	beginAtZero: true
 					        }
 					      }],

@@ -228,7 +228,7 @@ class Migrate extends CI_Model {
                 'lang_name' => 'itemPrice',
                 'icon_class' => 'clipboard list',
                 'color' => 'teal',
-                'sub_menu' => true,
+                'sub_menu' => false,
                 'description' => 'Define prices for items'
               ),
               array(
@@ -239,6 +239,15 @@ class Migrate extends CI_Model {
                 'color' => 'orange',
                 'sub_menu' => true,
                 'description' => 'Damages of the stocks'
+              ),
+              array(
+                'machine' => 'purchase-return',
+                'name' => 'Return Purchase',
+                'lang_name' => 'return',
+                'icon_class' => 'undo',
+                'color' => 'green',
+                'sub_menu' => true,
+                'description' => 'Return the purchased that has damage or others..'
               ),
               array(
                 'machine' => 'customers',
@@ -988,6 +997,33 @@ class Migrate extends CI_Model {
 
       $this->dbforge->add_key('damageId', TRUE);
       $this->dbforge->create_table('damages_tbl', TRUE);
+
+      // Create purchase return tbl
+
+      $this->dbforge->add_field(array(
+        'returnId' => array(
+          'type' => 'INT',
+          'constraint' => 8,
+          'auto_increment' => TRUE
+        ),
+        'itemId' => array(
+          'type' => 'INT',
+          'constraint' => 8
+        ),
+        'qty' => array(
+          'type' => 'INT',
+          'constraint' => 8
+        ),
+        'remark' => array(
+          'type' => 'TEXT'
+        ),
+        'created_at' => array(
+          'type' => 'DATETIME'
+        ),
+      ));
+
+      $this->dbforge->add_key('returnId', TRUE);
+      $this->dbforge->create_table('purchase_return_tbl', TRUE);
 
       // Create printer_profile_tbl
       $this->dbforge->add_field(array(

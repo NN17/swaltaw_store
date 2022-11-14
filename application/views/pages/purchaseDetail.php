@@ -54,10 +54,14 @@
 			$i ++;
 			endforeach;
 		?>
-		<tr>
+		<!-- <tr>
 			<td colspan="7" class="ui right aligned">Total Amount</td>
 			<td class="ui right aligned"><strong><?=number_format($total)?></strong></td>
 			<td colspan="2"></td>
-		</tr>
+		</tr> -->
 	</tbody>
 </table>
+
+<div class="ui stacked segment text-center green">
+	<strong>TOTAL PURCHASE : <span class="text-red"><?=number_format($total)?></span></strong>
+</div>

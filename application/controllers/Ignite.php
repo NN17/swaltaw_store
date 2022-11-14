@@ -1771,7 +1771,7 @@ class Ignite extends CI_Controller {
     * Reports
     */
 
-    public function reports(){
+    public function dailyReport(){
         $this->breadcrumb->add('Home', 'home');
         $this->breadcrumb->add('Reports');
 
@@ -1802,7 +1802,77 @@ class Ignite extends CI_Controller {
 
         $data['dailyData'] = $this->ignite_model->get_dailyReportsData($data['dDate'])->result();
 
-        $data['content'] = 'pages/reports';
+        $data['content'] = 'pages/reportDaily';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function monthlyReport(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Reports');
+
+        $data['tab'] = $this->uri->segment(2);
+        if(empty($data['tab'])){
+            $data['tab'] = 'daily';
+        }
+
+        $data['dDate'] = $this->input->post('dailyDate');
+        if(empty($data['dDate'])){
+            $data['dDate'] = date('Y-m-d');
+        }
+
+        $data['mMonth'] = $this->input->post('mMonth');
+        if(empty($data['mMonth'])){
+            $data['mMonth'] = date('m');
+        }
+
+        $data['mYear'] = $this->input->post('mYear');
+        if(empty($data['mYear'])){
+            $data['mYear'] = date('Y');
+        }
+
+        $data['yYear'] = $this->input->post('yYear');
+        if(empty($data['yYear'])){
+            $data['yYear'] = date('Y');
+        }
+
+        $data['dailyData'] = $this->ignite_model->get_dailyReportsData($data['dDate'])->result();
+
+        $data['content'] = 'pages/reportMonthly';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function yearlyReport(){
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Reports');
+
+        $data['tab'] = $this->uri->segment(2);
+        if(empty($data['tab'])){
+            $data['tab'] = 'daily';
+        }
+
+        $data['dDate'] = $this->input->post('dailyDate');
+        if(empty($data['dDate'])){
+            $data['dDate'] = date('Y-m-d');
+        }
+
+        $data['mMonth'] = $this->input->post('mMonth');
+        if(empty($data['mMonth'])){
+            $data['mMonth'] = date('m');
+        }
+
+        $data['mYear'] = $this->input->post('mYear');
+        if(empty($data['mYear'])){
+            $data['mYear'] = date('Y');
+        }
+
+        $data['yYear'] = $this->input->post('yYear');
+        if(empty($data['yYear'])){
+            $data['yYear'] = date('Y');
+        }
+
+        $data['dailyData'] = $this->ignite_model->get_dailyReportsData($data['dDate'])->result();
+
+        $data['content'] = 'pages/reportYearly';
         $this->load->view('layouts/template', $data);
     }
 
@@ -2354,6 +2424,85 @@ class Ignite extends CI_Controller {
 
         $this->session->set_tempdata('success', 'Damage Item Updated Successfully !', 3);
         redirect('damages');
+    }
+
+    /*
+    Purchase Return Section
+    */
+    public function purchaseReturn() {
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Purchase Return');
+
+        $data['return'] = $this->ignite_model->get_data_order('purchase_return_tbl', 'created_at', 'DESC')->result();
+        $data['content'] = 'pages/pReturn';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function newReturn() {
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Purchase Return', 'purchase-return');
+        $this->breadcrumb->add('New Return');
+
+        $data['items'] = $this->ignite_model->get_itemsForDamage();
+        $data['content'] = 'pages/newReturn';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function addReturn() {
+        $itemId = $this->input->post('item');
+        $qty = $this->input->post('qty');
+        $remark = $this->input->post('remark');
+
+        $insert = array(
+            'itemId' => $itemId,
+            'qty' => $qty,
+            'remark' => $remark,
+            'created_at' => date('Y-m-d H:i:s A')
+        );
+
+        $this->db->insert('purchase_return_tbl', $insert);
+        redirect('purchase-return');
+    }
+
+    public function editReturn() {
+        $returnId = $this->uri->segment(2);
+
+        $this->breadcrumb->add('Home', 'home');
+        $this->breadcrumb->add('Purchase Return', 'purchase-return');
+        $this->breadcrumb->add('Modify');
+
+        $data['items'] = $this->ignite_model->get_itemsForDamage();
+        $data['return'] = $this->ignite_model->get_limit_data('purchase_return_tbl', 'returnId', $returnId)->row();
+
+        $data['content'] = 'pages/editReturn';
+        $this->load->view('layouts/template', $data);
+    }
+
+    public function updateReturn() {
+        $returnId = $this->uri->segment(3);
+
+        $itemId = $this->input->post('item');
+        $qty = $this->input->post('qty');
+        $remark = $this->input->post('remark');
+
+        $upd = array(
+            'itemId' => $itemId,
+            'qty' => $qty,
+            'remark' => $remark,
+            'created_at' => date('Y-m-d H:i:s A')
+        );
+
+        $this->db->where('returnId', $returnId);
+        $this->db->update('purchase_return_tbl', $upd);
+        redirect('purchase-return');
+    }
+
+    public function deleteReturn() {
+        $returnId = $this->uri->segment(2);
+
+        $this->db->where('returnId', $returnId);
+        $this->db->delete('purchase_return_tbl');
+        redirect('purchase-return');
     }
 
     /*

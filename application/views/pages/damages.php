@@ -13,7 +13,6 @@
 			<th class="ui right aligned">#</th>
 			<th><?=$this->lang->line('date')?></th>
 			<th><?=$this->lang->line('item_name')?></th>
-			<th><?=$this->lang->line('item_model')?></th>
 			<th class="ui right aligned"><?=$this->lang->line('purchase_price')?></th>
 			<th class="ui right aligned"><?=$this->lang->line('sell_price')?></th>
 			<th><?=$this->lang->line('remark')?></th>
@@ -30,7 +29,6 @@
 				<td class="ui right aligned"><?=$i?></td>
 				<td><?=date('d-m-Y', strtotime($dmg->created_at))?></td>
 				<td><?=$item['itemName']?></td>
-				<td><?=$item['model']?></td>
 				<td class="ui right aligned"><?=number_format($item['purchasePrice'])?></td>
 				<td class="ui right aligned"><?=number_format($item['sellPrice'])?></td>
 				<td><?=$dmg->remark?></td>

@@ -168,3 +168,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	// Languages for Damages
 	$lang['new_damage'] = 'Create New Damage';
 	$lang['edit_damage'] = 'Edit Damage';
+
+	// Languages for Purchase Return
+	$lang['return'] = 'Purchase Return';
+	$lang['new_return'] = 'New Return';
+	$lang['edit_return'] = 'Edit Return';

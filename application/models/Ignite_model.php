@@ -767,7 +767,9 @@ class Ignite_model extends CI_Model {
     }
 
     function get_dGrossProfit($invID){
-        $query = $this->db->query("SELECT * FROM invoice_detail_tbl AS idetail
+        $query = $this->db->query("SELECT * FROM invoices_tbl AS inv
+            LEFT JOIN invoice_detail_tbl AS idetail
+            ON inv.invoiceId = idetail.invoiceId
             LEFT JOIN items_price_tbl AS ip
             ON ip.codeNumber = idetail.itemCode
             LEFT JOIN count_type_tbl AS ct
@@ -781,64 +783,105 @@ class Ignite_model extends CI_Model {
             $sTotal += $row->itemPrice * $row->itemQty;
             $pTotal += $row->price * $row->itemQty;
         }
-        return ['sTotal' => $sTotal, 'pTotal' => $pTotal];
+        return $sTotal - $pTotal;
     }
 
-    function get_dNetProfit($invID, $sType) {
-        $items = $this->db->query("SELECT * FROM invoice_detail_tbl AS invDetail
-            LEFT JOIN items_price_tbl AS ip_tbl
-            ON ip_tbl.codeNumber = invDetail.itemCode
-            LEFT JOIN count_type_tbl AS ct_tbl
-            ON ct_tbl.related_item_id = ip_tbl.itemId
-            WHERE invDetail.invoiceId = $invID
-            AND ct_tbl.type = 'P'
+    function get_dNetProfit($invID) {
+
+        $query = $this->db->query("SELECT * FROM invoices_tbl AS inv
+            LEFT JOIN invoice_detail_tbl AS idetail
+            ON inv.invoiceId = idetail.invoiceId
+            LEFT JOIN items_price_tbl AS ip
+            ON ip.codeNumber = idetail.itemCode
+            LEFT JOIN count_type_tbl AS ct
+            ON ct.related_item_id = ip.itemId
+            WHERE idetail.invoiceId = $invID
+            AND ct.type = 'p'
             ")->result();
-
-        $ProfitTotal = 0;
-        $totalCharge = 0;
-        foreach($items as $item) {
-            $charge = $this->db->query("SELECT * FROM purchase_tbl AS ps
-                LEFT JOIN vouchers_tbl AS vr
-                ON vr.voucherId = ps.voucherId
-                WHERE ps.itemId = $item->itemId
-                ")->row();
-
-            $chargeAmt = $charge->chargeAmt;
-
-            $totalItem = $this->db->query("SELECT SUM(quantity) AS pQty FROM purchase_tbl
-                WHERE voucherId = $charge->voucherId
-                ")->row();
-            $avgCharge = round($chargeAmt / $totalItem->pQty);
-            $totalCharge += $avgCharge;
-
-            $dmg = $this->db->query("SELECT SUM(qty) AS dQty FROM damages_tbl
-                WHERE related_item_id = $item->itemId
-                ")->row();
-
-            $pTotalPrice = $charge->quantity * $item->price;
-            $pActualPrice = round($pTotalPrice / ($charge->quantity - $dmg->dQty));
-
-            $sPrice = $this->db->query("SELECT * FROM count_type_tbl
-                WHERE related_item_id = $item->itemId
-                AND type = '$sType'
-                ")->row();
-
-            if(!empty($sPrice->price)){
-                $salePrice = $sPrice->price;
-            }else{
-                $salePrice = 0;
-            }
-
-            $totalSale = $salePrice * $item->itemQty;
-            $actualSale = ($pActualPrice + $avgCharge) * $item->itemQty;
-
-            $netProfit = $totalSale - $actualSale;
-            $ProfitTotal += $netProfit;
+        $sTotal = 0;
+        $pTotal = 0;
+        $tranChgTotal = 0;
+        foreach($query as $row) {
+            $actualPurchasePrice = $this->get_actual_purchase_price($row->itemId);
+            $tranChg = $this->get_tranChgByItem($row->itemId);
+            $sTotal += $row->itemPrice * $row->itemQty;
+            $pTotal += round($actualPurchasePrice * $row->itemQty, 2);
+            $tranChgTotal += $tranChg;
         }
 
-        return $ProfitTotal;
-
+        
+        return $sTotal - ($pTotal+$tranChgTotal);
     }
+
+    function get_actual_purchase_price($itemId) {
+        $purchase = $this->db->query("SELECT ct.price, purchase.quantity FROM purchase_tbl AS purchase
+            LEFT JOIN count_type_tbl AS ct
+            ON ct.related_item_id = purchase.itemId
+            WHERE ct.type = 'P'
+            AND purchase.itemId = $itemId
+            ")->row();
+
+        $damage = $this->db->query("SELECT * FROM damages_tbl AS dmg
+            WHERE related_item_id = $itemId
+            ")->row();
+
+        if(!empty($damage)) {
+            $dmgQty = $damage->qty;
+        }
+            else {
+                $dmgQty = 0;
+            }
+
+        return round(($purchase->price * $purchase->quantity) / ($purchase->quantity - $dmgQty), 2);
+    }
+
+    function get_tranChgByItem($itemId) {
+        $chg = $this->db->query("SELECT * FROM purchase_tbl AS purchase
+            LEFT JOIN vouchers_tbl AS vr
+            ON vr.voucherId = purchase.voucherId
+            WHERE purchase.itemId = $itemId
+            ")->row();
+
+        $totalQty = $this->db->query("SELECT SUM(quantity) AS qty FROM purchase_tbl
+            WHERE voucherId = $chg->voucherId
+            ")->row();
+
+        $return = $this->db->query("SELECT SUM(qty) AS qty FROM purchase_return_tbl
+            WHERE itemId = $itemId
+            ")->row();
+
+        $tranChg = round($chg->chargeAmt / ($totalQty->qty - $return->qty), 2);
+
+        return $tranChg;
+    }
+
+    function get_profitMargin($invID) {
+        $query = $this->db->query("SELECT * FROM invoices_tbl AS inv
+            LEFT JOIN invoice_detail_tbl AS idetail
+            ON inv.invoiceId = idetail.invoiceId
+            LEFT JOIN items_price_tbl AS ip
+            ON ip.codeNumber = idetail.itemCode
+            LEFT JOIN count_type_tbl AS ct
+            ON ct.related_item_id = ip.itemId
+            WHERE idetail.invoiceId = $invID
+            AND ct.type = 'p'
+            ")->result();
+        $sTotal = 0;
+        $pTotal = 0;
+        $tranChgTotal = 0;
+        foreach($query as $row) {
+            $actualPurchasePrice = $this->get_actual_purchase_price($row->itemId);
+            $tranChg = $this->get_tranChgByItem($row->itemId);
+            $sTotal += $row->itemPrice * $row->itemQty;
+            $pTotal += round($actualPurchasePrice * $row->itemQty, 2);
+            $tranChgTotal += $tranChg;
+        }
+
+        $netProfit = $sTotal - ($pTotal+$tranChgTotal);
+
+        return round(($netProfit/$pTotal) * 100, 2);
+    }
+
 
     function get_daily_invoices($day, $month, $year) {
         $dStart = $year.'-'.$month.'-'.sprintf('%02d', $day).' 00:00:00';
