@@ -103,7 +103,7 @@
 <div class="ui clearing segment teal text-right">
 	<strong>Total Sale Amount : <?=number_format($totalAmt)?></strong> , &nbsp;
 	<strong>Total Gross Profit : <?=number_format($totalGross)?></strong> , &nbsp;
-	<strong>Total Net Profit : <?=number_format($totalNet)?></strong>
+	<strong>Total Net Profit : <?=number_format(round($totalNet, 2), 2)?></strong>
 </div>
 
 <!-- Invoice Detail Modal -->

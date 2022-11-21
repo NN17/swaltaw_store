@@ -1986,16 +1986,18 @@ let chartJs = (function() {
 	let thisPath = function(){
 		let currentPath = window.location.pathname;
 		let arr = currentPath.split('/');
-		let itemId = arr[arr.length - 2];
+		let type = arr[arr.length - 1];
 		if (currentPath.indexOf('POSv2/reports') > 0) {
-			return true;
+			return {'status' : true, 'type' : type};
+			
 		} else {
-			return false;
+			return {'status':false};
 		}
 	};
 
 	function getChart() {
-		if(thisPath()){
+		console.log(thisPath().status);
+		if(thisPath().status && thisPath().type == 'daily'){
 
 			// Daily Report Charts
 			var dt = new Date();
@@ -2012,8 +2014,9 @@ let chartJs = (function() {
 					var obj = JSON.parse(res);
 					var xValues = obj.days;
 					var yValues = obj.datas;
+					var ctx = $("#dailyChart").get(0).getContext('2d');
 
-					new Chart("dailyChart", {
+					new Chart(ctx, {
 					  type: "bar",
 					  data: {
 					    labels: xValues,
@@ -2049,6 +2052,10 @@ let chartJs = (function() {
 					});
 				}
 			});
+
+		}
+
+		else if(thisPath().status && thisPath().type == 'monthly') {
 
 			// Monthly Report Charts
 			var dt = new Date();
@@ -2102,6 +2109,10 @@ let chartJs = (function() {
 				}
 			});
 
+		}
+
+
+		else if(thisPath().status && thisPath().type == 'yearly') {
 			// Yearly Report Charts
 			var dt = new Date();
 			$.ajax({

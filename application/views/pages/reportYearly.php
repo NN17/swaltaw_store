@@ -23,8 +23,8 @@
 			<div class="column">
 				<select name="yYear" class="ui selection dropdown" onchange="orderAjax.submitForm('yearlyFilter')">
 					<option value="">Select Year</option>
-					<?php for($j=date('Y'); $j>=(date('Y') - 10); $j--): ?>
-						<option value="<?=$j?>" <?=$yYear==$j?'selected':''?>><?=$j?></option>
+					<?php for($x=date('Y'); $x>=(date('Y') - 10); $x--): ?>
+						<option value="<?=$x?>" <?=$yYear==$x?'selected':''?>><?=$x?></option>
 					<?php endfor; ?>
 				</select>
 			</div>
@@ -36,8 +36,8 @@
 				<?php 
 					$yearlyTotal = 0;
 					
-					for($k = 1; $k <= 12; $k++){
-						$y_Total = $this->ignite_model->get_Y_Total($k, $yYear);
+					for($y = 1; $y <= 12; $y++){
+						$y_Total = $this->ignite_model->get_Y_Total($y, $yYear);
 						$yearlyTotal += $y_Total['total'];
 					}
 				?>
@@ -57,55 +57,44 @@
 				<th><?=$this->lang->line('date')?></th>
 				<th class="ui right aligned"><?=$this->lang->line('total_inv')?></th>
 				<th class="ui right aligned"><?=$this->lang->line('total_amount')?></th>
-				<th class="ui right aligned"><?=$this->lang->line('net_profit')?></th>
 				<th class="ui right aligned"><?=$this->lang->line('gross_profit')?></th>
+				<th class="ui right aligned"><?=$this->lang->line('net_profit')?></th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php 
-				for($k = 1; $k <= 12; $k++): 
-					$y_invTotal = $this->ignite_model->get_Y_invTotal($k, $yYear);
-					$y_Total = $this->ignite_model->get_Y_Total($k, $yYear);
-					$yInvoices = $this->ignite_model->get_monthly_invoices($k, $yYear);
-					$yProfitTotal = 0;
-					foreach($yInvoices as $yInv){
-							$yNetProfit = $this->ignite_model->get_dNetProfit($yInv->invoiceId, $yInv->saleType);
-							$yProfitTotal += $yNetProfit - $yInv->discountAmt;
-					}
+				$totalInv = 0;
+				$totalAmt = 0;
+				$totalGross  = 0;
+				$totalNet = 0;
+				for($y = 1; $y <= 12; $y++): 
+					$y_invTotal = $this->ignite_model->get_Y_invTotal($y, $yYear);
+					$y_Total = $this->ignite_model->get_Y_Total($y, $yYear);
+					$y_Gross = $this->ignite_model->get_Y_gross($y, $yYear);
+					$y_Net = $this->ignite_model->get_Y_net($y, $yYear);
+
+					$totalInv += $y_invTotal;
+					$totalAmt += $y_Total['total'];
+					$totalGross += $y_Gross;
+					$totalNet += $y_Net;
 			?>
 				<tr>
-					<td><?=$k?></td>
-					<td><?=$this->ignite_model->getMonth($k)?></td>
+					<td><?=$y?></td>
+					<td><?=$this->ignite_model->getMonth($y)?></td>
 					<td class="ui right aligned"><?=$y_invTotal?></td>
 					<td class="ui right aligned"><?=number_format($y_Total['total'])?></td>
-					<td class="ui right aligned"><?=number_format($yProfitTotal)?></td>
-					<td class="ui right aligned"><?=number_format($y_Total['total'] - $y_Total['gpTotal'])?></td>
+					<td class="ui right aligned"><?=number_format($y_Gross)?></td>
+					<td class="ui right aligned"><?=number_format(round($y_Net, 2), 2)?></td>
 				</tr>
 			<?php endfor; ?>
+
+			<tr>
+				<td class="ui right aligned" colspan="2"><strong>Total</strong></td>
+				<td class="ui right aligned"><strong><?=$totalInv?></strong></td>
+				<td class="ui right aligned"><strong><?=number_format($totalAmt)?></strong></td>
+				<td class="ui right aligned"><strong><?=number_format($totalGross)?></strong></td>
+				<td class="ui right aligned"><strong><?=number_format(round($totalNet, 2), 2)?></strong></td>
+			</tr>
 		</tbody>
 	</table>
-</div>
-
-<!-- Invoice Detail Modal -->
-<div class="ui large modal" id="invDetail">
-	<div class="itemSearch-header">
-  		<h3 id="invDetailHead">Invoice Detail</h3>
-	</div>
-  	<div class="scrolling content">
-  			<div id="invDate" class="text-right"></div>
-    		<table class="ui table">
-    				<thead>
-    						<tr>
-    							<th>No</th>
-    							<th>Description</th>
-    							<th class="ui right aligned">Rate</th>
-    							<th class="ui right aligned">Qty</th>
-    							<th class="ui right aligned">Amount</th>
-    						</tr>
-    				</thead>
-    				<tbody id="invDetailBody">
-    					
-    				</tbody>
-    		</table>
-  	</div>
 </div>

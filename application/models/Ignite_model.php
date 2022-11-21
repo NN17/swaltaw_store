@@ -925,15 +925,17 @@ class Ignite_model extends CI_Model {
         return $data;
     }
 
-    function get_dMarginRate($invID){
-
-    }
-
     function get_M_invTotal($day, $month, $year){
-        $date = $year.'-'.sprintf('%02d',$month).'-'.sprintf('%02d',$day);
+        
+        $sDate = $year.'-'.sprintf('%02d',$month).'-'.sprintf('%02d', $day).' 00:00:00';
+        $eDate = $year.'-'.sprintf('%02d',$month).'-'.sprintf('%02d', $day).' 23:59:59';
+
         $query = $this->db->query("SELECT COUNT(invoiceId) AS invoice FROM invoices_tbl
-            WHERE created_date = '$date'
+            WHERE created_date
+            BETWEEN '$sDate'
+            AND '$eDate'
             ")->row();
+
         return $query->invoice;
     }
 
@@ -960,12 +962,8 @@ class Ignite_model extends CI_Model {
             ")->result();
 
         $total = 0;
-        $profit = 0;
-        $pTotal = 0;
         foreach($query as $row){
             $total += $row->itemQty * $row->itemPrice;
-            $profit +=  ($row->itemQty * $row->itemPrice)-(($row->itemQty * $row->price));
-            $pTotal += $row->itemQty * $row->price;
         }
 
         $query2 = $this->db->query("SELECT * FROM invoices_tbl
@@ -978,8 +976,45 @@ class Ignite_model extends CI_Model {
             $disTotal += $inv->discountAmt;
         }
 
-        return ['total' => ($total-$disTotal), 'profit' => ($profit-$disTotal), 'pTotal' => $pTotal];
+        return $total-$disTotal;
     }
+
+    function get_M_Gross($day, $month, $year) {
+        $date = $year.'-'.sprintf('%02d', $month).'-'.sprintf('%02d', $day);
+
+        $invoice = $this->db->query("SELECT * FROM invoices_tbl
+            WHERE active = true
+            AND created_date
+            BETWEEN '$date 00:00:00'
+            AND '$date 23:59:59'
+            ")->result();
+
+        $grossTotal = 0;
+        foreach($invoice as $inv) {
+            $grossTotal += $this->get_dGrossProfit($inv->invoiceId) - $inv->discountAmt;
+        }
+
+        return $grossTotal;
+    }
+
+    function get_M_Net($day, $month, $year) {
+        $date = $year.'-'.sprintf('%02d', $month).'-'.sprintf('%02d', $day);
+
+        $invoice = $this->db->query("SELECT * FROM invoices_tbl
+            WHERE active = true
+            AND created_date
+            BETWEEN '$date 00:00:00'
+            AND '$date 23:59:59'
+            ")->result();
+
+        $netTotal = 0;
+        foreach($invoice as $inv) {
+            $netTotal += $this->get_dNetProfit($inv->invoiceId) - $inv->discountAmt;
+        }
+
+        return $netTotal;
+    }
+    
 
     function get_Y_invTotal($month, $year){
         $start = $year.'-'.sprintf('%02d', $month).'-01';
@@ -993,8 +1028,8 @@ class Ignite_model extends CI_Model {
     }
 
     function get_Y_Total($month, $year){
-        $start = $year.'-'.sprintf('%02d', $month).'-01';
-        $end = $year.'-'.sprintf('%02d', $month).'-31';
+        $start = $year.'-'.sprintf('%02d', $month).'-01 00:00:00';
+        $end = $year.'-'.sprintf('%02d', $month).'-31 23:59:59';
 
         $query = $this->db->query("SELECT * FROM invoices_tbl AS inv
             LEFT JOIN invoice_detail_tbl AS detail
@@ -1005,6 +1040,7 @@ class Ignite_model extends CI_Model {
             ON ct.related_item_id = ip.itemId
             WHERE inv.created_date BETWEEN '$start' AND '$end'
             AND ct.type = 'P'
+            AND inv.active = true
             ")->result();
 
         $total = 0;
@@ -1017,29 +1053,95 @@ class Ignite_model extends CI_Model {
         return ['total' => $total, 'gpTotal' => $gpTotal];
     }
 
-    function get_yChart($year){
+    function get_Y_gross($month, $year) {
+        $start = $year.'-'.sprintf('%02d', $month).'-01 00:00:00';
+        $end = $year.'-'.sprintf('%02d', $month).'-31 23:59:59';
+
+        $invoices = $this->db->query("SELECT * FROM invoices_tbl
+                WHERE created_date
+                BETWEEN '$start'
+                AND '$end'
+                AND active = true;
+            ")->result();
+
+        $grossTotal = 0;
+        foreach($invoices as $inv) {
+            $grossTotal += $this->get_dGrossProfit($inv->invoiceId) - $inv->discountAmt;
+        }
+
+        return $grossTotal;
+    }
+
+    function get_Y_net($month, $year) {
+        $start = $year.'-'.sprintf('%02d', $month).'-01 00:00:00';
+        $end = $year.'-'.sprintf('%02d', $month).'-31 23:59:59';
+
+        $invoices = $this->db->query("SELECT * FROM invoices_tbl
+                WHERE created_date
+                BETWEEN '$start'
+                AND '$end'
+                AND active = true;
+            ")->result();
+
+        $netTotal = 0;
+        foreach($invoices as $inv) {
+            $netTotal += $this->get_dNetProfit($inv->invoiceId) - $inv->discountAmt;
+        }
+
+        return $netTotal;
+    }
+
+    function get_yChart_amt($year){
         $start = $year.'-01-01';
         $end = $year.'-12-31';
     
         $query = $this->db->query("SELECT * FROM invoices_tbl AS inv
             LEFT JOIN invoice_detail_tbl AS detail
             ON detail.invoiceId = inv.invoiceId
-            LEFT JOIN items_price_tbl AS ip
-            ON ip.codeNumber = detail.itemCode
-            LEFT JOIN count_type_tbl AS ct
-            ON ct.related_item_id = ip.itemId
             WHERE inv.created_date BETWEEN '$start' AND '$end'
-            AND ct.type = 'P'
+            AND inv.active = true
             ")->result();
 
         $total = 0;
-        $gpTotal = 0;
         foreach($query as $row){
             $total += $row->itemQty * $row->itemPrice;
-            $gpTotal += $row->itemQty * $row->price;
         }
 
-        return ['total' => $total, 'gpTotal' => $gpTotal];
+        return $total;
+    }
+
+    function get_yChart_gross($year) {
+        $start = $year.'-01-01';
+        $end = $year.'-12-31';
+    
+        $query = $this->db->query("SELECT * FROM invoices_tbl 
+            WHERE created_date BETWEEN '$start' AND '$end'
+            AND active = true
+            ")->result();
+
+        $total = 0;
+        foreach($query as $row){
+            $total += $this->get_dGrossProfit($row->invoiceId) - $row->discountAmt;
+        }
+
+        return $total;
+    }
+
+    function get_yChart_net($year) {
+        $start = $year.'-01-01';
+        $end = $year.'-12-31';
+    
+        $query = $this->db->query("SELECT * FROM invoices_tbl
+            WHERE created_date BETWEEN '$start' AND '$end'
+            AND active = true
+            ")->result();
+
+        $total = 0;
+        foreach($query as $row){
+            $total += $this->get_dNetProfit($row->invoiceId) - $row->discountAmt;
+        }
+
+        return $total;
     }
 
     function checkPrice($itemId){

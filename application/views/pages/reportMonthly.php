@@ -9,9 +9,8 @@
   	<i class="ui icon square orange"></i><label>Net Profit</label>
   </div>
 </div>
-
 <!-- Monthly Tab -->
-<div class="ui bottom attached <?=$tab == 'monthly'?'active':''?> tab segment" data-tab="monthly">
+<div class="ui bottom attached <?=$tab == 'monthly'?'active':''?> tab segment">
 	<!-- Chart Canvas -->
 	<canvas id="mChart" style="width:70vw; height: 35vh"></canvas>
 
@@ -46,7 +45,7 @@
 					for($i = 1; $i <= $days; $i++){
 						$invTotal = $this->ignite_model->get_M_invTotal($i, $mMonth, $mYear);
 						$amtTotal = $this->ignite_model->get_M_Total($i, $mMonth, $mYear);
-						$monthlyTotal += $amtTotal['total'];
+						$monthlyTotal += $amtTotal;
 					}
 				?>
 				<div class="ui tag label green">
@@ -64,62 +63,49 @@
 			<tr>
 				<th>#</th>
 				<th><?=$this->lang->line('date')?></th>
-				<th><?=$this->lang->line('total_inv')?></th>
+				<th class="ui right aligned"><?=$this->lang->line('total_inv')?></th>
 				<th class="ui right aligned"><?=$this->lang->line('total_amount')?></th>
 				<th class="ui right aligned"><?=$this->lang->line('gross_profit')?></th>
 				<th class="ui right aligned"><?=$this->lang->line('net_profit')?></th>
-				<th class="ui center aligned"><?=$this->lang->line('margin')?></th>
 			</tr>
 		</thead>
 		<tbody>
-			<?php 
+			<?php
+				$totalAmt = 0;
+				$totalGross = 0;
+				$totalNet = 0; 
+				$invOfMonth = 0;
 				for($i = 1; $i <= $days; $i++):
 					$invTotal = $this->ignite_model->get_M_invTotal($i, $mMonth, $mYear);
 					$amtTotal = $this->ignite_model->get_M_Total($i, $mMonth, $mYear);
-					$invoices = $this->ignite_model->get_daily_invoices($i, $mMonth, $mYear);
-					$nProfitTotal = 0;
-					foreach($invoices as $inv){
-							$mNetProfit = $this->ignite_model->get_dNetProfit($inv->invoiceId, $inv->saleType);
-							$nProfitTotal += $mNetProfit - $inv->discountAmt;
-					}
-					
+					$grossProfit = $this->ignite_model->get_M_Gross($i, $mMonth, $mYear);
+					$netProfit = $this->ignite_model->get_M_Net($i, $mMonth, $mYear);
+
+					$totalAmt += $amtTotal;
+					$totalGross += $grossProfit;
+					$totalNet += round($netProfit, 2);
+					$invOfMonth += $invTotal;
 			?>
 				<tr>
 					<td><?=$i?></td>
 					<td><?=date('d M Y', strtotime($mYear.'-'.$mMonth.'-'.$i))?></td>
-					<td><?=$invTotal?></td>
-					<td class="ui right aligned"><?=number_format($amtTotal['total'])?></td>
-					<td class="ui right aligned"><?=number_format($amtTotal['profit'])?></td>
-					<td class="ui right aligned"><?=number_format($nProfitTotal)?></td>
-					<td class="ui center aligned"><?=$amtTotal['pTotal'] > 0 ?round(($amtTotal['profit'] / $amtTotal['pTotal']) * 100, 2): '0'?> %</td>
+					<td class="ui right aligned"><?=$invTotal?></td>
+					<td class="ui right aligned"><?=number_format($amtTotal)?></td>
+					<td class="ui right aligned"><?=number_format($grossProfit)?></td>
+					<td class="ui right aligned"><?=number_format(round($netProfit,2),2)?></td>
 				</tr>
 			<?php 
 				endfor;
 			?>
+
+			<tr>
+				<td class="ui right aligned" colspan="2"><strong>Total</strong></td>
+				<td class="ui right aligned"><strong><?=$invOfMonth?></strong></td>
+				<td class="ui right aligned"><strong><?=number_format($totalAmt)?></strong></td>
+				<td class="ui right aligned"><strong><?=number_format($totalGross)?></strong></td>
+				<td class="ui right aligned"><strong><?=number_format(round($totalNet, 2), 2)?></strong></td>
+			</tr>
 		</tbody>
 	</table>
 </div>
 
-<!-- Invoice Detail Modal -->
-<div class="ui large modal" id="invDetail">
-	<div class="itemSearch-header">
-  		<h3 id="invDetailHead">Invoice Detail</h3>
-	</div>
-  	<div class="scrolling content">
-  			<div id="invDate" class="text-right"></div>
-    		<table class="ui table">
-    				<thead>
-    						<tr>
-    							<th>No</th>
-    							<th>Description</th>
-    							<th class="ui right aligned">Rate</th>
-    							<th class="ui right aligned">Qty</th>
-    							<th class="ui right aligned">Amount</th>
-    						</tr>
-    				</thead>
-    				<tbody id="invDetailBody">
-    					
-    				</tbody>
-    		</table>
-  	</div>
-</div>
