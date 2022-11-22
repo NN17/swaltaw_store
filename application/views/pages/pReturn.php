@@ -1,7 +1,7 @@
 <div class="ui clearing segment green">
 	<h3 class="ui left floated header green"><?=$this->lang->line('return')?></h3>
 	
-	<a href="create-return" class="ui button right floated green <?=$this->auth->checkModify($this->session->userdata('Id'), 'damages')?'':'disabled'?>">
+	<a href="create-return" class="ui button right floated green <?=$this->auth->checkModify($this->session->userdata('Id'), 'purchase-return')?'':'disabled'?>">
 	    <i class="icon plus circle"></i> <?=$this->lang->line('new')?>
 	</a>
 </div>

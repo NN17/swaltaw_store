@@ -57,9 +57,9 @@
 				<td><?=$inv->paymentType?></td>
 				<td>
 					<?php if($inv->delivered == false && $inv->paymentType == 'COD'): ?>
-					<button class="ui tiny button circular orange icon" onclick="igniteAjax.delivered(<?=$inv->invoiceId?>)"><i class="ui icon shipping fast"></i></button>
+					<button class="ui tiny button circular orange icon" <?=$this->auth->checkModify($this->session->userdata('Id'), 'invoices/~')?'onclick="igniteAjax.delivered('.$inv->invoiceId.')"':'disabled'?>><i class="ui icon shipping fast"></i></button>
 					<?php elseif($inv->pReceived == false && $inv->paymentType == 'MBK'): ?>
-						<button class="ui tiny button circular orange icon" onclick="igniteAjax.receivePayment(<?=$inv->invoiceId?>)"><i class="ui icon hourglass outline"></i></button>
+						<button class="ui tiny button circular orange icon" <?=$this->auth->checkModify($this->session->userdata('Id'), 'invoices/~')?'onclick="igniteAjax.receivePayment('.$inv->invoiceId.')"':'disabled'?>><i class="ui icon hourglass outline"></i></button>
 					<?php else: ?>
 					<button class="ui tiny button circular green icon"><i class="ui icon check circle"></i></button>
 					<?php endif; ?>
@@ -67,8 +67,8 @@
 				<td><?=$inv->referId > 0?'<button class="ui button icon circular olive tiny" onclick="igniteAjax.detailInv('.$inv->referId.')"><i class="ui icon thumbtack"></i></button>':'-'?></td>
 				<td><?=$this->ignite_model->get_username($inv->created_by)?></td>
 				<td>
-					<a href="refer-invoice/<?=$inv->invoiceId?>" class="ui button icon circular tiny yellow"><i class="ui icon edit outline"></i></a>
-					<a href="javascript:void(0)" class="ui tiny button icon circular red" id="delete" data-url="del-invoice/<?=$inv->invoiceId?>"><i class="ui icon trash alternate outline"></i></a>
+					<a <?=$this->auth->checkModify($this->session->userdata('Id'), 'invoices/~')?'href="refer-invoice/'.$inv->invoiceId.'"':'id="popup" data-content="You don\'t have authorized to refer invoice !"'?> class="ui button icon circular tiny yellow"><i class="ui icon edit outline"></i></a>
+					<a href="javascript:void(0)" class="ui tiny button icon circular red" <?=$this->auth->checkModify($this->session->userdata('Id'), 'invoices/~')?'id="delete" data-url="del-invoice/'.$inv->invoiceId.'"':'id="popup" data-content="You don\'t have authorized to delete invoice !"'?> ><i class="ui icon trash alternate outline"></i></a>
 				</td>
 			</tr>
 			<?php 

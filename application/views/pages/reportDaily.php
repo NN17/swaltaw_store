@@ -2,10 +2,10 @@
 	<h3 class="ui left floated header teal"><?=$this->lang->line('reports')?></h3>
 </div>
 
-<div class="ui top attached tabular menu grey">
-  <div class="<?=$tab == 'daily'?'active':''?> item" ><a href="reports/daily">Daily</a></div>
-  <div class="<?=$tab == 'monthly'?'active':''?> item"><a href="reports/monthly">Monthly</a></div>
-  <div class="<?=$tab == 'yearly'?'active':''?> item"><a href="reports/yearly">Yearly</a></div>
+<div class="ui secondary pointing menu">
+  <a class="<?=$tab == 'daily'?'active':''?> item" href="reports/daily">Daily</a>
+  <a class="<?=$tab == 'monthly'?'active':''?> item" href="reports/monthly">Monthly</a>
+  <a class="<?=$tab == 'yearly'?'active':''?> item" href="reports/yearly">Yearly</a>
 
   <div class="item right floated">
   	<i class="ui icon square light-green"></i><label>Total Sale</label> &nbsp;
@@ -15,7 +15,7 @@
 </div>
 
 <!-- Daily Tab -->
-<div class="ui bottom attached <?=$tab == 'daily'?'active':''?> tab segment" data-tab="daily">
+<div class="ui segment">
 	<?php 
 		$dailyTotal = 0;
 		$dailyItems = 0;

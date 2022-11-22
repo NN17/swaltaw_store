@@ -46,8 +46,8 @@
 				<?php endif; ?>
 			</td>
 			<td>
-				<a href="edit-purchase/<?=$item['purchaseId']?>" class="ui button circular orange tiny icon <?=$this->ignite_model->check_purchase($item['purchaseId'])?'disabled':''?>"><i class="ui icon cog"></i></a>
-				<a href="javascript:void(0)" class="ui button circular red tiny icon <?=$this->ignite_model->check_purchase($item['purchaseId'])?'disabled':''?>" id="delete" data-url="ignite/delPurchase/<?=$item['purchaseId']?>"><i class="ui icon remove"></i></a>
+				<a <?=$this->auth->checkModify($this->session->userdata('Id'), 'purchase')?'href="edit-purchase/'.$item['purchaseId'].'"':'disabled'?> class="ui button circular orange tiny icon <?=$this->ignite_model->check_purchase($item['purchaseId'])?'disabled':''?>"><i class="ui icon cog"></i></a>
+				<a href="javascript:void(0)" class="ui button circular red tiny icon <?=$this->ignite_model->check_purchase($item['purchaseId'])?'disabled':''?>" <?=$this->auth->checkModify($this->session->userdata('Id'), 'purchase')?'id="delete" data-url="ignite/delPurchase/'.$item['purchaseId'].'"':'disabled'?> ><i class="ui icon remove"></i></a>
 			</td>
 		</tr>
 		<?php 

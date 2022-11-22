@@ -33,9 +33,9 @@
 			<td class="ui right aligned"><strong><?=number_format($total_amount)?></strong></td>
 			<td class="ui right aligned">
 				<?php if($this->ignite_model->check_active_purchase($voucher->voucherId) == 'empty'): ?>
-					<button class="ui tiny button circular icon" onclick="igniteAjax.setAllPurchaseActive(<?=$voucher->voucherId?>)"><i class="icon shopping bag"></i></button>
+					<button class="ui tiny button circular icon" <?=$this->auth->checkModify($this->session->userdata('Id'), 'purchase')?'onclick="igniteAjax.setAllPurchaseActive('.$voucher->voucherId.')"':'disabled'?>><i class="icon shopping bag"></i></button>
 				<?php elseif($this->ignite_model->check_active_purchase($voucher->voucherId) == 'less'): ?>
-					<button class="ui tiny button circular icon yellow" onclick="igniteAjax.setAllPurchaseActive(<?=$voucher->voucherId?>)"><i class="icon shopping bag"></i></button>
+					<button class="ui tiny button circular icon yellow" <?=$this->auth->checkModify($this->session->userdata('Id'), 'purchase')?'onclick="igniteAjax.setAllPurchaseActive('.$voucher->voucherId.')"':'disabled'?>><i class="icon shopping bag"></i></button>
 				<?php elseif($this->ignite_model->check_active_purchase($voucher->voucherId) == 'passed'): ?>
 					<button class="ui tiny button circular icon olive"><i class="icon shopping bag"></i></button>
 				<?php endif; ?>
