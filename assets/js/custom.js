@@ -1834,6 +1834,41 @@ var igniteAjax = function (){
 		});
 	}
 
+	let purchaseRestore = function(pId) {
+		$.ajax({
+			url: base_url() + 'restore-purchase',
+			type: 'POST',
+			crossDomain: 'TRUE',
+			data: {
+				'purchaseId' : pId
+			},
+			success: function(res){
+				
+				console.log(res);
+				if(res == 'Success') {
+
+					location.href = 'purchase';
+				}
+					else {
+						$.alert({
+						    title: 'Restore Alert !',
+						    content: res,
+						    backgroundDismiss: false,
+							columnClass: "custom-confirm-box",
+							animation: 'top',
+				    		closeAnimation: 'opacity',
+				    		animationBounce: 1.5,
+							theme: "modern",
+							type: "red",
+							icon: "ui icon",
+							useBootstrap: false,
+							boxWidth: '30%',
+						});
+					}
+			}
+		});
+	}
+
 	return {
 		init: function (){
 			thisPath();
@@ -1876,6 +1911,9 @@ var igniteAjax = function (){
 		},
 		searchInvoice() {
 			invoiceSearch();
+		},
+		restorePurchase(purchaseId) {
+			purchaseRestore(purchaseId);
 		}
 	}
 }();
@@ -1996,7 +2034,7 @@ let chartJs = (function() {
 	};
 
 	function getChart() {
-		console.log(thisPath().status);
+		// console.log(thisPath().status);
 		if(thisPath().status && thisPath().type == 'daily'){
 
 			// Daily Report Charts

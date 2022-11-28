@@ -140,6 +140,7 @@ $route['edit-purchase/(:num)'] = 'ignite/editPurchase';
 $route['detail-purchase/(:num)'] = 'ignite/purchaseDetail';
 $route['set-all-purchase/:num'] = 'ignite/setAllPurchase';
 $route['set-purchase/:num'] = 'ignite/setPurchase';
+$route['restore-purchase'] = 'ignite/restorePurchase';
 
 /*
 * Routes for Sales

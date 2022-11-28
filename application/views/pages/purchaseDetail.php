@@ -42,7 +42,7 @@
 				<?php if($this->ignite_model->check_purchase($item['purchaseId']) == false): ?>
 					<button class="ui tiny button circular icon" onclick="igniteAjax.setPurchaseActive(<?=$item['purchaseId']?>, '<?=$item['itemName']?>')"><i class="icon shopping bag"></i></button>
 				<?php else: ?>
-					<button class="ui tiny button circular icon green"><i class="icon shopping bag"></i></button>
+					<button class="ui tiny button circular icon green" onclick="igniteAjax.restorePurchase(<?=$item['purchaseId']?>)"><i class="icon shopping bag"></i></button>
 				<?php endif; ?>
 			</td>
 			<td>

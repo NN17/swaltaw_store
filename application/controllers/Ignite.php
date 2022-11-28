@@ -1125,7 +1125,7 @@ class Ignite extends CI_Controller {
     //Purchase Section
     public function purchase(){
         $this->breadcrumb->add('Home', 'home');
-        $this->breadcrumb->add('Stocks In');
+        $this->breadcrumb->add('Purchase');
 
         $data['vouchers'] = $this->ignite_model->get_data_order('vouchers_tbl', 'vDate', 'DESC')->result();
         $data['content'] = 'pages/purchase';
@@ -1136,7 +1136,7 @@ class Ignite extends CI_Controller {
         $vocId = $this->uri->segment(2);
 
         $this->breadcrumb->add('Home', 'home');
-        $this->breadcrumb->add('Stocks In', 'purchase');
+        $this->breadcrumb->add('Purchase', 'purchase');
         $this->breadcrumb->add('Detail');
 
         $data['purchaseItem'] = $this->ignite_model->get_purchaseItem($vocId);
@@ -1339,6 +1339,37 @@ class Ignite extends CI_Controller {
         $this->db->where('purchaseId', $purchaseId);
         $this->db->delete('purchase_tbl');
         redirect('purchase');
+    }
+
+    public function restorePurchase() {
+        $purchaseId = $this->input->post('purchaseId');
+
+        $purchase = $this->ignite_model->get_limit_data('purchase_tbl', 'purchaseId', $purchaseId)->row();
+
+        $balance = $this->ignite_model->get_limit_data('stocks_balance_tbl', 'itemId', $purchase->itemId)->row();
+
+        if($balance->qty < $purchase->quantity) {
+            echo 'Item can not be restore. The stock item is lower than the purchase balance';
+        }
+            else {
+
+                $updateBalance = $balance->qty - $purchase->quantity;
+
+                // Update Balance
+                $upd = array(
+                    'qty' => $updateBalance
+                );
+
+                $this->db->where('itemId', $purchase->itemId);
+                $this->db->where('warehouseId', $purchase->warehouseId);
+                $this->db->update('stocks_balance_tbl', $upd);
+
+                // Reset Purchase
+                $this->db->where('purchaseId', $purchaseId);
+                $this->db->update('purchase_tbl', ['active' => false]);
+
+                echo 'Success';
+            }
     }
 
     /*
