@@ -2465,6 +2465,17 @@ class Ignite extends CI_Controller {
         );
 
         $this->db->insert('purchase_return_tbl', $insert);
+
+        // Update Balance
+        $balance = $this->ignite_model->get_limit_data('stocks_balance_tbl', 'itemId', $itemId)->row();
+        if($balance->qty > $qty) {
+            $updBal = $balance->qty - $qty;
+        }
+        
+
+        $this->db->where('itemId', $itemId);
+        $this->db->update('stocks_balance_tbl', ['qty' => $updBal]);
+
         redirect('purchase-return');
     }
 
@@ -2485,6 +2496,16 @@ class Ignite extends CI_Controller {
     public function updateReturn() {
         $returnId = $this->uri->segment(3);
 
+        $return = $this->ignite_model->get_limit_data('purchase_return_tbl', 'returnId', $returnId)->row();
+
+        // Restore Balance
+        $balance = $this->ignite_model->get_limit_data('stocks_balance_tbl', 'itemId', $return->itemId)->row();
+
+        $restoreBal = $balance->qty + $return->qty;
+
+        $this->db->where('itemId', $return->itemId);
+        $this->db->update('stocks_balance_tbl', ['qty' => $restoreBal]);
+
         $itemId = $this->input->post('item');
         $qty = $this->input->post('qty');
         $remark = $this->input->post('remark');
@@ -2498,6 +2519,16 @@ class Ignite extends CI_Controller {
 
         $this->db->where('returnId', $returnId);
         $this->db->update('purchase_return_tbl', $upd);
+
+        // Update Balance
+        $balance = $this->ignite_model->get_limit_data('stocks_balance_tbl', 'itemId', $itemId)->row();
+        if($balance->qty > $qty) {
+            $updBal = $balance->qty - $qty;
+        }
+
+        $this->db->where('itemId', $itemId);
+        $this->db->update('stocks_balance_tbl', ['qty' => $updBal]);
+
         redirect('purchase-return');
     }
 
